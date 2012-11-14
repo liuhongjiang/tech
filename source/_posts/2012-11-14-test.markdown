@@ -1,0 +1,63 @@
+---
+layout: post
+title: "Math Test"
+date: 2012-11-14 17:41
+comments: true
+categories: math
+---
+
+* kramdown主页   
+[kramdown](http://kramdown.rubyforge.org/)  
+
+* 配置kramdown  
+在_config.yml文件里
+
+```
+markdown: kramdown
+```
+
+
+* 链接：  
+[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
+[解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
+
+# math equations
+
+* example one  
+
+$$
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+$$
+
+* example  
+
+段内插入LaTeX代码是这样的：$\exp(-\frac{x^2}{2})$，试试看看吧
+
+在段中插入公式$$J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha}$$,效果如何
+
+* example  
+
+$$
+\begin{align*}
+  & J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha}
+\end{align*}
+$$
+
+$$ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} $$
+
+* example failed
+
+\[ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} \]
