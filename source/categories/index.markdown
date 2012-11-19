@@ -4,5 +4,5 @@ title: "标签分类"
 ---
 
 <section>
-  <ul id="category-list"><li>{% category_list counter:true %}</li></ul>
+  <ul>{% category_list counter:true %}</ul>
 </section>
