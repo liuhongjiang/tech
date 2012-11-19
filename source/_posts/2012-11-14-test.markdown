@@ -3,7 +3,7 @@ layout: post
 title: "Math Test"
 date: 2012-11-14 17:41
 comments: true
-categories: math
+categories: math test
 ---
 
 * kramdown主页   
