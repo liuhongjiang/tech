@@ -21,6 +21,7 @@ markdown: kramdown
 [如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
 [解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
 
+<!-- more -->
 # math equations
 
 * example one  
