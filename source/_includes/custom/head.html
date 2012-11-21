@@ -2,6 +2,7 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+{% if page.math == true %}
 <!--JS for show math symbols -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -32,3 +33,4 @@
 <script type="text/javascript"
   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+{% endif %}

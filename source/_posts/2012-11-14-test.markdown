@@ -1,30 +1,13 @@
 ---
 layout: post
-title: "Math Test"
+title: "显示数学公式"
 date: 2012-11-14 17:41
 comments: true
+math: true
 categories: math test tags
 ---
 
-* kramdown主页   
-[kramdown](http://kramdown.rubyforge.org/)  
-
-* 配置kramdown  
-在_config.yml文件里
-
-```
-markdown: kramdown
-```
-
-
-* 链接：  
-[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
-[解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
-
-<!-- more -->
-# math equations
-
-* example one  
+* math equation example
 
 $$
 \begin{align*}
@@ -42,6 +25,8 @@ $$
     \end{array} \right)
 \end{align*}
 $$
+
+<!-- more -->
 
 * example  
 
@@ -62,3 +47,18 @@ $$ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha 
 * example failed
 
 \[ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} \]
+
+* kramdown主页   
+[kramdown](http://kramdown.rubyforge.org/)  
+
+* 配置kramdown  
+在_config.yml文件里
+
+```
+markdown: kramdown
+```
+
+
+* 链接：  
+[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
+[解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
