@@ -7,7 +7,9 @@ math: true
 categories: math
 ---
 
-* math equation example
+在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。   
+借用强大的`MathJax + Latex`就可以解决这个问题。  
+废话少说，先来一个例子  
 
 $$
 \begin{align*}
@@ -28,13 +30,34 @@ $$
 
 <!-- more -->
 
-* example  
+## 更多例子
+下面是在段中插入公式：
 
+```
 段内插入LaTeX代码是这样的：$\exp(-\frac{x^2}{2})$，试试看看吧
+```
+<div markdown="1" class="showbox">
+段内插入LaTeX代码是这样的：$\exp(-\frac{x^2}{2})$，试试看看吧
+</div>
 
+```
 在段中插入公式$$J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha}$$,效果如何
+```
 
-* example  
+<div markdown="1" class="showbox">
+在段中插入公式$$J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha}$$,效果如何
+</div>
+
+## 更多更多例子  
+
+```
+$$
+\begin{align*}
+  & J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha}
+\end{align*}
+$$
+```
+公式显示如下： <em style="color:red"> 注意：\$\$前一定要有空行</em>
 
 $$
 \begin{align*}
@@ -42,11 +65,69 @@ $$
 \end{align*}
 $$
 
+或者在一行里：
+
+```
+$$ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} $$
+```
+
+公式显示如下：
+
 $$ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} $$
 
-* example failed
+## 本文开头的例子
+
+```
+$$
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+$$
+```
+
+显示如下：
+
+$$
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+$$
+
+## 错误的例子
+
+这个本来是MathJax默认的方式，但是在kramdown中无法显示
+
+```
+\[ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} \]
+```
 
 \[ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha + 1)}{\left({\frac{x}{2}}\right)}^{2 m + \alpha} \]
+
+## krmadown
+
+本文主要用到了krmadown,使用很简单，下载安装kramdown，在后在\_config.yml文件里面配置即可
 
 * kramdown主页   
 [kramdown](http://kramdown.rubyforge.org/)  
@@ -58,6 +139,16 @@ $$ J_\alpha(x) = \sum\limits_{m=0}^\infty \frac{(-1)^m}{m! \, \Gamma(m + \alpha 
 markdown: kramdown
 ```
 
-* 链接：  
-[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
-[解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
+## 链接
+其实我主要是借鉴了下面两篇文字，具体如何配置，也可以在这两篇文字中找到。
+
+* [如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
+* [解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
+
+## 关于Latex
+
+本人不会Latex，那么怎么生成Latex格式的公式呢？   
+
+* 一是可以在线生成：[Online LaTeX Equation Editor](http://www.codecogs.com/latex/eqneditor.php)   
+* 二是使用mathtype。   
+	在mathtype的`Preferences`->`Cut and Copy preferences...`选中`MathML to Tex`。编辑公式后拷贝，粘贴到记事本，就可以得到Latex格式的公式。
