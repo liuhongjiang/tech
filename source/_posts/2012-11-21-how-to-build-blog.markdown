@@ -6,8 +6,10 @@ comments: true
 categories: octopress 
 ---
 
-## 如何搭建
+## 如何搭建blog
 这个blog是使用[Octopress](http://octopress.org/)搭建的，存放在[github](https://github.com/)上。相关信息如下：
+
+<!-- more -->
 
 * [github](https://github.com/)
 * [github pages](http://pages.github.com/)
