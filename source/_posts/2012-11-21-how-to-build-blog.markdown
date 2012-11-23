@@ -19,6 +19,9 @@ categories: octopress
 
 ## 值得借鉴的站点
 
+下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。
+这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。
+
 * [这个小站很牛B](http://luikore.github.com/2011/09/good-things-learned-from-octopress/)
 * [yanping.me](http://yanping.me/)
 * [http://www.yangzhiping.com/](http://www.yangzhiping.com/)

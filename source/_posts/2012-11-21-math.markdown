@@ -7,9 +7,7 @@ math: true
 categories: math
 ---
 
-在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。   
-借用强大的`MathJax + Latex`就可以解决这个问题。  
-废话少说，先来一个例子  
+在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。借用强大的`MathJax + Latex`就可以解决这个问题。废话少说，先来一个例子  
 
 $$
 \begin{align*}
@@ -152,3 +150,68 @@ markdown: kramdown
 * 一是可以在线生成：[Online LaTeX Equation Editor](http://www.codecogs.com/latex/eqneditor.php)   
 * 二是使用mathtype。   
 	在mathtype的`Preferences`->`Cut and Copy preferences...`选中`MathML to Tex`。编辑公式后拷贝，粘贴到记事本，就可以得到Latex格式的公式。
+
+## MathJax加载
+
+按照“[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)”的方法加入脚本，会产生一个问题，无论这个页面有没有数学公式，都会去加载MathJax脚本，而加载这个脚本的速度非常慢。那么如何控制，哪些页面加入这个脚本，哪些页面不需要加？    
+首先，我在post文档中加入了一个变量`math`,
+
+```
+---
+layout: post
+title: "显示公式"
+date: 2012-11-21 12:49
+comments: true
+math: true
+categories: math
+---
+```
+
+然后在`source/_includes/custom/head.html`加入脚本相关内容时，加入了`{% raw %} {% if page.math == true %}...{% endif %} {% endraw %}`语句进行判断，完整的如下：
+
+```
+{% raw %}
+{% if page.math == true %}
+<!--JS for show math symbols -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+{% endif %}
+{% endraw %}
+```
+
+这样，在post的markdown中文件中，如果你声明`math`为`true`,那么就会在最后生成的html文件中加上这段加载MathJax的代码；如果不声明，或在声明为空或`false`，就不会添加加载MathJax的代码。   
+还有一个问题，就是在博客首页生成的pinboard中，如果有公式的话，就无法正常显示了。如果需要在首页的pinboard中显示公式，在`source/index.html`文件中加入`math`的声明。
+
+```
+---
+layout: default
+math: true
+---
+```
