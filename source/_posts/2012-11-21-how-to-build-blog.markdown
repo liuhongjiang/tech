@@ -7,9 +7,14 @@ categories: octopress
 ---
 
 ## 如何搭建blog
-这个blog是使用[Octopress](http://octopress.org/)搭建的，存放在[github](https://github.com/)上。相关信息如下：
+* 这个blog是使用[Octopress](http://octopress.org/)搭建的，它是一种基于[Jekyll](https://github.com/mreid/jekyll/)的博客框架。
+* 存放在[github](https://github.com/)上。
+* markdown解析器用的[kramdown](http://kramdown.rubyforge.org/)
+* 数学公式解析器用的[MathJax](http://www.mathjax.org/)
 
 <!-- more -->
+
+相关信息如下：
 
 * [github](https://github.com/)
 * [github pages](http://pages.github.com/)
@@ -32,18 +37,29 @@ categories: octopress
 
 ## 在blog中显示公式
 
+数学公式解析器用的[MathJax](http://www.mathjax.org/), 这是一个JS脚本，渲染Latex格式的数学公式。请参考以下几篇文章。
+
 * [在Octopress中使用LaTeX](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)
 * [Hello MathJax](http://steshaw.org/blog/2012/02/09/hello-mathjax/)
 * [blog写公式的例子](http://jakevdp.github.com/blog/2012/09/05/quantum-python/)
 
 ## 标签  
 
-* [标签云的插件](https://github.com/tokkonopapa/octopress-tagcloud)
+标签云主要使用[标签云的插件](https://github.com/tokkonopapa/octopress-tagcloud)。
+在`_config.yml`的sidebar中加入`tag_cloud.html`，就标签出现在侧边栏中。
+
+```
+default_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+
+blog_index_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+
+post_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+```
 
 ## 拷贝本站
 或者你也可以拷贝这个项目到你的github的pages的项目中，然后删除source/\_post下面的所有文章。修改部分配置即可。
 
-* [本项目](https://github.com/liuhongjiang/liuhongjiang.github.com)
+* [本站的源代码](https://github.com/liuhongjiang/liuhongjiang.github.com)
 
 <strong style="color:red">注意：</strong>clone的是source分支，不是master。
 

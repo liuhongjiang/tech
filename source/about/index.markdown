@@ -26,3 +26,12 @@ title: "关于..."
 
 <p><img class="center" src="/images/lv.jpg" /></p>
 <h1 align="center">"Bazinga"</h1>
+
+<br/>
+<br/>
+<br/>
+
+* * *
+
+关于如何搭建本站，请参考“[使用Octopress搭建博客](/blog/2012/11/21/how-to-build-blog/)”。
+
