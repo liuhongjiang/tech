@@ -99,7 +99,50 @@ blockquote{
 
 #tag-clouds a{
     text-decoration:none;
-    
+}
+
+/* 引用 */
+#content blockquote.information {
+  border-left: 12px solid #080;
+  background-color: #bfb;
+  padding: 12px 12px 12px 0;
+  margin-left: -48px;
+  padding-left: 48px; 
+}
+
+#content blockquote.markdown-difference {
+  border-left: 12px solid #dc0;
+  background-color: #ffa;
+  padding: 12px 12px 12px 0;
+  margin-left: -48px;
+  padding-left: 48px; 
+}
+
+#content blockquote.markdown-difference:before {
+    content: "Difference";
+    display: block;
+    font-weight: bold; 
+}
+
+#content blockquote pre {
+  border: none; 
+}
+
+/* 表格 */
+#content table {
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  /*border: solid 1px black;*/
+ /* width: 100%; */
+}
+#content table td, #content table th {
+    padding: 3px 5px; 
+    border: solid 1px #070;
+}
+#content table th {
+    background-color: #080;
+    color: white; 
 }
 
 
