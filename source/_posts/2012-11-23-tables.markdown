@@ -1,0 +1,58 @@
+---
+layout: post
+title: "tables"
+date: 2012-11-23 17:18
+comments: true
+categories: 
+---
+
+
+| Header1 | Header2 | Header3 |
+|:--------|:-------:|--------:|
+| cell1   | cell2   | cell3   |
+| cell4   | cell5   | cell6   |
+|----
+| cell1   | cell2   | cell3   |
+| cell4   | cell5   | cell6   |
+|=====
+| Foot1   | Foot2   | Foot3
+{: rules="groups"}
+
+<br/>
+
+| First cell|Second cell|Third cell
+| First | Second | Third |
+
+First | Second | | Fourth |
+
+<br/>
+
+
+|-----------------+------------+-----------------+----------------|
+| Default aligned |Left aligned| Center aligned  | Right aligned  |
+|-----------------|:-----------|:---------------:|---------------:|
+| First body part |Second cell | Third cell      | fourth cell    |
+| Second line     |foo         | **strong**      | baz            |
+| Third line      |quux        | baz             | bar            |
+|-----------------+------------+-----------------+----------------|
+| Second body     |            |                 |                |
+| 2 line          |            |                 |                |
+|=================+============+=================+================|
+| Footer row      |            |                 |                |
+|-----------------+------------+-----------------+----------------|
+
+
+<br/>
+
+|---
+| Default aligned | Left aligned | Center aligned | Right aligned
+|-|:-|:-:|-:
+| First body part | Second cell | Third cell | fourth cell
+| Second line |foo | **strong** | baz
+| Third line |quux | baz | bar
+|---
+| Second body
+| 2 line
+|===
+| Footer row
+<br/>
