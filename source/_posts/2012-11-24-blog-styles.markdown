@@ -3,7 +3,7 @@ layout: post
 title: "博客的样式"
 date: 2012-11-24 14:23
 comments: true
-categories: 
+categories: octopress
 ---
 
 主要介绍了本小站的一些样式，希望能对有需要的人有帮助。
@@ -45,7 +45,7 @@ categories:
 
 ## 表格
 
-参考[kramdown关于表格的文档](http://kramdown.rubyforge.org/syntax.html#tables)，或者是[kramdown的快速参考中的表格介绍](http://kramdown.rubyforge.org/quickref.html#tables)。表格的样式也是在这个基础上修改的。    
+参考[kramdown关于表格的参考手册](http://kramdown.rubyforge.org/syntax.html#tables)，或者是[kramdown关于表格的快速参考手册](http://kramdown.rubyforge.org/quickref.html#tables)。下面表格的样式也是在这个基础上修改的。    
 首先看一下表格样式的定义，在`/sass/custom/_styles.scss`中定义样式
 
 ```  css 
