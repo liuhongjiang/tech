@@ -129,18 +129,18 @@ blockquote{
 }
 
 /* 表格 */
-#content table {
+#content table.mytable {
   border-collapse: collapse;
   margin-left: auto;
   margin-right: auto;
   /*border: solid 1px black;*/
  /* width: 100%; */
 }
-#content table td, #content table th {
+#content table.mytable td, #content table.mytable th {
     padding: 3px 5px; 
     border: solid 1px #070;
 }
-#content table th {
+#content table.mytable th {
     background-color: #080;
     color: white; 
 }
