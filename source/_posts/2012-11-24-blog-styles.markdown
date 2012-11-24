@@ -6,6 +6,12 @@ comments: true
 categories: 
 ---
 
+主要介绍了本小站的一些样式，希望能对有需要的人有帮助。
+目前介绍了引用块和表格的样式。  
+注意本站使用的markdown解析工具为kramdown。  
+
+<!-- more -->
+
 ## 引用块
 
 引用块的样式借用了[kramdown语法文档](http://kramdown.rubyforge.org/syntax.html#link-definitions)中的样式。
@@ -63,7 +69,7 @@ categories:
 
 然后可以用以下代码显示表格
 
-```
+``` plain
 | Header1 | Header2 | Header3 |
 |:--------|:-------:|--------:|
 | cell1   | cell2   | cell3   |
@@ -172,3 +178,5 @@ First | Second | | Fourth |
 | First | Second | Third |
 First | Second | | Fourth |
 {: .mytable}
+
+<br/>
