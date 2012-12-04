@@ -24,8 +24,7 @@ categories: octopress
 
 ## 值得借鉴的站点
 
-下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。
-这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。
+下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。
 
 * [这个小站很牛B](http://luikore.github.com/2011/09/good-things-learned-from-octopress/)
 * [yanping.me](http://yanping.me/)
@@ -46,6 +45,7 @@ categories: octopress
 ## 标签  
 
 标签云主要使用[标签云的插件](https://github.com/tokkonopapa/octopress-tagcloud)。
+
 在`_config.yml`的sidebar中加入`tag_cloud.html`，就标签出现在侧边栏中。
 
 ```
@@ -57,6 +57,7 @@ post_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/
 ```
 
 ## 拷贝本站
+
 或者你也可以拷贝这个项目到你的github的pages的项目中，然后删除source/\_post下面的所有文章。修改部分配置即可。
 
 * [本站的源代码](https://github.com/liuhongjiang/liuhongjiang.github.com)
