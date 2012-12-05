@@ -202,3 +202,26 @@ blog的样式中是没有缩进的，这样多少还是有点难看。加入的�
 ```
 
 这种解决办法不是很好，因为总有可能导致其它标签里面意外出现缩进，但我也不熟悉css，只有先这么办了，先解决眼前的问题。
+
+## 添加豆瓣的侧边栏
+
+[豆瓣收藏秀](http://www.douban.com/service/badgemakerjs)可以为你的博客生成一个侧边栏，放入到你的博客中。访问这个网址[http://www.douban.com/service/badgemakerjs]()，可以生成一段js代码，然后讲这段代码嵌入到侧边栏的html中即可。
+
+具体的做法，显示在收藏秀的页面里面选择好需要显示的内容，例如：我选择了，我想看的、书、每次随机选择、共显示9个 每行3个、图片小，下面两个选择隐藏，然后生成了这样的JS代码
+
+``` js
+<script type="text/javascript" src="http://www.douban.com/service/badge/63148093/?show=wishlist&amp;select=random&amp;n=9&amp;columns=3&amp;hidelogo=yes&amp;hideself=yes&amp;cat=book" ></script> 
+```
+
+然后创建文件`/source/_includes/custom/asides/douban-wishreading.html`, 在这个html文件中加入如下代码
+
+{% include_code 豆瓣想读的书 lang:html douban-wishreading.html %}
+
+其中第5行为豆瓣收藏秀生成的JS代码，其它的样式代码为blog的样式, 用于不同的blog可能需要修改。然后需要在`_config.yml`里修改配置，在`default_asides`中加入`custom/asides/douban-wishreading.html`，就像这样
+
+``` yml
+default_asides: [asides/recent_posts.html, custom/asides/douban-reading.html, custom/asides/douban-wishreading.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+```
+
+最后展现的样子可以参考[猪猫的生活](http://liuhongjiang.github.com/life/)。
+
