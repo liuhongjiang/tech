@@ -149,6 +149,10 @@ blockquote{
 	text-indent: 2em;
 }
 
+#content .entry-content > p > code {
+	text-indent: 0em;
+}
+
 
 /*--- 关于脚注 ---*/
 div.footnotes{

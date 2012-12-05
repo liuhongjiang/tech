@@ -180,3 +180,15 @@ First | Second | | Fourth |
 {: .mytable}
 
 <br/>
+
+## 首行缩进
+
+blog的样式中是没有缩进的，这样多少还是有点难看。加入的方法如下，在`/sass/custom/_styles.scss`中加入如下代码
+
+``` css
+#content .entry-content > p {
+	text-indent: 2em;
+}
+```
+
+然后就有了现在的缩进样式。需要主要的是，在markdown文件中，如果在一行的后面加入空格来换行的话，生成的html文件中，是用\<br\/\>来换行的，不是用\<p\>换行，就没有缩进的样式了。正确的方法是在两行文字之间插入空行。
