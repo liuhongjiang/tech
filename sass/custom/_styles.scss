@@ -259,3 +259,30 @@ div.sharing{
     position: relative;
     width: 100%;
 }
+
+// share to weibo
+
+.share-to-weibo .sina-weibo {
+	background-position: 0 0;
+}
+
+.share-to-weibo .tencent-weibo {
+	background-position: 0 -16px;
+}
+
+.share-to-weibo .twitter {
+	background-position: 0 -32px;
+}
+
+.share-to-weibo a {
+	background: url("/images/share-icon.png") no-repeat scroll 999px 999px transparent;
+	display: inline-block;
+	height: 16px;
+	margin-right: 4px;
+	width: 16px;
+}
+
+.share-to-weibo {
+	padding-left: 1em;
+	vertical-align: middle;
+}
