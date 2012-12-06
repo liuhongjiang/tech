@@ -207,4 +207,55 @@ div.sharing{
 }
 
 
+// test
+#social-links {
+	left: 20px;
+	position: relative;
+	top: 10px;
+	padding-right: 10px;
+}
 
+#social-links a .github {
+	left: 2px;
+	top: 3px;
+}
+
+#social-links a .sina-weibo {
+    left: 6px;
+    top: 8px;
+}
+
+#social-links a .tencent-weibo {
+    left: 4px;
+    top: 6px;
+}
+
+#social-links a .twitter {
+    left: 3px;
+    top: 2px;
+}
+
+#social-links a svg {
+	position: relative;
+}
+
+#social-links li {
+	background-color: #f2f2f2;
+	border-radius: 35px 35px 35px 35px;
+	height: 35px;
+	line-height: 35px;
+	margin-top: 0px;
+	overflow: hidden;
+	text-align: center;
+	transition: background-color 1s ease-in-out 0s;
+	width: 35px;
+	float: right;
+	margin-right: 10px;
+}
+
+#social-links a {
+    display: inline-block;
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
