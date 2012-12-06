@@ -11,6 +11,17 @@
         {% if site.disqus_short_name and page.comments != false and post.comments != false and site.disqus_show_comment_count == true %}
          | <a href="{% if index %}{{ root_url }}{{ post.url }}{% endif %}#disqus_thread">Comments</a>
         {% endif %}
+		{% capture category %}{% if post %}{{ post.categories | category_links | size }}{% else %}{{ page.categories | category_links | size }}{% endif %}{% endcapture %}
+        {% unless category == '0' %}
+        <span style="text-transform:none">
+		  | Tags: 
+          {% if post %}
+            {{ post.categories | category_links }}
+          {% else %}
+            {{ page.categories | category_links }}
+          {% endif %}
+        </span>
+        {% endunless %}
       </p>
     {% endunless %}
   </header>
