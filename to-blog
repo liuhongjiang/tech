@@ -1,0 +1,38 @@
+3. 虚继承的构造函数的调用顺序？
+
+4. 虚继承
+http://www.cppblog.com/chemz/archive/2007/06/12/26135.html
+http://www.cppblog.com/franksunny/archive/2008/10/16/64168.aspx
+http://baiy.cn/doc/cpp/inside_rtti.htm
+
+5.虚继承的实现方式
+
+5. 多态的实现
+
+7. protected, 继承的关系
+
+8. 各种cast and RTTI
+指针转换的问题, 继承情况下，指针转换后，编译器是怎么处理的
+http://www.cnblogs.com/stli/archive/2010/10/09/1846926.html
+http://blog.rednet.cn/user1/213546/archives/2007/33023.html
+
+http://blog.csdn.net/a199228/article/details/6684590
+http://baike.baidu.com/view/1042388.htm
+
+9. hash
+   一致性hash
+10. 深度学习
+
+11. python的机器学习工具
+scikit-learn: machine learning in Python
+Easy-to-use and general-purpose machine learning in Python 
+python的机器学习工具
+http://scikit-learn.org/stable/
+
+12. B+树
+
+13. flex and bison
+
+14. gcc的汇编学习
+
+15. friend 函数
