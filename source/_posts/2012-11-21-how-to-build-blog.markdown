@@ -26,13 +26,17 @@ categories: octopress
 
 下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。
 
-* [这个小站很牛B](http://luikore.github.com/2011/09/good-things-learned-from-octopress/)
+* [这个小站很不错](http://luikore.github.com/2011/09/good-things-learned-from-octopress/)
 * [yanping.me](http://yanping.me/)
 * [http://www.yangzhiping.com/](http://www.yangzhiping.com/)
 * [http://colors4.us/](http://colors4.us/)
 * [http://mark.reid.name/](http://mark.reid.name/)
 * [http://www.worldhello.net](http://www.worldhello.net)
 * [http://jakevdp.github.com/](http://jakevdp.github.com/)
+* [head的照片](http://threeofakind.ca/blog/2012/06/russells-6-8-months/) 
+* [head的渐变色](http://blog.satrex.jp/)
+* [左上的图标很有意思](http://mrzhang.me/)
+* [3d云标签，豆瓣阅读的侧边栏](http://www.dongwm.com/)
 
 ## 在blog中显示公式
 
@@ -81,6 +85,10 @@ description: 他是一个程序员，已婚，有个儿子，字“左烦子”�
 
 	* source/about/index.markdown 
 	* source/_includes/custom/asides/about.html
+
+## 博客样式
+
+另外关于本博客的一些样式可以参考[博客的样式](/blog/2012/11/24/blog-styles/)
 
 ## 感谢
 在本站的搭建过程中，参考了[http://yanping.me/cn/](http://yanping.me/cn/)。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。
