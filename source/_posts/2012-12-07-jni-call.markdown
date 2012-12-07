@@ -1,0 +1,90 @@
+---
+layout: post
+title: "jni调用C和C++"
+date: 2012-12-07 13:29
+comments: true
+categories: C/C++ 
+---
+
+已经在工作中碰到了两个这样的例子了，项目用java，但需要调用C/C++的库。之前一个是用java写hadoop的job，但是调用的算法是用C++实现的，使用的是jni。现在好像jni在android上面也有用到，但是我不了解。我自己也不懂java，但实际工作中有的时候也要看看java代码。所以决定写一个简单的jni例子，了解一下jni怎么完成C/C++调用的。
+
+<!-- more -->
+
+对于jni的内部实现，我也是不求甚解。编写一个java程序
+
+{%include_code jni调用的java代码 lang:java cpp/jni-call/Sample1.java %}
+
+然后编译java文件
+
+``` sh
+javac Sample1.java
+```
+
+编译完以后, 使用下面的命令生成jni调用的头文件
+
+``` sh
+javah -classpath ./ -jni Sample1
+```
+
+生成的头文件为Sample1.h, 就是下面C/C++实现的函数的声明, <em> 注意：Sample1.h是自动生成的</em>
+
+{% include_code jni生成的头文件 lang:cpp cpp/jni-call/Sample1.h %}
+
+有了头文件后，就可以实现这些调用的C/C++代码
+
+{% include_code C++实现的Sample1.cpp lang:cpp cpp/jni-call/Sample1.cpp %}
+
+然后调用下面的命令生成动态链接库(系统:ubuntu 12.04，gcc编译）
+
+``` sh
+g++ -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.cpp -fPIC -shared -o libSample1.so
+```
+
+具体的jdk的路径应该是和本地的相适应的。
+
+然后运行java程序
+
+``` sh 
+java Sample1
+```
+
+运行结果如下
+
+{% img center /images/blogimages/jni-call/cpp-output.jpg %}
+
+图中加入了一个环境变量的声明，`export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH`, 当java加载动态链接库时，会在本地路径下找libSample1.so。
+
+上面是调用C++的代码，C实现的代码如下
+
+{% include_code C语言实现的Sample1.c lang:c cpp/jni-call/Sample1.c %}
+
+C与C++的实现基本一样，唯一的差异在于用来访问 JNI 函数的方法。在 C 中，JNI 函数调用由“(*env)->”作前缀，目的是为了取出函数指针所引用的值。在 C++ 中，JNIEnv 类拥有处理函数指针查找的内联成员函数。下面将说明这个细微的差异，其中，这两行代码访问同一函数，但每种语言都有各自的语法。
+
+``` c
+C 语法：jsize len = (*env)->GetArrayLength(env,array);
+C++ 语法：jsize len = env->GetArrayLength(array);
+```
+
+编译命令
+
+```sh
+gcc -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.c -fPIC -shared -o libSample1.so
+```
+
+运行结果与上面C++的输出是一致的。
+
+实际上我是用了一个脚本完成编译等工作的
+
+{% include_code 完成整个过程的脚本 lang:sh cpp/jni-call/run.sh %}
+
+脚本的运行结果如下图
+
+{% img center /images/blogimages/jni-call/run-output.jpg %}
+
+github上本文的例子代码 [jni调用的例子](https://github.com/andrewliu117/test/tree/master/cpp_test/jni)
+
+本文参考了以下两个blog的内容, 代码来自第二个blog。
+
+* [Java基础知识——JNI入门介绍](http://www.cnblogs.com/hoys/archive/2011/09/30/2196290.html)
+* [第二篇：一个jni例子](http://blog.sina.com.cn/s/blog_60c8379d01015epl.html)
+
