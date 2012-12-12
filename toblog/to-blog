@@ -9,7 +9,9 @@ http://baiy.cn/doc/cpp/inside_rtti.htm
 
 5.虚继承的实现方式
 
-5. 多态的实现
+6. C++对象的内存分布
+http://blog.csdn.net/pathuang68/article/details/4101970
+http://blog.csdn.net/haoel/article/details/3081328
 
 7. protected, 继承的关系
 
