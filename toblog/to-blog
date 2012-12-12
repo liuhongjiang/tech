@@ -1,6 +1,8 @@
 3. 虚继承的构造函数的调用顺序？
 
 4. 虚继承
+http://blog.csdn.net/wuliming_sc/article/details/3838482
+
 http://www.cppblog.com/chemz/archive/2007/06/12/26135.html
 http://www.cppblog.com/franksunny/archive/2008/10/16/64168.aspx
 http://baiy.cn/doc/cpp/inside_rtti.htm
@@ -40,3 +42,15 @@ http://scikit-learn.org/stable/
 16. 数学之美读书笔记
 
 17. 推荐系统读书笔记
+
+18. const、volatile、mutable的用法
+http://blog.csdn.net/wuliming_sc/article/details/3717017
+
+19. 嵌套类 局部类
+http://blog.csdn.net/wuliming_sc/article/details/3845428
+
+20. Thrift, Avro and Protocol buffer
+http://avro.apache.org/
+
+21: reading
+http://highscalability.com/blog/2012/4/2/youporn-targeting-200-million-views-a-day-and-beyond.html
