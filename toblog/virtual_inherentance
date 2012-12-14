@@ -66,4 +66,8 @@ members.cc
 
 ## 虚继承的实现原理
 
-虚继承的实现是通过一个虚继承表实现的。
+虚继承中，是如何实现只有虚基类的，通过虚继承类的内存分布，可以一探究竟
+首先看memory_middle1.cc
+然后看memory_bottom.cc
+
+http://blog.csdn.net/wuhui_gdnt/article/details/6141405
