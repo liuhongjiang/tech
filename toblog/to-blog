@@ -1,17 +1,3 @@
-3. 虚继承的构造函数的调用顺序？
-
-4. 虚继承
-http://blog.csdn.net/wuliming_sc/article/details/3838482
-
-http://www.cppblog.com/chemz/archive/2007/06/12/26135.html
-http://www.cppblog.com/franksunny/archive/2008/10/16/64168.aspx
-http://baiy.cn/doc/cpp/inside_rtti.htm
-
-http://stackoverflow.com/questions/6921295/dual-emission-of-constructor-symbols
-http://blog.csdn.net/wuhui_gdnt/article/details/6141405
-
-5.虚继承的实现方式
-
 6. C++对象的内存分布
 http://blog.csdn.net/pathuang68/article/details/4101970
 http://blog.csdn.net/haoel/article/details/3081328
