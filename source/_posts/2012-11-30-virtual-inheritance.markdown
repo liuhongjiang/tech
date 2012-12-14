@@ -41,7 +41,7 @@ class middle1: virtual public top
 class middle1: public virtual top
 ```
 
-## 续基类的构造
+## 虚拟基类的构造
 
 由虚假继承引发的第一个问题是虚拟基类的构造，例如上面的例子中，构造iostream时，构造了istream和ostream两个基类，如果是虚继承关系，那么只有一个ios虚拟基类，那么谁来构造ios呢？
 
