@@ -45,7 +45,8 @@ aside.sidebar {
     @include transition(color .5s);
   }
   &:hover a {
-    color: $sidebar-link-color;
+// bugfix: 当鼠标放上去后，防止所有的侧边链接变色
+//    color: $sidebar-link-color;
     &:hover { color: $sidebar-link-color-hover; }
   }
 }
