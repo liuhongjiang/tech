@@ -38,6 +38,10 @@ categories: octopress
 * [左上的图标很有意思](http://mrzhang.me/)
 * [3d云标签，豆瓣阅读的侧边栏](http://www.dongwm.com/)
 
+其它的收集
+
+* [这个slideshows太亮了](http://justineo.github.com/slideshows/font/#/)
+
 ## 在blog中显示公式
 
 数学公式解析器用的[MathJax](http://www.mathjax.org/), 这是一个JS脚本，渲染Latex格式的数学公式。请参考以下几篇文章。
