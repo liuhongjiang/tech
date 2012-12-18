@@ -10,10 +10,9 @@ blockquote{
 
 /* 提示框样式 */
 
-.info, .warning{
-
+.abstract, .warning{
 	border:none;
-	padding:0.6em 1.25em 0.6em 48px;
+	padding:0.6em 1.25em 0.6em 1.25em;
 	margin-top:0.25em;
 
 	-webkit-border-radius: 8px; 
@@ -25,12 +24,16 @@ blockquote{
 	-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);  
 }
 
-.info{
-	background:#d5e9f6 url(/cn/images/blog/tab_info.gif) no-repeat left top;
+.abstract{
+	background:#d5e9f6 no-repeat left top;
+}
+
+.abstract td {
+    vertical-align: baseline;
 }
 
 .warning{
-	background:#f9d9d8 url(/cn/images/blog/tab_red.gif) no-repeat left top;
+	background:#f9d9d8 no-repeat left top;
 }
 
 
