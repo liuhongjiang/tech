@@ -4,11 +4,10 @@ title: "博客的样式"
 date: 2012-11-24 14:23
 comments: true
 categories: octopress
+abstract: "本文就介绍了这个blog搭建过程中，一些样式如何设置的。包括：引用块的样式，表格的样式，首行缩进，添加豆瓣侧边栏, 文章摘要。"
 ---
 
-主要介绍了本小站的一些样式，希望能对有需要的人有帮助。目前介绍了引用块和表格的样式。  
-
-注意本站使用的markdown解析工具为kramdown。  
+使用的markdown解析工具为kramdown。  
 
 <!-- more -->
 
@@ -224,4 +223,47 @@ default_asides: [asides/recent_posts.html, custom/asides/douban-reading.html, cu
 ```
 
 最后展现的样子可以参考[猪猫的生活](http://liuhongjiang.github.com/life/)。
+
+## 文章摘要
+
+当文章比较长的时候，如果在文章的前面有一个摘要，就会方便很多。下面就就是一个添加摘要的简单方法。
+
+首先在文章的markdown文件中添加一个变量`abstract`如下
+
+```
+---
+layout: post
+title: "博客的样式"
+date: 2012-11-24 14:23
+comments: true
+categories: octopress
+abstract: "本文就介绍了这个blog搭建过程中，一些样式如何设置的。包括：引用块的样式，表格的样式，首行缩进，添加豆瓣侧边栏, 文章摘要。"
+---
+```
+
+然后修改`source/_include/article.html`
+
+{% include_code 修改article.html lang:diff article.diff %} 
+
+之后修改样式文件`sass/custom/_styles.scss`, 添加如下的样式
+
+``` css
+.abstract, .warning{
+border:none;
+padding:0.6em 1.25em 0.6em 1.25em;
+    margin-top:0.25em;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    -box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.abstract{
+    background:#d5e9f6;
+}
+```
+
+就可以显示和本文开始一样的摘要了。
 
