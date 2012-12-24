@@ -1,4 +1,12 @@
 
+介绍svm的多类分类问题
+http://www.blogjava.net/zhenandaci/archive/2009/03/26/262113.html
+
+
+
+
+安装matplotlib
+
 ubuntu最简单的安装方法
 sudo apt-get install python-matplotlib
 
