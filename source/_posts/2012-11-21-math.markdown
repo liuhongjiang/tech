@@ -239,3 +239,6 @@ math: true
 |特殊    | `\oplus \otimes \mp \hbar \dagger \ddagger \star \circ \cdot \bullet` | $\oplus \otimes \mp \ \hbar \dagger \ddagger \star \circ \cdot \bullet\$ | 
 |---
 {: .mytable}
+
+[letax数学公式](http://wiki.ubuntu.org.cn/Wikipedia:%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F)
+
