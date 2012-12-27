@@ -51,7 +51,7 @@ java Sample1
 
 运行结果如下
 
-{% img center /images/blogimages/jni-call/cpp-output.jpg %}
+{% img center /images/blogimages/2012/jni-call/cpp-output.jpg %}
 
 图中加入了一个环境变量的声明，`export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH`, 当java加载动态链接库时，会在本地路径下找libSample1.so。
 
@@ -80,7 +80,7 @@ gcc -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openj
 
 脚本的运行结果如下图
 
-{% img center /images/blogimages/jni-call/run-output.jpg %}
+{% img center /images/blogimages/2012/jni-call/run-output.jpg %}
 
 github上本文的例子代码 [jni调用的例子](https://github.com/andrewliu117/test/tree/master/cpp_test/jni)
 

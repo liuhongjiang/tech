@@ -10,7 +10,7 @@ C++里面的virtual关键字可以用虚函数声明，也可以用于虚继承�
 
 首先来看为什么需要虚继承。C++里面继承关系中有个很有名的继承结构，菱形继承，如下图所示
 
-{% img center /images/blogimages/virtualinheritance/iostream.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/iostream.jpg %}
 
 普通继承，派生类包含了基类所有的非static成员。如果采用普通继承，在上图的iostream类中，实际上会存在两个ios基类。这样会带来很多问题，首先最简单的是空间浪费，iostream类中存在两个相同的ios类,然后是构造效率低，需要构造两个ios类。更严重的是调用基类中的函数时，存在二义性，当iostream调用ios的成员函数时，编译器无法知道是调用istream还是ostream中的ios。
 
@@ -24,7 +24,7 @@ C++的解决方案就是虚拟继承(Virtual Inheritance)。虚拟继承可以�
 
 没有使用虚继承，那么`bottom`类在调用`printself()`就存在二义性，所以在编译的时候会报下面这样的错误。
 
-{% img center /images/blogimages/virtualinheritance/inheritance_error.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/inheritance_error.jpg %}
 
 下面就是使用虚继承的例子
 
@@ -32,7 +32,7 @@ C++的解决方案就是虚拟继承(Virtual Inheritance)。虚拟继承可以�
 
 编译和运行结果如下
 
-{% img center /images/blogimages/virtualinheritance/virtual_inheritance.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/virtual_inheritance.jpg %}
 
 上面的例子中，采用了虚继承，就没有出现二义性的问题了。虚拟继承声明时，virtual关键字可以放在继承关系的前面也可以放在后面，下面两种方式是等价的。
 
@@ -51,7 +51,7 @@ class middle1: public virtual top
 
 运行结果如下
 
-{% img center /images/blogimages/virtualinheritance/constructor.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/constructor.jpg %}
 
 例子中，虽然bottom显示调用了middle1和middle2的构造函数，但是top的构造却不是有这两个中间类完成的,  因为top的成员name的值为“top”，实际上是由最终派生类bottom调用了top的默认构造函数`top()`。
 
@@ -61,7 +61,7 @@ class middle1: public virtual top
 
 运行结果如下
 
-{% img center /images/blogimages/virtualinheritance/constructor1.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/constructor1.jpg %}
 
 在上面的例子中，bottom和bottom1都显示调用了top的构造函数，但前者没有调用了中间类的默认构造函数，后者调用了构造虚基类的构造函数，但结果对于虚基类的构造，都是由最终派生类构造的。
 
@@ -77,7 +77,7 @@ class middle1: public virtual top
 
 输出结果
 
-{% img center /images/blogimages/virtualinheritance/constructor_seq.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/constructor_seq.jpg %}
 
 另外一个例子
 
@@ -85,7 +85,7 @@ class middle1: public virtual top
 
 输出结果
 
-{% img center /images/blogimages/virtualinheritance/constructor_seq1.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/constructor_seq1.jpg %}
 
 上面这个两个例子中可以看出top_b的构造顺序是不一样的。第一个例子中，做为普通基类，它放到了middle1和middle2后面构造，但在第二个例子中将它声明为了虚基类，它就放到了middle1和middle2前面构造了。
 
@@ -104,7 +104,7 @@ class middle1: public virtual top
 
 输出结果
 
-{% img center /images/blogimages/virtualinheritance/members.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/members.jpg %}
 
 由例子可以看出，上面三点分别对应了printA, printB, printC三个函数。如果不在bottom中重载printC，那么编译是会报错。
 
@@ -123,7 +123,7 @@ class middle1: public virtual top
 
 运行结果如下图
 
-{% img center /images/blogimages/virtualinheritance/memory_middle1.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/memory_middle1.jpg %}
 
 在`middle1`中有两个vtable，分布指向了各自的虚函数表，而且这两个虚函数表实际是放在一张表，只是分别指向表中不同的位置。vtable的起始地址之前的3个地址分布存放了与虚继承相关的信息。
 
@@ -147,11 +147,11 @@ nm -gC memory_middle1
 
 部分输出结果的截图
 
-{% img center /images/blogimages/virtualinheritance/nm_memory_middle1.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/nm_memory_middle1.jpg %}
 
 根据上面的程序分析可以画出middle1的内存结构图如下:
 
-{% img center /images/blogimages/virtualinheritance/memory_middle1_topo.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/memory_middle1_topo.jpg %}
 
 下面是一个菱形结构继承的例子代码，有兴趣的读者可以下载以后，按照上面的方面分析。
 
@@ -159,7 +159,7 @@ nm -gC memory_middle1
 
 这里仅仅画出内存的结构图如下
 
-{% img center /images/blogimages/virtualinheritance/memory_bottom_topo.jpg %}
+{% img center /images/blogimages/2012/virtualinheritance/memory_bottom_topo.jpg %}
 
 在菱形虚继承的关系下，有下面几点需要注意：
 

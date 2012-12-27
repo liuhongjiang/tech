@@ -22,7 +22,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 运行结果如下[^1]:
 
-{% img center /images/blogimages/polymorphism/polymorphism_output.jpg %}
+{% img center /images/blogimages/2012/polymorphism/polymorphism_output.jpg %}
 
 从运行结果来看，函数`call_func()`最后实际调用的`f()`要到运行时，根据传入的参数，才能确定调用的是哪个函数。
 
@@ -32,13 +32,13 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 输出结果如下：
 
-{% img center /images/blogimages/polymorphism/vfun_output.jpg %}
+{% img center /images/blogimages/2012/polymorphism/vfun_output.jpg %}
 
 上面这段代码的第20行，通过定义指针的方式[^2]，直接访问虚表，发现它的输出与通过对象调用是一直的，而且指针的类型无关。由上面的代码也可以看出虚表在对象的内存空间中是怎么分布的。对象的起始地址，就是虚表指针。虚表的最后一项为0，代表虚表结束。上面程序的最后一项输出可以看出来。
 
 用一张图来说明情况。
 
-{% img center /images/blogimages/polymorphism/one_derived.jpg %}
+{% img center /images/blogimages/2012/polymorphism/one_derived.jpg %}
 
 在多个虚函数的情况下，子类仅仅覆盖在子类重载的虚函数，而子类新定义的虚函数，加入到虚表的最后。下面这个例子就是多个虚函数的情况。
 
@@ -46,11 +46,11 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 输出结果：
 
-{% img center /images/blogimages/polymorphism/vfun1_output.jpg %}
+{% img center /images/blogimages/2012/polymorphism/vfun1_output.jpg %}
 
 虚表的组织结构如下:
 
-{% img center /images/blogimages/polymorphism/more_derived.jpg %}
+{% img center /images/blogimages/2012/polymorphism/more_derived.jpg %}
 
 由图中可以看出，子类的`f()`覆盖了基类的`f()`，而基类的`f0()`依然存在，子类的`f1()`添加到了虚表的最后。
 
@@ -60,11 +60,11 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 输出结果：
 
-{% img center /images/blogimages/polymorphism/vfun2_output.jpg %}
+{% img center /images/blogimages/2012/polymorphism/vfun2_output.jpg %}
 
 这是一个比较复杂的继承关系了，可以看出最后的`derived`类里面已经有3个虚表指针了，也就是说，子类会讲所有的父类的虚表继承下来，并将自己的虚函数添加到第一个虚表的最后。还有一点，就是子类的虚函数会覆盖所有基类的对应虚函数，图中的`derived::f()`就覆盖了3处。其组织结构如下：
 
-{% img center /images/blogimages/polymorphism/more_bases.jpg %}
+{% img center /images/blogimages/2012/polymorphism/more_bases.jpg %}
 
 [^1]: 系统为ubuntu 12.04 server 64bit, 编译器为gcc 4.6.3 
 [^2]: 程序运行在64位机器上，所以使用long进行强制转换获取指针，如果在32位服务器上，就应该用int。
@@ -82,7 +82,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 {% include_code 构造和析构函数的调用顺序 lang:cpp cpp/polymorphism/constructor_destructor_order.cc %}
 
 输出结果
-{% img center /images/blogimages/polymorphism/constructor_destructor_order.jpg %}
+{% img center /images/blogimages/2012/polymorphism/constructor_destructor_order.jpg %}
 
 从输出结果可以看出，先调用了`base_b`的构造函数，然后调用`base_a`的构造函数（但得先调用`base_a`的父类`father_base_a`），然后是成员`member_a`和`member_b`的构造函数，最后是`derived`自己的构造函数。析构的过程正好相反。
 
@@ -96,7 +96,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 实际上，如果将构造函数声明为虚函数，编译时，gcc会报错。
 
-{% img center /images/blogimages/polymorphism/constructor_error.jpg %}
+{% img center /images/blogimages/2012/polymorphism/constructor_error.jpg %}
 
 ## 析构函数声明为虚函数
 
@@ -108,7 +108,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 运行结果
 
-{% img center /images/blogimages/polymorphism/destructor_virtual.jpg %}
+{% img center /images/blogimages/2012/polymorphism/destructor_virtual.jpg %}
 
 由结果可以看出，由于`base1`的析构函数没有声明为虚函数，在`delete pbase1`时，没有调用`derived1`的析构函数，那么在`derived1`中申请的资源就无法释放。而因为`base`类中的修改函数声明为了虚函数，就没有这样的问题。
 
@@ -128,7 +128,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 输出结果
 
-{% img center /images/blogimages/polymorphism/same_name.jpg %}
+{% img center /images/blogimages/2012/polymorphism/same_name.jpg %}
 
 注意在用不同类型的类指针调用`g()`,`h()`,`m()`三个函数时，程序实际的行为。
 
@@ -140,7 +140,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 在编译的时候会报这样的错误
 
-{% img center /images/blogimages/polymorphism/same_name1_error.jpg %}
+{% img center /images/blogimages/2012/polymorphism/same_name1_error.jpg %}
 
 ## 总结
 
