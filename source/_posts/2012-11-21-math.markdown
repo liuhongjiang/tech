@@ -145,14 +145,6 @@ markdown: kramdown
 * [如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)  
 * [解决闪烁问题](http://steshaw.org/blog/2012/02/09/hello-mathjax/)  
 
-## 关于Latex
-
-本人不会Latex，那么怎么生成Latex格式的公式呢？   
-
-* 一是可以在线生成：[Online LaTeX Equation Editor](http://www.codecogs.com/latex/eqneditor.php)   
-* 二是使用mathtype。   
-	在mathtype的`Preferences`->`Cut and Copy preferences...`选中`MathML to Tex`。编辑公式后拷贝，粘贴到记事本，就可以得到Latex格式的公式。
-
 ## MathJax加载
 
 按照“[如何加入公式](http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/)”的方法加入脚本，会产生一个问题，无论这个页面有没有数学公式，都会去加载MathJax脚本，而加载这个脚本的速度非常慢。那么如何控制，哪些页面加入这个脚本，哪些页面不需要加？    
@@ -219,3 +211,31 @@ layout: default
 math: true
 ---
 ```
+
+## 关于Latex
+
+本人不会Latex，那么怎么生成Latex格式的公式呢？   
+
+* 一是可以在线生成：[Online LaTeX Equation Editor](http://www.codecogs.com/latex/eqneditor.php)   
+* 二是使用mathtype。   
+	在mathtype的`Preferences`->`Cut and Copy preferences...`选中`MathML to Tex`。编辑公式后拷贝，粘贴到记事本，就可以得到Latex格式的公式。
+
+
+## 常用latex符号
+
+特殊字符
+
+|---
+| 功能 | 语法| 显示 |
+|:-:|:-:|:-:|
+|标准函数| `\sin x + \ln y +\operatorname{sgn} z ` | $\sin x + \ln y +\operatorname{sgn} z$ |
+|其他    | `\nabla \partial dx`                      | $\nabla \partial dx$                   |
+|集      | `\forall x\not\in\varnothing\subseteq A\cap B\cup \exists \{x,y\} \times C` | $\forall x \not\in \varnothing \subseteq A\cap B\cup \exists \{x,y\} \times C$ |
+|逻辑    | `p\wedge \bar{q} \rightarrow p\vee \bar{q} \Rightarrow r` | $p\wedge \bar{q} \rightarrow p\vee \bar{q} \Rightarrow r$ |
+|根号    | `\pm \sqrt{2}\approx\pm 1.4`              | $\pm \sqrt{2}\approx\pm 1.4$ |
+|        | `\sqrt[n]{x}`        | $\sqrt[n]{x}$ |          
+|等号    | `\sim \simeq \cong \le \ge \equiv \approx \ne`  | $\sim \ \simeq \ \cong \ \le \ \ge \ \equiv \ \approx \ \ne$ |
+|几何    | `\angle \perp \|` | $\angle \perp \\\|$ |
+|特殊    | `\oplus \otimes \mp \hbar \dagger \ddagger \star \circ \cdot \bullet` | $\oplus \otimes \mp \ \hbar \dagger \ddagger \star \circ \cdot \bullet\$ | 
+|---
+{: .mytable}
