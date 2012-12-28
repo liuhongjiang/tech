@@ -5,7 +5,7 @@ date: 2012-12-26 19:40
 comments: true
 categories: Machine&nbspLearning
 math: true
-abstract: 
+abstract: SVM（support vector machine, 支持向量机）是一个二分的分类器。本文简单讲解了线性svm和非线性svm的原理。
 ---
 
 是今年工作中才开始接触机器学习的，之前有所听说，但是也没有深入了解过。其实所谓的接触主要是照着李航的这本[《统计学习方法》](http://book.douban.com/subject/10590856/)学习。当时我们是几个同事每人学习一章，学完了，然后给大家办个讲座。我想既然学习了，就应该写博客把这些内容记录下来。于是，就开始写了。
@@ -184,6 +184,12 @@ $$
 \mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } }
 $$
 
+参数${b^\*}$的计算公式变成了（但分量$j$的选取条件未变）：
+
+$$
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
+$$
+
 而分类决策函数也相应变了
 
 $$
@@ -209,7 +215,7 @@ $$
 选择一个 $ {a^\*} $ 的正分量 $ 0 \lt {a_j^\*} \lt C $ , 计算（或者通过所有解求平均值）：
 
 $$
-{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} 
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
 $$
 
 决策函数为

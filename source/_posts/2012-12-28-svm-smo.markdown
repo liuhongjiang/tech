@@ -1,0 +1,39 @@
+---
+layout: post
+title: "svm smo"
+date: 2012-12-28 09:01
+comments: true
+categories: 
+math: 
+abstract: 
+---
+
+## SMO 
+
+将需要解决问题抽象成了数学公式后，如果利用计算机，解出这些数学公式的答案。换句话说，就是怎么通过计算机算出我们的svm模型的参数呢？方法就是序列最小最优化(sequential minimal optimization, SMO)算法。
+
+首先我们来讲问题的数学表达列出来, 对偶问题
+
+$$
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+$$
+
+选择一个 $ {a^\*} $ 的正分量 $ 0 \lt {a_j^\*} \lt C $ , 计算（或者通过所有解求平均值）：
+
+$$
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} 
+$$
+
+决策函数为
+
+$$
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
+$$
+
+
+## 一个例子
+
