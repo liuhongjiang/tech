@@ -48,22 +48,5 @@ ${E_i}$为函数$g({x_i})$对输入的${x_i}$的预测值与真实值${y_i}$之�
 
 ${E_i} = g({x_i}) - {y_i} = (\sum\limits_{j = 1}^N {{a_j}{y_j}K({x_j},{x_i}) + b) - {y_i}} $
 
-## 安装matplotlib
-
-ubuntu最简单的安装方法
-sudo apt-get install python-matplotlib
-
-不是最新的，要安装最新，按照下面的方法
-
-
-Ubuntu安装Matplotlib
-http://www.codecho.com/install-matplotlib-on-ubuntu-12-04/
-
-在ubuntu下安装scipy-numpy-matplotlib-ipython
-http://scipy.org/Installing_SciPy/Linux
-http://iefan.is-programmer.com/posts/33592.html
-
-(转）在Ubuntu中安装Python科学计算环境
-http://forum.ubuntu.org.cn/viewtopic.php?f=88&t=391300
 
 
