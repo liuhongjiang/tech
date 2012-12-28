@@ -18,7 +18,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 虚，不实也。也可以理解为看到的和实际的不一样。虚函数存在的目的只有一个，那就是实现多态。关于多态，可以去参考各种教科书，上面都有详细的说明。虚函数在实现多态时，通过一种间接的运行时（而不是编译时）的机制激活（调用）的函数。下面看一个多态的简单例子。
 
-{% include_code 多态的简单例子 lang:cpp cpp/polymorphism/polymorphism.cc %}
+{% include_code 多态的简单例子 lang:cpp 2012/polymorphism/polymorphism.cc %}
 
 运行结果如下[^1]:
 
@@ -28,7 +28,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 那么虚函数的这种性质是如何实现的呢？答案是虚表(vtable)。具体的做法是，在对象的存储空间里面开辟一个指针，指针指向一个存放着虚函数地址的函数指针表。编译器在生成调用虚函数的指令时，按照偏移量，从虚表中取相应的函数指针进行调用。子类的虚函数会覆盖父类中对应虚函数在虚表中的位置，所以在调用的时候，就调用到了子类的函数了。也许这段话没有说太清楚，下面看一段代码或许会有帮助。
 
-{% include_code 测试虚表的例子 lang:cpp cpp/polymorphism/vfun.cc %} 
+{% include_code 测试虚表的例子 lang:cpp 2012/polymorphism/vfun.cc %} 
 
 输出结果如下：
 
@@ -42,7 +42,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 在多个虚函数的情况下，子类仅仅覆盖在子类重载的虚函数，而子类新定义的虚函数，加入到虚表的最后。下面这个例子就是多个虚函数的情况。
 
-{% include_code 多个虚函数 lang:cpp cpp/polymorphism/vfun1.cc %}
+{% include_code 多个虚函数 lang:cpp 2012/polymorphism/vfun1.cc %}
 
 输出结果：
 
@@ -56,7 +56,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 当有多个基类时，子类会为每个基类添加一个虚表指针，指针的顺序按照类定义时的声明顺序。下面这个例子就是这样的。
 
-{% include_code 虚函数多重继承 lang:cpp cpp/polymorphism/vfun2.cc %}
+{% include_code 虚函数多重继承 lang:cpp 2012/polymorphism/vfun2.cc %}
 
 输出结果：
 
@@ -79,7 +79,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 下面是一段测试调用顺序的代码
 
-{% include_code 构造和析构函数的调用顺序 lang:cpp cpp/polymorphism/constructor_destructor_order.cc %}
+{% include_code 构造和析构函数的调用顺序 lang:cpp 2012/polymorphism/constructor_destructor_order.cc %}
 
 输出结果
 {% img center /images/blogimages/2012/polymorphism/constructor_destructor_order.jpg %}
@@ -104,7 +104,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 首先来看一个代码例子
 
-{% include_code 析构函数为虚函数 lang:cpp cpp/polymorphism/destructor_virtual.cc %}
+{% include_code 析构函数为虚函数 lang:cpp 2012/polymorphism/destructor_virtual.cc %}
 
 运行结果
 
@@ -124,7 +124,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 在父类和子类中如果存在同名的函数，那么一定要小心了，这时需要重载父类中所有同名的函数。首先来看一个关于同名函数的例子
 
-{% include_code  诡异的同名函数 lang:cpp cpp/polymorphism/same_name.cc %}
+{% include_code  诡异的同名函数 lang:cpp 2012/polymorphism/same_name.cc %}
 
 输出结果
 
@@ -136,7 +136,7 @@ C++的关键字virtual只能用在两个地方，一是定义类的成员函数�
 
 下面是一个例子
 
-{% include_code  诡异的同名函数 lang:cpp cpp/polymorphism/same_name1.cc %}
+{% include_code  诡异的同名函数 lang:cpp 2012/polymorphism/same_name1.cc %}
 
 在编译的时候会报这样的错误
 

@@ -20,7 +20,7 @@ C++的解决方案就是虚拟继承(Virtual Inheritance)。虚拟继承可以�
 
 先看看如果没有续集继承的情况下，菱形继承会出现什么情况
 
-{% include_code 普通继承的菱形继承 lang:cpp cpp/virtualinheritance/inheritance.cc %}
+{% include_code 普通继承的菱形继承 lang:cpp 2012/virtualinheritance/inheritance.cc %}
 
 没有使用虚继承，那么`bottom`类在调用`printself()`就存在二义性，所以在编译的时候会报下面这样的错误。
 
@@ -28,7 +28,7 @@ C++的解决方案就是虚拟继承(Virtual Inheritance)。虚拟继承可以�
 
 下面就是使用虚继承的例子
 
-{% include_code 虚继承的菱形继承 lang:cpp cpp/virtualinheritance/virtual_inheritance.cc %}
+{% include_code 虚继承的菱形继承 lang:cpp 2012/virtualinheritance/virtual_inheritance.cc %}
 
 编译和运行结果如下
 
@@ -47,7 +47,7 @@ class middle1: public virtual top
 
 普通继承关系，基类由派生类构造。虚继承下，虚基类的构造由<em>最终派生类</em>显示调用，即iostream负责构造ios类, 中间类的构造函数将会被抑制，无法完成虚拟基类的构造。看一个虚基类的构造例子
 
-{% include_code 中间类的构造函数被抑制 lang:cpp cpp/virtualinheritance/constructor.cc %}
+{% include_code 中间类的构造函数被抑制 lang:cpp 2012/virtualinheritance/constructor.cc %}
 
 运行结果如下
 
@@ -57,7 +57,7 @@ class middle1: public virtual top
 
 要想完成虚基类top的构造，必须由最终派生类调用对应的虚基类构造函数。
 
-{% include_code 最终派生类调用虚基类的构造函数 lang:cpp cpp/virtualinheritance/constructor1.cc %}
+{% include_code 最终派生类调用虚基类的构造函数 lang:cpp 2012/virtualinheritance/constructor1.cc %}
 
 运行结果如下
 
@@ -73,7 +73,7 @@ class middle1: public virtual top
 
 先看两个虚基类构造的例子，
 
-{% include_code top_b类不采用虚继承 lang:cpp cpp/virtualinheritance/constructor_seq.cc %}
+{% include_code top_b类不采用虚继承 lang:cpp 2012/virtualinheritance/constructor_seq.cc %}
 
 输出结果
 
@@ -81,7 +81,7 @@ class middle1: public virtual top
 
 另外一个例子
 
-{% include_code top_b类采用虚继承 lang:cpp cpp/virtualinheritance/constructor_seq1.cc %}
+{% include_code top_b类采用虚继承 lang:cpp 2012/virtualinheritance/constructor_seq1.cc %}
 
 输出结果
 
@@ -100,7 +100,7 @@ class middle1: public virtual top
 
 下面这个例子分别都涉及到了上面三种情况
 
-{% include_code 虚继承中成员的可见性 lang:cpp cpp/virtualinheritance/members.cc %}
+{% include_code 虚继承中成员的可见性 lang:cpp 2012/virtualinheritance/members.cc %}
 
 输出结果
 
@@ -119,7 +119,7 @@ class middle1: public virtual top
 
 首先看一个简单的只有一层虚继承关系的例子
 
-{% include_code 一层虚继承 lang:cpp cpp/virtualinheritance/memory_middle1.cc %}
+{% include_code 一层虚继承 lang:cpp 2012/virtualinheritance/memory_middle1.cc %}
 
 运行结果如下图
 
@@ -155,7 +155,7 @@ nm -gC memory_middle1
 
 下面是一个菱形结构继承的例子代码，有兴趣的读者可以下载以后，按照上面的方面分析。
 
-{% include_code 菱形虚继承 lang:cpp cpp/virtualinheritance/memory_bottom.cc %}
+{% include_code 菱形虚继承 lang:cpp 2012/virtualinheritance/memory_bottom.cc %}
 
 这里仅仅画出内存的结构图如下
 

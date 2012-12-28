@@ -214,7 +214,7 @@ blog的样式中是没有缩进的，这样多少还是有点难看。加入的�
 
 然后创建文件`/source/_includes/custom/asides/douban-wishreading.html`, 在这个html文件中加入如下代码
 
-{% include_code 豆瓣想读的书 lang:html douban-wishreading.html %}
+{% include_code 豆瓣想读的书 lang:html 2012/blog_style/douban-wishreading.html %}
 
 其中第5行为豆瓣收藏秀生成的JS代码，其它的样式代码为blog的样式, 用于不同的blog可能需要修改。然后需要在`_config.yml`里修改配置，在`default_asides`中加入`custom/asides/douban-wishreading.html`，就像这样
 
@@ -243,7 +243,7 @@ abstract: "本文就介绍了这个blog搭建过程中，一些样式如何设�
 
 然后修改`source/_include/article.html`
 
-{% include_code 修改article.html lang:diff article.diff %} 
+{% include_code 修改article.html lang:diff 2012/blog_style/article.diff %} 
 
 之后修改样式文件`sass/custom/_styles.scss`, 添加如下的样式
 
