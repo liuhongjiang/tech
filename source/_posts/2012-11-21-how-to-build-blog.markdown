@@ -96,3 +96,9 @@ description: 他是一个程序员，已婚，有个儿子，字“左烦子”�
 
 ## 感谢
 在本站的搭建过程中，参考了[http://yanping.me/cn/](http://yanping.me/cn/)。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。
+
+## 好文章
+
+[如何高效利用GitHub](http://www.yangzhiping.com/tech/github.html)
+
+
