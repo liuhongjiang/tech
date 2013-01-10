@@ -3,6 +3,7 @@ layout: page
 title: "关于..."
 ---
 
+<p><img class="right" width="30%" height="30%" src="/images/about_asides.jpg" /></p>
 
 ### 码砖的苦逼
 
