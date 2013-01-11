@@ -87,6 +87,18 @@ curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&pretty=tru
 curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&format=yaml'
 ```
 
+当然ES还支持一次查询多组记录，即multi get，在URI中是使用关键字`_mget`，具体可以参考ES的文档[multi get](http://www.elasticsearch.org/guide/reference/api/multi-get.html)。
+
+## 更新
+
+ES同样支持更新，但是更新的方式是通过一个提供的脚本进行的。ES的做法是，通过index找到相应的存放记录的节点，然后执行脚本，执行完之后，返回新的索引。实际上执行的是一个get和reindex的过程，在这个过程中，通过versioning来控制没有其它的更新操作（这个功能是0.19后可用的）。具体实现的原理应该和[elasticsearch Versioning](http://www.elasticsearch.org/blog/2011/02/08/versioning.html)相关。
+
+get，reindex的含义是，ES先取出这条记录，然后根据新数据生成新记录，然后在把新记录放回到ES中（并不会覆盖老的记录）。
+
+
+
+
+
 
 
 
