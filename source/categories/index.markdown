@@ -4,7 +4,7 @@ title: "标签分类"
 ---
 
 <section>
-  <input class="search" type="text" name="filter_tags" results="0" placeholder="Filter Tags ..."/>
+  <p>查找：<input class="search" type="text" name="filter_tags" results="0" placeholder="Filter Tags ..."/></p>
   <script type="text/javascript">
     $('input[name=filter_tags]').keyup(function(e){
       var val = $(this).val();
