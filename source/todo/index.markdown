@@ -30,6 +30,7 @@ footer: true
 * libevent http json
 * node.js
 * master election
+* google updater
 
 ### Done
 
