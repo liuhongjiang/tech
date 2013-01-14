@@ -3,7 +3,7 @@ layout: post
 title: "SMO序列最小最优化算法"
 date: 2012-12-28 09:01
 comments: true
-categories: Machine&nbspLearning
+categories: Machine&nbsp;Learning
 math: true
 abstract: 序列最小最优化(sequential minimal optimization, SMO)算法是支持向量机的学习算法，本文主要讲解了SMO算法，并且实现了一个简单基于smo的svm。
 ---
