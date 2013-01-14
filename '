@@ -1,0 +1,25 @@
+---
+layout: post
+title: "test"
+date: 2013-01-14 10:54
+comments: true
+categories: 
+math: 
+abstract: 
+---
+
+
+*   this is it
+    
+    * this is another line
+    * this is another line
+* what's that
+* fuckit
+    * i do't understand
+
+> * this is it
+> * this is it
+> ** thisi ist
+> * this is a list
+>    wahat
+{: .information}
