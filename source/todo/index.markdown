@@ -34,9 +34,11 @@ footer: true
 
 ### Done
 
+<div class="skill-done hide">
 * <del>HTML DOM(w3school 教程)</del>
 * <del>JQuery(w3school 教程)</del>
 * <del>Ajax(w3school 教程)</del>
 * <del>Json(w3school 教程)</del>
 * <del>CSS(w3school 教程)</del>
 * <del>HTML(w3school 教程)</del>
+</div>
