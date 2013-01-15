@@ -299,7 +299,6 @@ div.sharing{
 
 .toggle-del {
     text-decoration: line-through;
-    display: none; 
 }
 
 .toggle-title:hover {
@@ -308,4 +307,8 @@ div.sharing{
 
 .toggle-title {
     background: silver;
+}
+
+.box-fold {
+    display: none; 
 }
