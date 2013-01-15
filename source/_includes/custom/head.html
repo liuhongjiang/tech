@@ -34,3 +34,8 @@
   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 {% endif %}
+
+{% if page.todo-toggle == true %}
+<script type="text/javascript" src="{{ root_url }}/javascripts/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="{{ root_url }}/javascripts/todo-toggle.js"></script>
+{% endif %}

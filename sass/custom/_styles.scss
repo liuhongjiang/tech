@@ -296,3 +296,16 @@ div.sharing{
 	padding-left: 1em;
 	vertical-align: middle;
 }
+
+.toggle-del {
+    text-decoration: line-through;
+    display: none; 
+}
+
+.toggle-title:hover {
+    cursor:pointer;
+}
+
+.toggle-title {
+    background: silver;
+}

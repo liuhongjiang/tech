@@ -4,6 +4,7 @@ title: "TODO"
 comments:
 sharing: true
 footer: true
+todo-toggle: true
 ---
 
 ## To-blog
@@ -16,12 +17,14 @@ footer: true
 ## Skills
 
 ### Learning
-{:.doing}
+{: .toggle-title .title-unfold}
 
 * Elasticsearch
 * PHP(w3school 教程)
+{: .toggle-box}
 
 ### Plan
+{: .toggle-title .title-fold}
 
 * Ruby
 * Rails
@@ -31,14 +34,16 @@ footer: true
 * node.js
 * master election
 * google updater
+{: .toggle-box}
 
-### Done
+### Done1
+{: .toggle-title .title-fold}
 
-<div class="skill-done hide">
-* <del>HTML DOM(w3school 教程)</del>
-* <del>JQuery(w3school 教程)</del>
-* <del>Ajax(w3school 教程)</del>
-* <del>Json(w3school 教程)</del>
-* <del>CSS(w3school 教程)</del>
-* <del>HTML(w3school 教程)</del>
-</div>
+* HTML DOM(w3school 教程)
+* JQuery(w3school 教程)
+* Ajax(w3school 教程)
+* Json(w3school 教程)
+* CSS(w3school 教程)
+* HTML(w3school 教程)
+{: .toggle-box .toggle-del}
+
