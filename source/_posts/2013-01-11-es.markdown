@@ -17,9 +17,9 @@ abstract:
 
 启动和安装特别简单，在[ES下载页面](http://www.elasticsearch.org/download/)下载zip或者tar包后，解压，然后到elasticsearch的目录下，运行下面的命令就可以了。
 
-``` bash
+{% sh :commands %}
 bin/elasticsearch -f
-```
+{% endsh %}
 
 搭建集群也非常简单，在同网段的机器上，启动es后，它们会自动组建成一个集群，并完成数据的分布式存储，查询时也会按照分布式的方式去查找。
 
@@ -43,7 +43,14 @@ $ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
 
 执行结果如下图所示，绿色框内的内容是ES返回的执行结果：
 
-{% img center /images/blogimages/2013/es/put1.jpg %}
+{% sh :bash %}
+andrew@ubuntu:~$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
+>     "user" : "kimchy",
+>     "post_date" : "2009-11-15T14:12:12",
+>     "message" : "trying out Elastic Search"
+> }'
+{"ok":true,"_index":"twitter","_type":"tweet","_id":"1","_version":6}andrew@ubuntu:~$
+{% endsh %}
 
 从上面的这个例子中，可以看出ES的http的服务的默认端口9200，后面的`/twitter/tweet/1`是这条记录的索引部分。
 
@@ -73,7 +80,14 @@ $ curl -XGET 'http://localhost:9200/twitter/tweet/1'
 
 执行上面的查询命令，可以等到下面的结果：
 
-{% img center /images/blogimages/2013/es/get1.jpg %}
+{% sh :bash %}
+andrew@ubuntu:~$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
+{"_index":"twitter","_type":"tweet","_id":"1","_version":5,"exists":true, "_source" : {
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elastic Search"
+}}andrew@ubuntu:~$ 
+{% endsh %}
 
 `exists`表示是否有查询结果，`_source`字段是查询到的记录。
 
@@ -161,6 +175,22 @@ $ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
     }
 }'
 ```
+
+``` bash
+$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
+    "query" : {
+        "term" : { "user" : "kimchy" }
+    }
+}'
+```
+
+{% sh :bash %}
+$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
+    "query" : {
+        "term" : { "user" : "kimchy" }
+    }
+}'
+{% endsh %}
 
 query body的定义可以查看[query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/)
 另外两种查询方式都可以带参数，参数的含义参考[URI Request](http://www.elasticsearch.org/guide/reference/api/search/uri-request.html)和[Request Body](http://www.elasticsearch.org/guide/reference/api/search/request-body.html)。

@@ -35,12 +35,13 @@ categories: octopress
 * [http://jakevdp.github.com/](http://jakevdp.github.com/)
 * [head的照片](http://threeofakind.ca/blog/2012/06/russells-6-8-months/) 
 * [head的渐变色](http://blog.satrex.jp/)
-* [左上的图标很有意思](http://mrzhang.me/)
+* [一个前端大牛的博客：wǒ_is神仙](http://mrzhang.me/)
 * [3d云标签，豆瓣阅读的侧边栏](http://www.dongwm.com/)
 
 其它的收集
 
 * [这个slideshows太亮了](http://justineo.github.com/slideshows/font/#/)
+* [另外一种博客语法高亮:Using SHJS for Jekyll](http://mrzhang.me/blog/using-shjs-for-jekyll.html)
 
 ## 在blog中显示公式
 
