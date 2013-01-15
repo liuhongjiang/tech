@@ -138,6 +138,7 @@ blockquote{
   border: none; 
 }
 
+
 /* 表格 */
 #content table.mytable {
   border-collapse: collapse;
@@ -303,12 +304,32 @@ div.sharing{
 
 .toggle-title:hover {
     cursor:pointer;
+    background: rgba(0, 0, 0, 0.6);
 }
 
 .toggle-title {
     background: silver;
+    transition: background-color 1s ease-in-out 0s;
 }
 
 .box-fold {
     display: none; 
+}
+
+.toggle-box p {
+    margin: 0;
+}
+
+.toggle-box blockquote {
+    color: #888888;
+    font-size: 0.875em;
+    padding-left: 1.8em;
+    padding-right: 2.8em;
+    line-height: 1.2em;
+    border-left: 0;
+    margin: 0 0 0.2em;
+}
+
+.toggle-box blockquote a {
+    color: #888888;
 }
