@@ -168,22 +168,6 @@ $ curl -XGET 'http://localhost:9200/twitter/tweet/_search?q=user:kimchy'
 
 第二种方式，即在查询的请求中加入一个doc
 
-``` bash
-$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
-    "query" : {
-        "term" : { "user" : "kimchy" }
-    }
-}'
-```
-
-``` bash
-$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
-    "query" : {
-        "term" : { "user" : "kimchy" }
-    }
-}'
-```
-
 {% sh :bash %}
 $ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
     "query" : {
@@ -194,6 +178,19 @@ $ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
 
 query body的定义可以查看[query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/)
 另外两种查询方式都可以带参数，参数的含义参考[URI Request](http://www.elasticsearch.org/guide/reference/api/search/uri-request.html)和[Request Body](http://www.elasticsearch.org/guide/reference/api/search/request-body.html)。
+
+ES的搜索功能是可以跨index和type的，例如下面这几条命令
+
+{% sh :commands %}
+curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
+curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
+curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
+curl -XGET 'http://localhost:9200/_all/tweet/_search?q=tag:wow'
+curl -XGET 'http://localhost:9200/_search?q=tag:wow'
+{% endsh %}
+
+第一条是在所有的`twitter`这个index下的所有type中查找，第二条是在`tweet,user`这两个type中查找，第三条是在`kimchy,elasticsearch`这两个index的`tweet`这个type中查找，第四条使用了`_all`关键字，是在所有的index的`tweet`的type中查找，第五条更暴力，在所有的index和type中查找。
+
 
 
 

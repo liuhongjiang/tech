@@ -28,6 +28,8 @@ todo-toggle: true
 * master election
 * google updater
 * [deep learning](http://blog.csdn.net/abcjennifer/article/details/7826917)
+* Lucene
+* apache and tomcat
 {: .toggle-box .box-fold}
 
 ### Done
@@ -155,3 +157,4 @@ todo-toggle: true
 * svm
 * svm-ocr
 {: .toggle-box .box-fold .toggle-del}
+
