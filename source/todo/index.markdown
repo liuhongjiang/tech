@@ -30,6 +30,7 @@ todo-toggle: true
 * [deep learning](http://blog.csdn.net/abcjennifer/article/details/7826917)
 * Lucene
 * apache and tomcat
+* open flash chart
 {: .toggle-box .box-fold}
 
 ### Done
@@ -143,6 +144,8 @@ todo-toggle: true
     > <http://www.blogjava.net/qileilove/archive/2012/05/23/378903.html>    
     > <http://www.2cto.com/os/201109/103758.html>   
     > <http://blog.csdn.net/jiang1013nan/article/details/5721675>
+
+* master election 的霸道算法
 {: .toggle-box}
 
 ### Done
