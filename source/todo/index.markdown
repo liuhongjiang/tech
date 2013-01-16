@@ -17,7 +17,7 @@ todo-toggle: true
 {: .toggle-box}
 
 ### Plan
-{: .toggle-title .title-fold}
+{: .toggle-title .title-unfold}
 
 * Ruby
 * Rails
@@ -31,7 +31,7 @@ todo-toggle: true
 * Lucene
 * apache and tomcat
 * open flash chart
-{: .toggle-box .box-fold}
+{: .toggle-box }
 
 ### Done
 {: .toggle-title .title-fold}
@@ -42,7 +42,7 @@ todo-toggle: true
 * Json(w3school 教程)
 * CSS(w3school 教程)
 * HTML(w3school 教程)
-{: .toggle-box .box-fold .toggle-del}
+{: .toggle-box .toggle-del}
 
 ## [Books](http://book.douban.com/people/63148093/)
 
@@ -54,15 +54,15 @@ todo-toggle: true
 </div>
 
 ### Wish
-{: .toggle-title .title-fold}
+{: .toggle-title .title-unfold}
 
-<div class="toggle-box box-fold">
+<div class="toggle-box">
 <script type="text/javascript" src="http://www.douban.com/service/badge/63148093/?show=wishlist&amp;select=random&amp;n=12&amp;columns=6&amp;picsize=medium&amp;hidelogo=yes&amp;hideself=yes&amp;cat=book"></script> 
 </div>
 
 ### Done
 {: .toggle-title .title-fold}
-<div class="toggle-box box-fold">
+<div class="toggle-box">
 <script type="text/javascript" src="http://www.douban.com/service/badge/63148093/?show=collection&amp;select=random&amp;n=12&amp;columns=6&amp;picsize=medium&amp;hidelogo=yes&amp;hideself=yes&amp;cat=book" ></script> 
 </div>
 
@@ -159,5 +159,5 @@ todo-toggle: true
 
 * svm
 * svm-ocr
-{: .toggle-box .box-fold .toggle-del}
+{: .toggle-box .toggle-del}
 

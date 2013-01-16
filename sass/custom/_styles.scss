@@ -298,6 +298,7 @@ div.sharing{
 	vertical-align: middle;
 }
 
+// toggle for to-do page
 .toggle-del {
     text-decoration: line-through;
 }
@@ -311,10 +312,6 @@ div.sharing{
 .toggle-title {
     background: silver;
     transition: background-color 1s ease-in-out 0s, color 1.5s ease-in-out 0s;
-}
-
-.box-fold {
-    display: none; 
 }
 
 .toggle-box p {
