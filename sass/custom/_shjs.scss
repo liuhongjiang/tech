@@ -8,7 +8,7 @@
 
 */
 
-pre[class^='sh_'], .sh_sourcecode {
+pre[class^='sh-'], .sh-sourcecode {
     overflow-x: auto;
     margin-top: 1em;
     padding: 8px 12px;
@@ -20,31 +20,31 @@ pre[class^='sh_'], .sh_sourcecode {
     font-size: 15px;
 }
 
-.sh_sourcecode {
-    .sh_type, .sh_keyword, .sh_selector, .sh_preproc {
+.sh-sourcecode {
+    .sh-type, .sh-keyword, .sh-selector, .sh-preproc {
         color: #e8bf69;
     }
 
-    .sh_string, .sh_regexp, .sh_number, .sh_specialchar {
+    .sh-string, .sh-regexp, .sh-number, .sh-specialchar {
         color: #a5c160;
     }
 
-    .sh_property, .sh_value {
+    .sh-property, .sh-value {
         color: #6e9cbd;
     }
 
-    .sh_function {
+    .sh-function {
         color: #da4938;
     }
 
-    .sh_comment {
+    .sh-comment {
         color: #bc9357;
         font-style: italic;
         text-shadow: none;
     }
 }
 
-.sh_commands code::before {
+.sh-commands code::before {
 
 margin-right: 10px;
 

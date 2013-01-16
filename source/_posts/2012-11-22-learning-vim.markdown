@@ -11,6 +11,7 @@ categories: Vi
 	作者: Bram Moolenaar  
 	翻译: ZhaoRuFei<slimzhao@hotmail.com>  
 	版本: 7.0  
+{: .sh-bash}
 
 ## 笔记 
 1. __要退出Vim, 用命令"ZZ". 该命令保存当前文件并退出Vim.__

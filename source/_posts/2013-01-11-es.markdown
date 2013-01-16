@@ -33,13 +33,12 @@ bin/elasticsearch -f
 
 先来一个简单的官方例子，插入的参数为`-XPUT`，插入一条记录。
 
-``` bash
-$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elastic Search"
-}'
-```
+    $ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
+        "user" : "kimchy",
+        "post_date" : "2009-11-15T14:12:12",
+        "message" : "trying out Elastic Search"
+    }'
+{: .sh-bash}
 
 执行结果如下图所示，绿色框内的内容是ES返回的执行结果：
 
@@ -64,9 +63,8 @@ andrew@ubuntu:~$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
 
 删除的http请求参数为`-XDELETE`，通过下面的命令可以删除这条记录：
 
-``` bash
-$ curl -XDELETE 'http://localhost:9200/twitter/tweet/1'
-```
+    curl -XDELETE 'http://localhost:9200/twitter/tweet/1'
+{: .sh-commands}
 
 删除这条记录的时候，`_verison`也会自动加一的。
 
@@ -74,20 +72,18 @@ $ curl -XDELETE 'http://localhost:9200/twitter/tweet/1'
 
 创建了一个索引后，可以通过下面的方式查询（参数`-XGET`）出来:
 
-``` bash
-$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
-```
+    curl -XGET 'http://localhost:9200/twitter/tweet/1'
+{: .sh-commands}
 
 执行上面的查询命令，可以等到下面的结果：
 
-{% sh :bash %}
-andrew@ubuntu:~$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
-{"_index":"twitter","_type":"tweet","_id":"1","_version":5,"exists":true, "_source" : {
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elastic Search"
-}}andrew@ubuntu:~$ 
-{% endsh %}
+    andrew@ubuntu:~$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
+    {"_index":"twitter","_type":"tweet","_id":"1","_version":5,"exists":true, "_source" : {
+        "user" : "kimchy",
+        "post_date" : "2009-11-15T14:12:12",
+        "message" : "trying out Elastic Search"
+    }}andrew@ubuntu:~$ 
+{: .sh-bash}
 
 `exists`表示是否有查询结果，`_source`字段是查询到的记录。
 
@@ -96,10 +92,9 @@ andrew@ubuntu:~$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
 还可以通过参数对返回结果继续控制，例如：用fields选取返回的字段，用pretty控制返回的json格式是否更阅读友好。`format=yaml`可以设置输入格式为YAML。
 下面是两个例子
 
-``` bash
-curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&pretty=true'
-curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&format=yaml'
-```
+    curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&pretty=true'
+    curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&format=yaml'
+{: .sh-commands}
 
 当然ES还支持一次查询多组记录，即multi get，在URI中是使用关键字`_mget`，具体可以参考ES的文档[multi get](http://www.elasticsearch.org/guide/reference/api/multi-get.html)。
 
@@ -111,48 +106,44 @@ get，reindex的含义是，ES先取出这条记录，然后根据新数据生�
 
 首先创建一条记录
 
-``` bash
-curl -XPUT localhost:9200/test/type1/1 -d '{
-    "counter" : 1,
-    "tags" : ["red"]
-}'
-```
+    $ curl -XPUT localhost:9200/test/type1/1 -d '{
+        "counter" : 1,
+        "tags" : ["red"]
+    }'
+{: .sh-bash}
 
 将counter的值加4
 
-``` bash
-curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.counter += count",
-    "params" : {
-        "count" : 4
-    }
-}'
-```
+    $ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
+        "script" : "ctx._source.counter += count",
+        "params" : {
+            "count" : 4
+        }
+    }'
+{: .sh-bash}
 
 也可以添加一个tag的值
 
-``` bash
-curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.tags += tag",
-    "params" : {
-        "tag" : "blue"
-    }
-}'
-```
+    $ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
+        "script" : "ctx._source.tags += tag",
+        "params" : {
+            "tag" : "blue"
+        }
+    }'
+{: .sh-bash}
 
 现在还支持upsert功能，即在更新的时候，如果记录没有这个key，则插入这个key，下面是一个例子，如果没有`counter`字段，则插入该字段：
 
-``` bash
-curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.counter += count",
-    "params" : {
-        "count" : 4
-    },
-    "upsert" : {
-        "counter" : 1
-    }
-}'
-```
+    $ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
+        "script" : "ctx._source.counter += count",
+        "params" : {
+            "count" : 4
+        },
+        "upsert" : {
+            "counter" : 1
+        }
+    }'
+{: .sh-bash}
 
 关于update还有其它很多功能，可以参考[ES的API update](http://www.elasticsearch.org/guide/reference/api/update.html)
 
@@ -162,32 +153,29 @@ elasticsearch的名字里面有一个search，那么主要功能也是search了�
 
 es的search有两种形式，一是通过URI，二是通过Requst Body。通过URI查询，即将查询的语句放入到请求的url中，例如：
 
-``` bash
-$ curl -XGET 'http://localhost:9200/twitter/tweet/_search?q=user:kimchy'
-```
+    curl -XGET 'http://localhost:9200/twitter/tweet/_search?q=user:kimchy'
+{: .sh-commands}
 
 第二种方式，即在查询的请求中加入一个doc
 
-{% sh :bash %}
-$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
-    "query" : {
-        "term" : { "user" : "kimchy" }
-    }
-}'
-{% endsh %}
+    $ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
+        "query" : {
+            "term" : { "user" : "kimchy" }
+        }
+    }'
+{: .sh-bash}
 
 query body的定义可以查看[query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/)
 另外两种查询方式都可以带参数，参数的含义参考[URI Request](http://www.elasticsearch.org/guide/reference/api/search/uri-request.html)和[Request Body](http://www.elasticsearch.org/guide/reference/api/search/request-body.html)。
 
 ES的搜索功能是可以跨index和type的，例如下面这几条命令
 
-{% sh :commands %}
-curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
-curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
-curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
-curl -XGET 'http://localhost:9200/_all/tweet/_search?q=tag:wow'
-curl -XGET 'http://localhost:9200/_search?q=tag:wow'
-{% endsh %}
+    curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
+    curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
+    curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
+    curl -XGET 'http://localhost:9200/_all/tweet/_search?q=tag:wow'
+    curl -XGET 'http://localhost:9200/_search?q=tag:wow'
+{: .sh-commands}
 
 第一条是在所有的`twitter`这个index下的所有type中查找，第二条是在`tweet,user`这两个type中查找，第三条是在`kimchy,elasticsearch`这两个index的`tweet`这个type中查找，第四条使用了`_all`关键字，是在所有的index的`tweet`的type中查找，第五条更暴力，在所有的index和type中查找。
 
