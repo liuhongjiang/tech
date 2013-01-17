@@ -1,14 +1,14 @@
 ---
 layout: post
-title: "elasticsearch"
+title: "elasticsearch之基本操作"
 date: 2013-01-11 17:08
 comments: true
 categories: tools 
 math: 
-abstract: 
+abstract: 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找功能。 
 ---
 
-[elasticsearch](http://www.elasticsearch.org)是一个是开源的（Apache2协议），分布式的，[RESTful](http://zh.wikipedia.org/zh-cn/REST)的，构建在Apache Lucene之上的的搜索引擎。 
+[elasticsearch](http://www.elasticsearch.org)是一个是开源的（Apache2协议），分布式的，[RESTful](http://zh.wikipedia.org/zh-cn/REST)的，构建在[Apache Lucene](http://lucene.apache.org/)之上的的搜索引擎。 
 
 它有很多特点例如Schema Free，Document Oriented。它是#nosql的，基于JSON，同时支持多种API，包括HTTP, thrift, memcached。支持HTTP,是比较爽的一点，因为基本上所有的应用都可以用ES了，页面上的js脚本都可以去查询。
 
@@ -27,7 +27,7 @@ bin/elasticsearch -f
 
 <!-- more -->
 
-下面我们就来看一下ES的HTTP的API吧，（ES安装在ubuntu server 64位 12.04LTS）。
+下面我们就来看一下ES的HTTP的API的插入、删除、更新、查找的功能吧，（ES安装在ubuntu server 64位 12.04LTS）。
 
 ## 插入
 
@@ -179,9 +179,39 @@ ES的搜索功能是可以跨index和type的，例如下面这几条命令
 
 第一条是在所有的`twitter`这个index下的所有type中查找，第二条是在`tweet,user`这两个type中查找，第三条是在`kimchy,elasticsearch`这两个index的`tweet`这个type中查找，第四条使用了`_all`关键字，是在所有的index的`tweet`的type中查找，第五条更暴力，在所有的index和type中查找。
 
+查找还有其它的很多选项，[sort](http://www.elasticsearch.org/guide/reference/api/search/sort.html)，[高亮](http://www.elasticsearch.org/guide/reference/api/search/highlighting.html)，选取返回记录的域[Fields](http://www.elasticsearch.org/guide/reference/api/search/fields.html)，还可以对返回的域使用一个脚本进行计算[script Fields](http://www.elasticsearch.org/guide/reference/api/search/script-fields.html)，或者对返回结果继续统计[Facets](http://www.elasticsearch.org/guide/reference/api/search/facets/)，Facets的内容比较多，它支持关键词统计，范围内统计，直方图式统计，日期的直方图式统计，过滤，查询，还有记录地理位置距离的统计[geo distance](http://www.elasticsearch.org/guide/reference/api/search/facets/geo-distance-facet.html)。
+支持名字过滤[Named Filters](http://www.elasticsearch.org/guide/reference/api/search/named-filters.html)。
+定义搜索类型[Search Type ](http://www.elasticsearch.org/guide/reference/api/search/search-type.html)。例如什么Query And Fetch，Query Then Fetch。
+索引加速的功能[Index Boost](http://www.elasticsearch.org/guide/reference/api/search/index-boost.html)，可以让某一个索引的权重大于另外一个。
+保持上次检索的环境了结果[Scroll](http://www.elasticsearch.org/guide/reference/api/search/scroll.html)。保留每一个命中的score值[Explain](http://www.elasticsearch.org/guide/reference/api/search/explain.html)。
+设置命中的[min_score](http://www.elasticsearch.org/guide/reference/api/search/min-score.html)。保留版本号[Version](http://www.elasticsearch.org/guide/reference/api/search/version.html)。
 
+Search的参数很多，我也没有一一看，不过果然是名字里面有个search，对检索的各种场景都有支持。
 
+当然还支持多个查询multi search，例如下面这个例子
 
+    $ cat requests
+    {"index" : "test"}
+    {"query" : {"match_all" : {}}, "from" : 0, "size" : 10}
+    {"index" : "test", "search_type" : "count"}
+    {"query" : {"match_all" : {}}}
+    {}
+    {"query" : {"match_all" : {}}}
 
-* http://blog.csdn.net/laigood12345/article/details/7421173
-* http://www.qwolf.com/?p=1387
+    $ curl -XGET localhost:9200/_msearch --data-binary @requests; echo
+{: .sh-bash}
+
+## 小结
+
+以上就是elasticsearch的基本的几个功能了。当然它还有其它的很多功能，大家可以上<http://www.elasticsearch.org>去查看。
+
+ES是基于Lucene的，有很多概念是直接来自于它，所有要想深入学习ES，还得有点Lucene的基础。
+
+总的，感觉elasticsearch是一个比较强大的工具，而且对社交网络的支持比较好，而且使用方便，配置简单，就不知道稳定性如何了。
+
+下面是两篇不错的文章，大家也可以借鉴一下：
+
+* <http://blog.csdn.net/laigood12345/article/details/7421173>
+* <http://www.qwolf.com/?p=1387>
+
+还有elasticsearch的中文站点<http://www.elasticsearch.cn/>，不过这个网站还在构建中，翻译工作也才刚刚开始，大家就期盼早点完成。
