@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "TODO"
+title: "todo"
 comments:
 sharing: true
 footer: true
@@ -23,14 +23,19 @@ todo-toggle: true
 * Rails
 * Bootstrap
 * Zookeeper 
-* libevent http json
+* [libevent http json](http://blog.csdn.net/jiang1013nan/article/details/5674349)
 * node.js
+* yaml
 * master election
 * google updater
 * [deep learning](http://blog.csdn.net/abcjennifer/article/details/7826917)
 * Lucene
 * apache and tomcat
 * open flash chart
+* less & scss 
+
+    > [css预处理器](http://www.lesscss.net/)    
+    > [scss](http://sass-lang.com/)
 {: .toggle-box }
 
 ### Done
