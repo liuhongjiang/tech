@@ -5,7 +5,7 @@ date: 2013-01-11 17:08
 comments: true
 categories: tools 
 math: 
-abstract: 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找功能。 
+abstract: 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找、搜索功能。 
 ---
 
 [elasticsearch](http://www.elasticsearch.org)是一个是开源的（Apache2协议），分布式的，[RESTful](http://zh.wikipedia.org/zh-cn/REST)的，构建在[Apache Lucene](http://lucene.apache.org/)之上的的搜索引擎。 
@@ -27,7 +27,7 @@ bin/elasticsearch -f
 
 <!-- more -->
 
-下面我们就来看一下ES的HTTP的API的插入、删除、更新、查找的功能吧，（ES安装在ubuntu server 64位 12.04LTS）。
+下面我们就来看一下ES的HTTP的API的插入、删除、更新、查找、搜索的功能吧，（ES安装在ubuntu server 64位 12.04LTS）。
 
 ## 插入
 
@@ -92,9 +92,10 @@ andrew@ubuntu:~$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
 还可以通过参数对返回结果继续控制，例如：用fields选取返回的字段，用pretty控制返回的json格式是否更阅读友好。`format=yaml`可以设置输入格式为YAML。
 下面是两个例子
 
-    curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&pretty=true'
-    curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&format=yaml'
-{: .sh-commands}
+{% sh :commands %}
+curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&pretty=true'
+curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&format=yaml'
+{% endsh %}
 
 当然ES还支持一次查询多组记录，即multi get，在URI中是使用关键字`_mget`，具体可以参考ES的文档[multi get](http://www.elasticsearch.org/guide/reference/api/multi-get.html)。
 
@@ -147,7 +148,7 @@ get，reindex的含义是，ES先取出这条记录，然后根据新数据生�
 
 关于update还有其它很多功能，可以参考[ES的API update](http://www.elasticsearch.org/guide/reference/api/update.html)
 
-## 查询
+## 搜索
 
 elasticsearch的名字里面有一个search，那么主要功能也是search了。
 
@@ -170,12 +171,13 @@ query body的定义可以查看[query DSL](http://www.elasticsearch.org/guide/re
 
 ES的搜索功能是可以跨index和type的，例如下面这几条命令
 
-    curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
-    curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
-    curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
-    curl -XGET 'http://localhost:9200/_all/tweet/_search?q=tag:wow'
-    curl -XGET 'http://localhost:9200/_search?q=tag:wow'
-{: .sh-commands}
+{% sh :commands %}
+curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
+curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
+curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
+curl -XGET 'http://localhost:9200/_all/tweet/\_search?q=tag:wow'
+curl -XGET 'http://localhost:9200/\_search?q=tag:wow'
+{% endsh %}
 
 第一条是在所有的`twitter`这个index下的所有type中查找，第二条是在`tweet,user`这两个type中查找，第三条是在`kimchy,elasticsearch`这两个index的`tweet`这个type中查找，第四条使用了`_all`关键字，是在所有的index的`tweet`的type中查找，第五条更暴力，在所有的index和type中查找。
 
