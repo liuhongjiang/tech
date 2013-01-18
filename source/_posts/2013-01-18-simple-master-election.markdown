@@ -1,8 +1,18 @@
+---
+layout: post
+title: "霸道算法和环选举算法"
+date: 2013-01-18 17:44
+comments: true
+categories: Algorithm 
+math: 
+abstract: 本文介绍了两种简单的master算法，霸道算法和环选举算法，另外还提出了一个没有验证的假象算法，它是在同一个host上基于文件锁的霸道选举算法。  
+---
+
 现在主流的分布式集群一致性问题大多都吸收了PAXOS算法[^1]的思想。然而，如果完全按照Leslie Lamport的论文[^2]，实现复杂度比较高。因此，大多数实现都采用PAXOS的某种变形。Lamport的重要贡献，献是把分布式一致性的问题，形式化并给出了证明，给出了理论指导。[^3]
 
 关于Paxos算法，在网上看到了一个Fast Paxos算法，见淘宝核心系统团队博客, [paxos 实现](http://rdc.taobao.com/blog/cs/?p=162)
 
-Paxos算法看起来还是很负责的，没有仔细研究，倒是在网上另外找到了两个简单的master选举算法。
+Paxos算法看起来还是很复杂的，没有仔细研究，倒是在网上另外找到了两个简单的master选举算法。
 
 ## 霸道算法
 
@@ -46,8 +56,10 @@ Garcia-Monila 在 1982 年的一篇论文中发明了所谓的霸道选举算法
 文件锁可以用于进程间的同步，它支持读锁和写锁。具体算法如下：
 
 假设：
-有固定的一个路径下的文件file，用于选举和保存每个进程的通信端口。
-进程编号单调递增的。
+
+* 有固定的一个路径下的文件file，用于选举和保存每个进程的通信端口。
+* 进程编号单调递增的。
+* 进程通过TCP方式通信，当然也可以采用其它方式通信，例如共享内存的方式。
 
 进程启动时：
 
@@ -63,10 +75,11 @@ Garcia-Monila 在 1982 年的一篇论文中发明了所谓的霸道选举算法
 
 当master无相应时：
 
-1. 感知到master无响应时，发起master选举，知道产生master进程。
-2. 新的master先创建一个file副本，然后加写锁，用副本替换file，然后所有进程的编号和端口写入到file文件中。
+1. 感知到master无响应时，发起master选举，直到产生新的master进程。
+2. 新的master先创建一个file副本，然后加写锁，用副本替换file，然后所有进程的编号和端口写入到file文件中，并通知所有的进程自己为master，当然这时也可以重置所有的进程编号。
 
 以上是我设想的一个算法，现在仅仅是一个思路，没有经过验证，慎用。
+关于文件锁，我也写了一个简单的[文件锁测试程序](https://github.com/liuhongjiang/blog_projects/tree/master/file-lock)。
 
 [^1]: wikipedia, [Paxos (computer science)](http://en.wikipedia.org/wiki/Paxos_%28computer_science%29)
 [^2]: Leslie Lamport, Paxos Made Simple, 1, Nov, 2001.
