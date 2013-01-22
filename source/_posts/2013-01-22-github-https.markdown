@@ -23,5 +23,14 @@ abstract:
 5. github配置，关键一步是remote add的时候，方法是：     
     git remote add origin https://liuhongjiang@github.com/liuhongjiang/tech.git     
     这样就可以正常地pull和push了，麻烦的是，每次都要输入秘密。      
+6. 接下来就是octopress的rake deploy了：
+    需要修改Rakefile：
 
+        # user = repo_url.match(/:([^\/]+)/)[1]
+        user = repo_url.match(/github\.com.([^\/]+)/)[1]
+        #branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
+        branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
 
+    然后在`rake setup_github_pages`命令中填https的url地址：          
+    https://liuhongjiang@github.com/liuhongjiang/tech       
+    同样在部署的时候，还是要输入密码
