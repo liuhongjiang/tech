@@ -36,3 +36,10 @@ abstract:
     然后在`rake setup_github_pages`命令中填https的url地址：          
     https://liuhongjiang@github.com/liuhongjiang/tech       
     同样在部署的时候，还是要输入密码
+7. 解决不输入密码的方式，在`~/.ssh/config`文件中添加如下配置：
+    如果没有config文件，就添加config文件，id_rsa是添加到github网站上ssh key对应的密钥文件。
+    
+        # github account for liuhongjiang
+        Host liuhongjiang@github.com
+            HostName liuhongjiang@github.com
+            IdentityFile ~/.ssh/id_rsa
