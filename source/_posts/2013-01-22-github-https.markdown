@@ -19,7 +19,7 @@ abstract:
     http://askubuntu.com/questions/73287/how-do-i-install-a-root-certificate        
 
 3. 启动代理 python proxy.py
-4. 设置代理： export HTTPS PROXY="http://127.0.0.1:8087"
+4. 设置代理： export HTTPS\_PROXY="http://127.0.0.1:8087"
 5. github配置，关键一步是remote add的时候，方法是：     
     git remote add origin https://liuhongjiang@github.com/liuhongjiang/tech.git     
     这样就可以正常地pull和push了，麻烦的是，每次都要输入秘密。      
