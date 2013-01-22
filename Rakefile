@@ -307,8 +307,9 @@ task :setup_github_pages, :repo do |t, args|
   end
   # user = repo_url.match(/:([^\/]+)/)[1]
   user = repo_url.match(/github\.com.([^\/]+)/)[1]
-  #branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
+  # branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
   branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
+  # project = (branch == 'gh-pages') ? repo_url.match(/\/([^\.]+)/)[1] : ''
   project = (branch == 'gh-pages') ? repo_url.match(/\/([^\/^\.]+)$/)[1] : ''
   unless `git remote -v`.match(/origin.+?octopress.git/).nil?
     # If octopress is still the origin remote (from cloning) rename it to octopress

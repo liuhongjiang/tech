@@ -28,8 +28,10 @@ abstract:
 
         # user = repo_url.match(/:([^\/]+)/)[1]
         user = repo_url.match(/github\.com.([^\/]+)/)[1]
-        #branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
+        # branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
         branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
+        # project = (branch == 'gh-pages') ? repo_url.match(/\/([^\.]+)/)[1] : ''
+        project = (branch == 'gh-pages') ? repo_url.match(/\/([^\/^\.]+)$/)[1] : ''
 
     然后在`rake setup_github_pages`命令中填https的url地址：          
     https://liuhongjiang@github.com/liuhongjiang/tech       
