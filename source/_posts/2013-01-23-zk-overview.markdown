@@ -30,6 +30,8 @@ ZooKeeper的基本运转流程：
     4、Leader要具有最高的zxid。
     5、集群中大多数的机器得到响应并follow选出的Leader。
 
+<!-- more -->
+
 ## ZooKeeper Overview
 
 ### 结构
