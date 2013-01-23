@@ -3,7 +3,7 @@ layout: post
 title: "elasticsearch之基本操作"
 date: 2013-01-11 17:08
 comments: true
-categories: tools 
+categories: 3rd&nbsp;tools 
 math: 
 abstract: 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找、搜索功能。 
 ---

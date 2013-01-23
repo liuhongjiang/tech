@@ -1,3 +1,14 @@
+---
+layout: post
+title: "ZooKeeper Overview"
+date: 2013-01-23 17:05
+comments: true
+categories: 3rd&nbsp;tools
+math: 
+abstract: 简单介绍了zookeeper的概要，主要是翻译了apache zookeeper overview的内容。 
+---
+
+## ZooKeeper 简介
 
 ZooKeeper是Hadoop的正式子项目，它是一个针对大型分布式系统的可靠协调系统，提供的功能包括：配置维护、名字服务、分布式同步、组服务等。ZooKeeper的目标就是封装好复杂易出错的关键服务，将简单易用的接口和性能高效、功能稳定的系统提供给用户。[^1]
 
@@ -19,7 +30,7 @@ ZooKeeper的基本运转流程：
     4、Leader要具有最高的zxid。
     5、集群中大多数的机器得到响应并follow选出的Leader。
 
-## zookeeper overview
+## ZooKeeper Overview
 
 ### 结构
 
@@ -27,13 +38,13 @@ zookeeper service本身就是一个分布式集群，这一点和chubby是一样
 
 Zookeeper的客户端连接到zookeeper的server上，客户端保持一个与server之间的TCP连接，并通过这个TCP链接发送请求，获取响应，获取watch事件，和发送心跳。如果连接断掉了，那么客户端将会自动连接到另外一个server。
 
-{% img center /images/blogimages/zk/zkservice.jpg %} 
+{% img center /images/blogimages/2013/zk-overview/zkservice.jpg %} 
 
 zookeeper的操作是有顺序的，zookeeper为每一个操作添加一个数字，通过这个数字可以体现出所有ZooKeeper transactions的顺序。后续的操作，可以通过这个种顺序去实现更上层的应用，例如同步操作。
 
 zookeeper的数据模型，类似文件系统，通过定一个了Hierarchical Namespace的概念，一个name就是路径，每一个节点znode都是通过一个路径来定义的。ZooKeeper\'s Hierarchical Namespace的一个示例：
 
-{% img center /images/blogimages/zk/zknamespace.jpg %} 
+{% img center /images/blogimages/2013/zk-overview/zknamespace.jpg %} 
 
 ### 节点和临时节点
 
@@ -41,7 +52,6 @@ zookeeper的数据模型，类似文件系统，通过定一个了Hierarchical N
 zookeeper的设计目的就是存放同步信息：状态信息，配置，位置信息等等。所以每个节点存放的数据都是非常小的。具体实现是，可能是一个路径对应DB中的一项数据，例如chubby就是使用Berkeley DB来保存Node的信息。
 
 znode实际上包含的是一个有状态的数据，它包含了数据变更的版本号，ACL(Access Control List)变更的版本号，时间戳。每次数据变更时，version就是增加。例如，每次客户端查找收到一个node的数据，同时还会收到这个数据的版本号。
-zondes maintain a stat structure that includes version numbers for data changes, ACL changes, and timestamps, to allow cache validations and coordinated updates. Each time a znode\'s data changes, the version number increases. For instance, whenever a client retrieves data it also receives the version of the data.
 
 znode的数据操作是原子性的，读操作将会获取znode的所有数据，写操作操作将会覆盖所有的数据。而且没有节点的都通过ACL来限制谁可以操作。
 
@@ -79,7 +89,7 @@ ZooKeeper提供了非常简单的编程接口，它仅仅支持以下操作:
 
 下图展示了ZK的模块图，这个模块图是非常顶层和概要的。除了request processor不相同以外，其余的所有的ZK service中的server都有每个模块的一模一样的副本。
 
-{% img center /images/blogimages/2013/zk/zkcomponents.jpg %}
+{% img center /images/blogimages/2013/zk-overview/zkcomponents.jpg %}
 
 replicated database 存放了所有的数据，并且存放在内存中。所有的更新就会以日志的形式记录到磁盘中，以便可以用于灾后重建，所有的写操作，都先序列化到磁盘中，然后再写到内存中的database中。
 
@@ -93,7 +103,7 @@ agreement protocol的一部分，就是所有的来自客户端的写请求，�
 
 ZooKeeper的一个目标就是高性能。由雅虎研究院开发zookeeper的小组所做的测试实验证明了zk的高性能。下图是他们的实验结果：
 ZooKeeper Throughput as the Read-Write Ratio Varies
-{% img center /images/blogimages/zk/zkperfRW-3.2.jpg %}
+{% img center /images/blogimages/2013/zk-overview/zkperfRW-3.2.jpg %}
 
 当读请求远远高于写请求时zk的性能会更好。因为写请求需要同步所有的zk server。通常情况下当读写比例为10：1时，性能就可以达到一个比较好的效果了。
 
@@ -101,41 +111,15 @@ ZooKeeper Throughput as the Read-Write Ratio Varies
 
 在zookeeper的介绍页面，还有关于failure的一个实验。实验表明zk在存在failure的情况下，依然可以保证比较高的吞吐能力。但更重要的是，leader选举算法可以保证系统能够很快从错误中恢复正常。在实验中观察，选举出新的leader的耗时少于200毫秒。当follower恢复正常后，zk的吞吐能力马上就上去了。
 
-## 试用
+### 连接库
 
-先装一个zookeeper Standalone来试试。安装和配置还是十分简单的，参考[ZooKeeper Getting Started Guide](http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html)上面讲到地，进行就可以了。配置完后，就可以启动zookeeper了，启动命令可以参考前面的Guide。
-
-zooker启动后可以使用客户端连接zookeeper service了，有两种客户端使用，一是java版，另外一个是c版的。可以先使用java版的练习一下。
-
-实际上启动了java的client后，看到的是一个类是shell的交互式界面了，通过这个shell可以做很多事情，通过命令`help`来查看。
- 
-{% sh :bash %}
-[zkshell: 0] help
-    ZooKeeper host:port cmd args
-    get path [watch]
-    ls path [watch]
-    set path data [version]
-    delquota [-n|-b] path
-    quit
-    printwatches on|off
-    createpath data acl
-    stat path [watch]
-    listquota path
-    history
-    setAcl path acl
-    getAcl path
-    sync path
-    redo cmdno
-    addauth scheme auth
-    delete path [version]
-    setquota -n|-b val path
-{% endsh %}
-
-[ZooKeeper Getting Started Guide](http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html)还举一个通过zkshell进行znode的创建、查看、更新、删除等操作。
-
-zookeeper可以通过java和C种方式进行连接（就是客户端），C连接方式，有个库，单线程的zookeeper\_st和多线程的zookeeper\_mt。
+zookeeper可以通过多种方式连接，正式发布包里面包含了java和C种方式进行连接（就是客户端），C连接方式，有个库，单线程的zookeeper\_st和多线程的zookeeper\_mt。
 zookeeper\_st放弃了事件循环，可在事件驱动的应用程序中使用。而zookeeper\_mt更加易用，与Java API类似，创建一个网络IO线程和一个事件分发线程，用来维护连接和执行回调。
 在具体使用上，zookeeper\_st仅提供了异步API与回调，用以集成至应用程序的事件循环。它只是为了支持pthread库不可用或不稳定的平台而存在，例如FreeBSD 4.x。除此以外的其他情况，应使用提供同步与异步两种API的zookeeper\_mt。[^1]
+
+当然还有其它语言非正式发布的连接库：[ZKClientBindings](https://cwiki.apache.org/confluence/display/ZOOKEEPER/ZKClientBindings)。
+
+### zk集群
 
 配置zookeeper集群其实也是比较简单地的。配置方法就是standalone mode的配置文件基础上添加几个配置项，下面是一个示例：
 
@@ -150,27 +134,64 @@ server.2=zoo2:2888:3888
 server.3=zoo3:2888:3888
 ```
 
-The new entry, initLimit is timeouts ZooKeeper uses to limit the length of time the ZooKeeper servers in quorum have to connect to a leader. The entry syncLimit limits how far out of date a server can be from a leader.
+单机版中包含了`tickTime`，`dataDir`，`clientPort`三个配置项。[^2]
 
-With both of these timeouts, you specify the unit of time using tickTime. In this example, the timeout for initLimit is 5 ticks at 2000 milleseconds a tick, or 10 seconds.
-
-The entries of the form server.X list the servers that make up the ZooKeeper service. When the server starts up, it knows which server it is by looking for the file myid in the data directory. That file has the contains the server number, in ASCII.
-
-Finally, note the two port numbers after each server name: " 2888" and "3888". Peers use the former port to connect to other peers. Such a connection is necessary so that peers can communicate, for example, to agree upon the order of updates. More specifically, a ZooKeeper server uses this port to connect followers to the leader. When a new leader arises, a follower opens a TCP connection to the leader using this port. Because the default leader election also uses TCP, we currently require another port for leader election. This is the second port in the server entry. 
+* tickTime 是zk的时钟周期，单位是毫秒。Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每个 tickTime时间就会发送一个心跳。tickTime以毫秒为单位。
+* dataDir 保存数据的目录，默认情况下，Zookeeper将写数据的日志文件也保存在这个目录里。
+* clientPort 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求。
 
 
+在集群配置中多出来了，`initLimit`，`syncLimit`，`server.x`配置项。
 
-Finally, note the two port numbers after each server name: " 2888" and "3888". Peers use the former port to connect to other peers. Such a connection is necessary so that peers can communicate, for example, to agree upon the order of updates. More specifically, a ZooKeeper server uses this port to connect followers to the leader. When a new leader arises, a follower opens a TCP connection to the leader using this port. Because the default leader election also uses TCP, we currently require another port for leader election. This is the second port in the server entry. 
+* initLimit 集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数（tickTime的数量）。
+* syncLimit 集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数（tickTime的数量）。
+* server.X  集群信息（服务器编号，服务器地址，Leader Followers通信端口，选举端口）
+    这个配置项的书写格式比较特殊，规则如下：
+        server.N=YYY:A:B  
+    其中N表示服务器编号，YYY表示服务器的IP地址，A为leader followers(LF)通信端口，表示该服务器与集群中的leader交换的信息的端口。B为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader），连接方式也是tcp。一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。但是当所采用的为伪集群时（所有的zk server在一台服务器上），IP地址都一样，只能时A端口和B端口不一样。
+    当一台zk服务器启动时，它通过查看myid文件，可以知道自己是这些配置中的哪一台服务器。myid文件包含了服务器的数字编号。
+
+## 试用
+
+先装一个zookeeper Standalone来试试。安装和配置还是十分简单的，参考[ZooKeeper Getting Started Guide](http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html)上面讲到地，进行就可以了。配置完后，就可以启动zookeeper了，启动命令可以参考前面的Guide。
+
+zooker启动后可以使用客户端连接zookeeper service了，有两种客户端使用，一是java版，另外一个是c版的。可以先使用java版的练习一下。
+
+实际上启动了java的client后，看到的是一个类是shell的交互式界面了，通过这个shell可以做很多事情，通过命令`help`来查看。
+ 
+    [zkshell: 0] help
+        ZooKeeper host:port cmd args
+        get path [watch]
+        ls path [watch]
+        set path data [version]
+        delquota [-n|-b] path
+        quit
+        printwatches on|off
+        createpath data acl
+        stat path [watch]
+        listquota path
+        history
+        setAcl path acl
+        getAcl path
+        sync path
+        redo cmdno
+        addauth scheme auth
+        delete path [version]
+        setquota -n|-b val path
+
+[ZooKeeper Getting Started Guide](http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html)还举一个通过zkshell进行znode的创建、查看、更新、删除等操作。
+
 
 
 ## 总结
 
 上面简单介绍了zookeeper，包括zookeeper的一些概念和框架等，绝大部分是直接翻译了[zookeeper Overview](http://zookeeper.apache.org/doc/trunk/zookeeperOver.html)。下一篇文章就讲讲[ZooKeeper Programmer's Guide](http://zookeeper.apache.org/doc/r3.4.5/zookeeperProgrammers.html)，当然重点是C binding。
 
-在网上查找zookeeper的资料时，找到了几篇不错的文章[^2][^3][^4]，大家可以一读。另外还找到一篇介绍google的chubby的不错的blog——[Google利器之Chubby](http://blog.csdn.net/historyasamirror/article/details/3870168)，这个blog还写了关于google的分布式重用的5篇论文的文章，第一篇是[Google利器之Google Cluster](http://blog.csdn.net/historyasamirror/article/details/3861144)，如果大家有兴趣可以顺着读下去看一看。
+在网上查找zookeeper的资料时，找到了几篇不错的文章[^3][^4][^5][^6]，大家可以一读。另外还找到一篇介绍google的chubby的不错的blog——[Google利器之Chubby](http://blog.csdn.net/historyasamirror/article/details/3870168)，这个blog还写了关于google的分布式重用的5篇论文的文章，第一篇是[Google利器之Google Cluster](http://blog.csdn.net/historyasamirror/article/details/3861144)，如果大家有兴趣可以顺着读下去看一看。
 
 [^1]: <http://baike.baidu.com/view/3061646.htm>
-[^2]: [ZooKeeper编程笔记](http://www.cnblogs.com/caosiyang/archive/2012/11/09/2763190.html)
-[^3]: <http://www.oschina.net/p/zookeeper>
-[^4]: <http://bbs.zoomla.cn/archiver/showtopic-15086.aspx>
-[^5]: <http://liyanblog.cn/articles/2012/09/28/1348814456421.html>
+[^2]: <http://blog.csdn.net/poechant/article/details/6650249>
+[^3]: [ZooKeeper编程笔记](http://www.cnblogs.com/caosiyang/archive/2012/11/09/2763190.html)
+[^4]: <http://www.oschina.net/p/zookeeper>
+[^5]: <http://bbs.zoomla.cn/archiver/showtopic-15086.aspx>
+[^6]: <http://liyanblog.cn/articles/2012/09/28/1348814456421.html>

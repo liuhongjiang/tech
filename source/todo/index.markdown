@@ -36,6 +36,15 @@ todo-toggle: true
 
     > [css预处理器](http://www.lesscss.net/)    
     > [scss](http://sass-lang.com/)
+
+* doxygen
+
+    > <http://blog.csdn.net/xilibi2003/article/details/4400356> 还有一个博客目录，研究一下      
+    > <http://bigzhu.iteye.com/blog/408294>         
+    > vim的doxygen的插件        
+    > <http://blog.sina.com.cn/s/blog_4c451e0e0100gixe.html>        
+    > <http://wen.dingyuan.blog.163.com/blog/static/40452473201031432224821/>       
+    > <http://liujian.is-programmer.com/posts/9938.html>        
 {: .toggle-box }
 
 ### Done
