@@ -147,10 +147,10 @@ server.3=zoo3:2888:3888
 
 * initLimit 集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数（tickTime的数量）。
 * syncLimit 集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数（tickTime的数量）。
-* server.X  集群信息（服务器编号，服务器地址，Leader Followers通信端口，选举端口）
-    这个配置项的书写格式比较特殊，规则如下：
-        server.N=YYY:A:B  
-    其中N表示服务器编号，YYY表示服务器的IP地址，A为leader followers(LF)通信端口，表示该服务器与集群中的leader交换的信息的端口。B为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader），连接方式也是tcp。一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。但是当所采用的为伪集群时（所有的zk server在一台服务器上），IP地址都一样，只能时A端口和B端口不一样。
+* server.X  集群信息（服务器编号，服务器地址，Leader Followers通信端口，选举端口）       
+    这个配置项的书写格式比较特殊，规则如下：    
+        server.N=YYY:A:B     
+    其中N表示服务器编号，YYY表示服务器的IP地址，A为leader followers(LF)通信端口，表示该服务器与集群中的leader交换的信息的端口。B为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader），连接方式也是tcp。一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。但是当所采用的为伪集群时（所有的zk server在一台服务器上），IP地址都一样，只能时A端口和B端口不一样。       
     当一台zk服务器启动时，它通过查看myid文件，可以知道自己是这些配置中的哪一台服务器。myid文件包含了服务器的数字编号。
 
 ## 试用

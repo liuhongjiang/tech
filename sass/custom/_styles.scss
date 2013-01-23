@@ -331,3 +331,5 @@ div.sharing{
 .toggle-box blockquote a {
     color: #888888;
 }
+
+ul.toggle-box { &, ul { margin-left: 2em; }}
