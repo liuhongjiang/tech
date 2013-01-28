@@ -45,6 +45,9 @@ todo-toggle: true
     > <http://blog.sina.com.cn/s/blog_4c451e0e0100gixe.html>        
     > <http://wen.dingyuan.blog.163.com/blog/static/40452473201031432224821/>       
     > <http://liujian.is-programmer.com/posts/9938.html>        
+
+* [highcharts](http://www.highcharts.com/)/open flash chart
+* [mockup](http://www.balsamiq.com/products/mockups)
 {: .toggle-box }
 
 ### Done
