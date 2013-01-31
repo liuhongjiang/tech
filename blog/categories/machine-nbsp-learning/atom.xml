@@ -4,7 +4,7 @@
   <title><![CDATA[分类: Machine&nbsp;Learning | 刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/blog/categories/machine-nbsp-learning/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2013-01-31T14:56:55+08:00</updated>
+  <updated>2013-01-31T15:09:17+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -202,7 +202,7 @@ B = \{ w:\left\| w \right\| \le \frac{1}{ {\sqrt \lambda  } }\}
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
 </span><span class='line'>
-</span><span class='line'><span class="c"># Pegasos inplemented in Python</span>
+</span><span class='line'><span class="c"># Pegasos implemented in Python</span>
 </span><span class='line'>
 </span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>

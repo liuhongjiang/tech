@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Pegasos inplemented in Python
+# Pegasos implemented in Python
 
 import os
 import sys
