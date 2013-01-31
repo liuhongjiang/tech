@@ -12,7 +12,6 @@ todo-toggle: true
 ### Learning
 {: .toggle-title .title-unfold}
 
-* Elasticsearch
 * PHP(w3school 教程)
 {: .toggle-box}
 
@@ -31,7 +30,6 @@ todo-toggle: true
 * [deep learning](http://blog.csdn.net/abcjennifer/article/details/7826917)
 * Lucene
 * apache and tomcat
-* open flash chart
 * less & scss 
 
     > [css预处理器](http://www.lesscss.net/)    
@@ -46,6 +44,7 @@ todo-toggle: true
     > <http://wen.dingyuan.blog.163.com/blog/static/40452473201031432224821/>       
     > <http://liujian.is-programmer.com/posts/9938.html>        
 
+* open flash chart
 * [highcharts](http://www.highcharts.com/)/open flash chart
 * [mockup](http://www.balsamiq.com/products/mockups)
 {: .toggle-box }
@@ -53,6 +52,7 @@ todo-toggle: true
 ### Done
 {: .toggle-title .title-fold}
 
+* Elasticsearch
 * HTML DOM(w3school 教程)
 * JQuery(w3school 教程)
 * Ajax(w3school 教程)
@@ -150,11 +150,6 @@ todo-toggle: true
     > <http://tritarget.org/blog/2012/05/07/integrating-photos-into-octopress-using-fancybox-and-plugin/>       
     > <http://fancyapps.com/fancybox/>
 
-* online learning
-
-    > <http://mark.reid.name/sap/online-learning-in-clojure.html>
-
-* 年终总结
 
 * 文件锁
 
@@ -162,19 +157,23 @@ todo-toggle: true
     > <http://www.2cto.com/os/201109/103758.html>   
     > <http://blog.csdn.net/jiang1013nan/article/details/5721675>
 
-* master election 的霸道算法
 {: .toggle-box}
 
 ### Done
 {: .toggle-title .title-fold}
 
+* 2012年终总结
+* master election 的霸道算法
+* online learning
+
+    > <http://mark.reid.name/sap/online-learning-in-clojure.html>
+
+* svm-ocr
+* svm
 * 虚函数
 * 虚继承
 
     > <http://blog.csdn.net/wuhui_gdnt/article/details/6141405>      
     > <http://baiy.cn/doc/cpp/inside_rtti.htm>
-
-* svm
-* svm-ocr
 {: .toggle-box .toggle-del}
 
