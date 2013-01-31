@@ -1,0 +1,1864 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: Machine&nbsp;Learning | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/machine-nbsp-learning/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2013-01-31T14:56:55+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Pegasos算法]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/"/>
+    <updated>2013-01-31T11:49:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos</id>
+    <content type="html"><![CDATA[<p>本文参考了博文<a href="http://mark.reid.name/sap/online-learning-in-clojure.html">Online Learning in Clojure</a>和论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>(<a href="http://www.machinelearning.org/proceedings/icml2007/papers/587.pdf">PDF</a>)</p>
+
+<h2 id="online-learning">online learning</h2>
+
+<p>Online learning的算法结构是非常简单的，下面的描述是监督的online learning算法框架，其中有经验损失函数$L$，样本流$S$，样本的格式为$(x,y)$:</p>
+
+<pre><code>Initialise a starting model w
+While there are more examples in S
+    Get the next feature vector x
+    Predict the label y' for x using the model w
+    Get the true label y for x and incur a penaly L(y,y')
+    Update the model w if y ≠ y'
+</code></pre>
+
+<p>一般来是，训练出来的模型都是一个与样本相同维度的向量。对应二分的分类器，往往涉及到的是计算内积$\langle w,x \rangle$，模型的更新是沿着损失函数的梯度下降方向的。</p>
+
+<h2 id="pegasos">Pegasos</h2>
+
+<p>论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>是一种svm的online learning算法。</p>
+
+<!-- more -->
+
+<p>首先来看svm的经验合页损失函数：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+L(w,S) = \frac{\lambda }{2}{\left\| w \right\|^2} + \frac{1}{k}\sum\limits_{(x,y) \in S} {h(w;(x,y))} \\
+h(w;(x,y)) = \max \{ 0,1 - y \langle w,x \rangle \} 
+\end{array}
+</script>
+
+<p>上面式子中，$k$是训练集$S$的大小，$h()$是the hinge loss（合页损失函数），$\langle w, x\rangle$表示$w,x$的内积，$\lambda$是正则化项。</p>
+
+<p>在<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>这本书的7.2.4证明了合页损失函数与引入松弛变量后的损失函数是等价的，并证明了$\lambda$与惩罚系数$C$是成反比的。引入松弛变量后的损失函数为:</p>
+
+<script type="math/tex; mode=display">
+\frac{1}{2}\left \| w \right \|^{2} + C\sum_{i=1}^{N}\xi _{i}
+</script>
+
+<p>训练过程中，如果遇到了一个预测错误的样本$(x,y)$, 对模型的更新方法如下：</p>
+
+<script type="math/tex; mode=display">
+{w_{t + \frac{1}{2}}} = (1 - \frac{1}{t}){w_t} + \frac{1} { {\lambda t} } yx
+</script>
+
+<p>其中$t$表示已经训练过的样本个数，$ {w_{t + \frac{1}{2}}}$表示训练过$t$个的样本后的模型，${w_{t + \frac{1}{2} }}$ 表示新模型。
+根据pegasos算法，新模型的$l_2$范数如果超出了以 $\frac{1}{ {\sqrt \lambda  } }$ 为半径的超球面，那么需要将新模型投射到这个超球面上。即：</p>
+
+<script type="math/tex; mode=display">
+{w_{t + 1}} = \min \{ 1,\frac{1}{ {\sqrt \lambda  \left\| { {w_{t + \frac{1}{2} } } } \right\|}}\} {w_{t + \frac{1}{2}}}
+</script>
+
+<p>为什么需要讲新的模型投射到以$\frac{1}{ {\sqrt \lambda  } }$为半径的超球面上呢？论文证明了svm的最优解是在下面这个集合中的：</p>
+
+<script type="math/tex; mode=display">
+B = \{ w:\left\| w \right\| \le \frac{1}{ {\sqrt \lambda  } }\} 
+</script>
+
+<p>而且在pegasos算法的推导，以及模型初始化$w$的时候，都使用了条件</p>
+
+<script type="math/tex; mode=display">
+\left\| w \right\| \le \frac{1}{ {\sqrt \lambda  } }
+</script>
+
+<p>由上面模型的更新公式可以简单分析一下正则化参数$\lambda$的作用，它决定了训练过程中，后面出现的预测错误的样本，对应模型的修正程度。$\lambda$越大，修正程度越小，$\lambda$越小，修正程度越大。同时$\lambda$与惩罚系数$C$是成反比的，所以也可理解为，在训练过称中，出现预测错误样本时，对模型的惩罚程度。$\lambda$越大，惩罚越小，$\lambda$越小，惩罚越大。</p>
+
+<p>Pegasos的算法描述在论文”Pegasos: Primal Estimated sub-GrAdient SOlver for SVM”也是给出了的，可以参考。</p>
+
+<p>但实际上pegasos是一个线性的svm，而且还是一个没有bias的svm，训练出来的线性函数是$y=\langle w,x \rangle$，在上面的论文中的Extensions小节中也讲到了，目前pegasos还没有证明可应用于线性模型$y=\langle w,x \rangle + b$或者是非线性svm模型。</p>
+
+<h2 id="pegasos-1">Pegasos的实现例子</h2>
+
+<p>前面的博客<a href="http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr/">基于SVM的手写数字识别</a>，实现了一个基于SMO算法的svm，今天就来基于Pegasos实现数字手写识别。svm用于多分类，还是一对多的方式，手写数据还是来自<a href="http://www.manning.com/pharrington/">“Machine Learning in Action”</a>的第二章的数据。下面是实现代码</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>基于pegasos的数字手写识别  (pegasos.py)</span> <a href='/code/2013/pegasos/pegasos.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Pegasos inplemented in Python</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">G_WEIGHT</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">parse_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">img_map</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">img_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">img_map</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">ret</span> <span class="o">+=</span> <span class="n">model</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">train_one_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">,</span> <span class="n">modelNum</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">pvalue</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">],</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'>    <span class="c"># the hinge loss</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">pvalue</span> <span class="o">*</span> <span class="n">label</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># update model</span>
+</span><span class='line'>    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class='line'>    <span class="n">new_weight</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># pegasos</span>
+</span><span class='line'>        <span class="n">a</span> <span class="o">=</span> <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sampleNum</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">sampleNum</span><span class="p">))</span><span class="o">*</span><span class="n">label</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">new_weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># projection</span>
+</span><span class='line'>    <span class="n">norm2</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">norm2</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">new_weight</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">norm2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">norm2</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambd</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_weight</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">norm2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambd</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_weight</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">train_one_sample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">modelNum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">label</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="n">modelNum</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">label</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">train_one_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">,</span> <span class="n">modelNum</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span><span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">G_WEIGHT</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span> <span class="o">*</span> <span class="mi">32</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">dirpath</span> <span class="o">=</span> <span class="s">&quot;./trainingDigits/&quot;</span>
+</span><span class='line'>    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">sampleNum</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;training:&quot;</span><span class="p">,</span> <span class="nb">file</span>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">dirpath</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>        <span class="n">sampleNum</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">train_one_sample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># test</span>
+</span><span class='line'>    <span class="n">testdir</span> <span class="o">=</span> <span class="s">&quot;./testDigits/&quot;</span>
+</span><span class='line'>    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">testdir</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">right</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">wrong</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">can_not_classify</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">testdir</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;testing:&quot;</span><span class="p">,</span> <span class="nb">file</span>
+</span><span class='line'>        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>        <span class="n">classify_failed</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">pvalue</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">pvalue</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">classify_failed</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>                <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;prdict:&quot;</span><span class="p">,</span> <span class="mi">1</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">right</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>                <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">wrong</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;prdict:&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">classify_failed</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">can_not_classify</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;right=&quot;</span><span class="p">,</span> <span class="n">right</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;wrong=&quot;</span><span class="p">,</span> <span class="n">wrong</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;can_not_classify=&quot;</span><span class="p">,</span> <span class="n">can_not_classify</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;total=&quot;</span><span class="p">,</span> <span class="n">total</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>训练出来的模型测试结果如下：</p>
+
+<p><pre class='sh-bash'><code>right= 849
+</code><code>wrong= 46
+</code><code>can_not_classify= 72
+</code><code>total= 946</code></pre></p>
+
+<p>一共有946个测试样本，其中46个分类错误，72个没有找到分类，849个正确分类，正确分类率89.7%。$\lambda$取值为0.5。我也没有仔细调整$\lambda$的取值，不过看来结果还是慢不错的。但比起SMO算法实现的svm效果要差一些。但是pegasos的优势是快啊，同样的1934个训练样本，基于SMO的svm，花了3、4个小时训练，而pegasos算法只用了30多秒，逆天了。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[基于SVM的手写数字识别]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr/"/>
+    <updated>2012-12-29T22:37:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr</id>
+    <content type="html"><![CDATA[<p>前面两篇blog介绍了<a href="/blog/2012/12/26/svm/">支持向量机SVM</a>和<a href="/blog/2012/12/28/svm-smo/">SMO算法</a>，这一篇就讲讲SVM的一个简单实际应用：使用svm实现一个简单的数字手写识别软件。首先要解决如何使用svm进行多类分类。</p>
+
+<h2 id="svm1">svm与多类分类<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></h2>
+
+<p>svm是一个二类的分类器，即它只回答属于正类还是负类的问题。而现实中要解决的问题，往往是多类的问题，比如文本分类，比如数字识别。如何由两类分类器得到多类分类器, 一般有三种方法：</p>
+
+<h3 id="section">一对多（一对其余）</h3>
+
+<p>比如我们有5个类别，第一次就把类别1的样本定为正样本，其余2，3，4，5的样本合起来定为负样本，这样得到一个两类分类器。
+通过类似的方法构造类别2、3、4、5的分类器，对于测试数据，每一个分类器都过一次，在那个分类器中，被判定为正，那么就认识它属于那个分类。
+但有两个问题还没有解决：一是被多个分类器判定为正，二是被所有分类器判定为负。第一种情况，可以简单地选择第一个被判定为正的分类，对二种情况，可以视为分类失败了。另外一个问题是，“其余”的那一类样本数总是要数倍于正类（因为它是除正类以外其他类别的样本之和嘛），这就人为的造成了的<a href="http://www.blogjava.net/zhenandaci/archive/2009/03/17/260315.html">“数据集偏斜”</a>问题。</p>
+
+<!-- more -->
+
+<h3 id="section-1">一对一</h3>
+
+<p>这种方法需要构造n*(n-1)/2个分类器。简单地可以理解为所有分类1v1进行pk,具体做法，还是每次选一个类的样本作正类样本，而负类样本则变成只选一个类，(例如构造一个1 pk 2的分类器，它的正样本为1的分类，负样本为2的分类）这就避免了偏斜。
+因此过程就是算出这样一些分类器，第一个只回答“是第1类还是第2类”，第二个只回答“是第1类还是第3类”，第三个只回答“是第1类还是第4类”，如此下去，所以一共有5*(5-1)/2=10个分类器。</p>
+
+<p>虽然分类器的数目多了，但是在训练阶段（也就是算出这些分类器的分类平面时）所用的总时间却比“一类对其余”方法少很多，在真正用来分类的时候，把一个测试数据扔给所有分类器，第一个分类器会投票说它是“1”或者“2”，第二个会说它是“1”或者“3”，让每一个都投上自己的一票，最后统计票数，如果类别“1”得票最多，就判这篇文章属于第1类。但这有个问题，分类器的数量是类别数量的平方,例如，类别数如果是1000，要调用的分类器数目会上升至约500,000个（类别数的平方量级）。</p>
+
+<h3 id="dag-svm">DAG SVM</h3>
+
+<p>这种方法是构造一个DAG SVM，（有向无环的svm)。
+还是像一对一方法那样来训练，只是在对一篇文章进行分类之前，先按照下面图的样子来组织分类器这样在分类时,我们就可以先问分类器“1对5”（意思是它能够回答“是第1类还是第5类”），如果它回答5，我们就往左走，再问“2对5”这个分类器，如果它还说是“5”，我们就继续往左走，这样一直问下去，就可以得到分类结果。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm-ocr/dag-svm.jpg"></p>
+
+<p>好处在哪？我们其实只调用了4个分类器（如果类别数是k，则只调用k-1个），分类速度飞快，且没有分类重叠和不可分类现象！缺点在哪？假如最一开始的分类器回答错误（明明是类别1的文章，它说成了5），那么后面的分类器是无论如何也无法纠正它的错误的（因为后面的分类器压根没有出现“1”这个类别标签），其实对下面每一层的分类器都存在这种错误向下累积的现象。
+不过不要被DAG方法的错误累积吓倒，错误累积在一对其余和一对一方法中也都存在，DAG方法好于它们的地方就在于，累积的上限，不管是大是小，总是有定论的，有理论证明。而一对其余和一对一方法中，尽管每一个两类分类器的泛化误差限是知道的，但是合起来做多类分类的时候，误差上界是多少，没人知道，这意味着准确率低到0也是有可能的，这多让人郁闷。</p>
+
+<p>而且现在DAG方法根节点的选取（也就是如何选第一个参与分类的分类器），也有一些方法可以改善整体效果，我们总希望根节点少犯错误为好，因此参与第一次分类的两个类别，最好是差别特别特别大，大到以至于不太可能把他们分错；或者我们就总取在两类分类中正确率最高的那个分类器作根节点，或者我们让两类分类器在分类的时候，不光输出类别的标签，还输出一个类似“置信度”的东东，当它对自己的结果不太自信的时候，我们就不光按照它的输出走，把它旁边的那条路也走一走，等等。 </p>
+
+<h2 id="section-2">高斯核函数</h2>
+
+<p>这个手写识别svm的核函数采用了高斯核函数。高斯核函数的公式如下</p>
+
+<script type="math/tex; mode=display">
+K({x_i},{x_j})=e^{- \frac { {\left \| {x_i - x_j} \right \| }^2}{2\delta ^2}}
+</script>
+
+<p>其中的径向基函数的宽度$\delta$对分类器的性能比较敏感，对取不同的$\delta$时，高斯核支持向量机的性能进行分析，若$\delta \to 0 $ ，则所有的训练样本点都是支持向量，且它们全部能被正确的分类，但容易出现“过学习”的现象，推广能力较差，对测试样本的错误识别率较高；若$\delta \to \infty$ ，高斯核支持向量机对所有样本一视同仁，推广能力或对测试样本的正确判别能力为零，即它把所有样本点判为同一类。
+实际上，当$\delta$取比训练样本点之间的平均距离小得多时，就能达到$\delta \to 0 $的效果；当$\delta$取比训练样本点之间的平均距离大得多时，就能达到$\delta \to \infty$的效果。
+在确定高斯径向基函数的宽度$\delta$时，最基本的方法是对$\delta$取不同的值，然后分别采用支持向量机方法进行训练，选择最小分类错误率的一组$\delta$参数。比较典型的方法有梯度下降法与交叉验证法。<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup></p>
+
+<h2 id="section-3">数据</h2>
+
+<p>我实现的这个数学手写识别的数据是<a href="http://www.manning.com/pharrington/">“Machine Learning in Action”</a>的第二章的数据，可以下载这本的<a href="http://www.manning.com/pharrington/MLiA_SourceCode.zip">source code</a>获得。解压后的路径为machinelearninginaction/Ch02/digits.zip。</p>
+
+<p>将digits.zip解压后就可以得到训练数据和测试数据。这些都是原始数据经过处理后的数据，是一个各个文件，一个文件是一个手写数据，文件名像这样”0_52.txt”，签名的0表示这个手写数据对应的数字，后面的数字52，是0这一类手写数据的文件编号。书写数据如下图所示，是一个32*32的黑白位图。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm-ocr/data-sample.jpg"></p>
+
+<p>在处理手写数据时，例子中是将它们存放到一个32*32的矩阵中，也可以存放到一个有1024的一维数组。计算高斯核函数的${\left \| {x_i} - {x_j} \right \|} ^2 $如下，以一维数组为例：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+{\left \| {x_i} - {x_j} \right \|}^2 = \sum\limits_{k=0}^{1023}{ {(x_i^k - x_j^k)}^2} \\
+x_i=(x_i^0,x_i^1,\cdot \cdot \cdot,x_i^{1023})
+\end{array}
+</script>
+
+<h2 id="section-4">实现</h2>
+
+<p>我实现了一个简单的基于svm的数字手写识别的python脚本，多类分类的模型采用的是一对多（一对其余）的方式，所以一共构造了10个分类器，分别对应0到9。算法采用的是前一篇blog讲的<a href="/blog/2012/12/28/svm-smo/">SMO</a>，算法的实现也基本是一样的。下面是具体的代码，可以下载<a href="https://github.com/liuhongjiang/blog_projects/tree/master/svm_ocr">github上的代码和数据</a>。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>基于svm的数字手写识别  (svm_ocr.py)</span> <a href='/code/2012/svm-ocr/svm_ocr.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+<span class='line-number'>256</span>
+<span class='line-number'>257</span>
+<span class='line-number'>258</span>
+<span class='line-number'>259</span>
+<span class='line-number'>260</span>
+<span class='line-number'>261</span>
+<span class='line-number'>262</span>
+<span class='line-number'>263</span>
+<span class='line-number'>264</span>
+<span class='line-number'>265</span>
+<span class='line-number'>266</span>
+<span class='line-number'>267</span>
+<span class='line-number'>268</span>
+<span class='line-number'>269</span>
+<span class='line-number'>270</span>
+<span class='line-number'>271</span>
+<span class='line-number'>272</span>
+<span class='line-number'>273</span>
+<span class='line-number'>274</span>
+<span class='line-number'>275</span>
+<span class='line-number'>276</span>
+<span class='line-number'>277</span>
+<span class='line-number'>278</span>
+<span class='line-number'>279</span>
+<span class='line-number'>280</span>
+<span class='line-number'>281</span>
+<span class='line-number'>282</span>
+<span class='line-number'>283</span>
+<span class='line-number'>284</span>
+<span class='line-number'>285</span>
+<span class='line-number'>286</span>
+<span class='line-number'>287</span>
+<span class='line-number'>288</span>
+<span class='line-number'>289</span>
+<span class='line-number'>290</span>
+<span class='line-number'>291</span>
+<span class='line-number'>292</span>
+<span class='line-number'>293</span>
+<span class='line-number'>294</span>
+<span class='line-number'>295</span>
+<span class='line-number'>296</span>
+<span class='line-number'>297</span>
+<span class='line-number'>298</span>
+<span class='line-number'>299</span>
+<span class='line-number'>300</span>
+<span class='line-number'>301</span>
+<span class='line-number'>302</span>
+<span class='line-number'>303</span>
+<span class='line-number'>304</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">### ###</span>
+</span><span class='line'><span class="c"># handwriting numbers OCR based on svm.</span>
+</span><span class='line'><span class="c"># data from &quot;Machine Learning in Action&quot; chapter 02.</span>
+</span><span class='line'><span class="c"># 基于SVM的手写数字的识别程序</span>
+</span><span class='line'><span class="c"># 数据：采用了《Machine Learning in Action》第二章的数据</span>
+</span><span class='line'><span class="c">### ###</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">model</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">GV</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c"># 样本数据</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">tests</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c"># 测试数据</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c"># 训练的模型</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">diff_dict</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c"># 用于缓存预测知与真实y之差Ei</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="mi">0</span>         <span class="c"># 当前正使用或训练的模型</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c"># 缓存kernel函数的计算结果</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">use_linear</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c"># 是否使用线性核函数</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">RBF_dlt</span> <span class="o">=</span> <span class="mi">10</span>        <span class="c"># 径向基函数的宽度</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">init_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>                <span class="n">m</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">init_cache_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">print</span> <span class="n">i</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+</span><span class='line'>            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">mj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">j</span><span class="p">:</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+</span><span class='line'>                <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span><span class="n">mj</span><span class="p">))</span>
+</span><span class='line'>                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">image</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">printself</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;data&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">print</span> <span class="n">line</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;num&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;fn&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># global variables</span>
+</span><span class='line'><span class="n">gv</span> <span class="o">=</span> <span class="n">GV</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">parse_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">img_map</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">img_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">img_map</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># load samples and tests</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">loaddata</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">img</span> <span class="o">=</span> <span class="n">image</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">img</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">dirpath</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">img</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>        <span class="n">img</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="nb">file</span>
+</span><span class='line'>        <span class="n">col</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">use_linear</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">kernel_linear</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span><span class="n">mi</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">kernel_RBF</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span><span class="n">mi</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="c"># 高斯核函数</span>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">kernel_RBF</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">mj</span> <span class="o">==</span> <span class="n">mi</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">dlt</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">RBF_dlt</span>
+</span><span class='line'>    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+</span><span class='line'>            <span class="n">ret</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">ret</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">ret</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dlt</span><span class="o">*</span><span class="n">dlt</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="c"># 线性</span>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">kernel_linear</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+</span><span class='line'>            <span class="n">ret</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c"># g(x)</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">pred</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">m</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">pred</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># the same as predict(m), only with different parmaters</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict_train</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">pred</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">pred</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 决策函数对xi的预测值和真实值之差</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict_diff_real</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">=</span> <span class="n">predict_train</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">-=</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">diff</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 优化计算Ei</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict_diff_real_optimized</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_aj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">+=</span> <span class="p">(</span><span class="n">new_aj</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">+=</span> <span class="n">new_b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">diff</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">init_predict_diff_real_dict</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predict_diff_real</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update_diff_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_bj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>        <span class="c"># 原来的函数</span>
+</span><span class='line'>        <span class="c"># gv.diff_dict[idx] = predict_diff_real(idx)</span>
+</span><span class='line'>        <span class="c"># 有优化后的</span>
+</span><span class='line'>        <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict_diff_real_optimized</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_bj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update_samples_label</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">img</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">img</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="c">#  svmocr train</span>
+</span><span class='line'><span class="c">#  基于算法SMO</span>
+</span><span class='line'><span class="c">#  T: tolerance 误差容忍度(精度)</span>
+</span><span class='line'><span class="c">#  times: 迭代次数</span>
+</span><span class='line'><span class="c">#  C: 惩罚系数</span>
+</span><span class='line'><span class="c">#  Mno: 模型序号0到9</span>
+</span><span class='line'><span class="c">#  step: aj移动的最小步长</span>
+</span><span class='line'><span class="c">######</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">SVM_SMO_train</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Mno</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="n">Mno</span>
+</span><span class='line'>    <span class="n">update_samples_label</span><span class="p">(</span><span class="n">Mno</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">init_predict_diff_real_dict</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">times</span> <span class="ow">and</span> <span class="n">updated</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">updated</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>        <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>            <span class="n">ai</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>            <span class="n">Ei</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c"># agaist the KKT</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">T</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&gt;</span> <span class="n">T</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span class='line'>                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span> <span class="k">continue</span>
+</span><span class='line'>                    <span class="n">kii</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>                    <span class="n">kjj</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+</span><span class='line'>                    <span class="n">kji</span> <span class="o">=</span> <span class="n">kij</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+</span><span class='line'>                    <span class="n">eta</span> <span class="o">=</span> <span class="n">kii</span> <span class="o">+</span> <span class="n">kjj</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kij</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">eta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">continue</span>
+</span><span class='line'>                    <span class="n">new_aj</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">eta</span> <span class="c"># f 7.106</span>
+</span><span class='line'>                    <span class="n">L</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>                    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>                    <span class="n">a1_old</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>                    <span class="n">a2_old</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">==</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]:</span>
+</span><span class='line'>                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">+</span> <span class="n">a1_old</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span>
+</span><span class='line'>                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">+</span> <span class="n">a1_old</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span>
+</span><span class='line'>                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">C</span> <span class="o">+</span> <span class="n">a2_old</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="n">H</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">H</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">L</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a2_old</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">step</span><span class="p">:</span>
+</span><span class='line'>                        <span class="k">print</span> <span class="s">&quot;j = </span><span class="si">%d</span><span class="s">, is not moving enough&quot;</span> <span class="o">%</span> <span class="n">j</span>
+</span><span class='line'>                        <span class="k">continue</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="n">new_ai</span> <span class="o">=</span> <span class="n">a1_old</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">a2_old</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="c"># f 7.109 </span>
+</span><span class='line'>                    <span class="n">new_b1</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kii</span> <span class="o">*</span> <span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kji</span> <span class="o">*</span> <span class="p">(</span><span class="n">new_aj</span> <span class="o">-</span> <span class="n">a2_old</span><span class="p">)</span> <span class="c"># f7.115</span>
+</span><span class='line'>                    <span class="n">new_b2</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">*</span><span class="n">kji</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">*</span><span class="n">kjj</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">a2_old</span><span class="p">)</span>    <span class="c"># f7.116</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_ai</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b1</span>
+</span><span class='line'>                    <span class="k">elif</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b2</span>
+</span><span class='line'>                    <span class="k">else</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_b1</span> <span class="o">+</span> <span class="n">new_b2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="n">update_diff_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_aj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">)</span>
+</span><span class='line'>                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ai</span>
+</span><span class='line'>                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_aj</span>
+</span><span class='line'>                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">new_b</span>
+</span><span class='line'>                    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>                    <span class="k">print</span> <span class="s">&quot;iterate: </span><span class="si">%d</span><span class="s">, changepair: i: </span><span class="si">%d</span><span class="s">, j:</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>                    <span class="c">#break</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 测试数据</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">recog</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">recog_correct</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;test for&quot;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">fn</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">mno</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="n">mno</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">print</span> <span class="n">mno</span>
+</span><span class='line'>                <span class="k">print</span> <span class="n">img</span><span class="o">.</span><span class="n">fn</span>
+</span><span class='line'>                <span class="n">recog</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">mno</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+</span><span class='line'>                    <span class="n">recog_correct</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>                <span class="k">break</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;recog:&quot;</span><span class="p">,</span> <span class="n">recog</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;recog_correct:&quot;</span><span class="p">,</span> <span class="n">recog_correct</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;total:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">save_models</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_a.model&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ai</span><span class="p">))</span>
+</span><span class='line'>            <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_b.model&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">load_models</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_a.model&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fn</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_b.model&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+</span><span class='line'>        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">training</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="n">loaddata</span><span class="p">(</span><span class="s">&quot;trainingDigits/&quot;</span><span class="p">,</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">loaddata</span><span class="p">(</span><span class="s">&quot;testDigits/&quot;</span><span class="p">,</span> <span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">training</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">gv</span><span class="o">.</span><span class="n">init_cache_kernel</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">gv</span><span class="o">.</span><span class="n">init_models</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;init_models done&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">T</span> <span class="o">=</span> <span class="mf">0.0001</span>
+</span><span class='line'>    <span class="n">C</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="n">step</span> <span class="o">=</span> <span class="mf">0.0001</span>
+</span><span class='line'>    <span class="n">gv</span><span class="o">.</span><span class="n">RBF_dlt</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">training</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">print</span> <span class="s">&quot;traning model no:&quot;</span><span class="p">,</span> <span class="n">i</span>
+</span><span class='line'>            <span class="n">SVM_SMO_train</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">save_models</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">load_models</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">update_samples_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">test</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>训练数据一共是1934个，测试数据是946，一共是识别出来了914个，其中有911个识别正确。运行结果的截图如下：</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm-ocr/ocr_test_output.jpg"></p>
+
+<p>在实现的过程中，第一个版本效率很低，主要是做了两个地方的改进，一是，缓存了核函数的运算结果，二是，计算预测值的与真实值之差$E_i$，改用增量变化的方式，即每次只计算出$new\_a_i$, $new\_a_j$对$E_i$的改变量。
+同样一开始，还有识别率低的问题，主要通过配置精度，惩罚系数，$a_i$改变最小步长，这三个参数来提高识别率。但还是对高斯核函数的径向基函数的宽度$\delta$的调整最有效果，针对本例最优情况是当$\delta=10$左右。</p>
+
+<h2 id="section-5">不足</h2>
+
+<p>本文实现的例子，还有很多不足之处:</p>
+
+<ol>
+  <li>样本数据的偏移，训练时，正负样本的数量应该是相当的。本文中的例子，负样本是正样本的9倍。</li>
+  <li>高斯径向基函数的宽度，没有经过训练</li>
+  <li>选择第二个变量时，本文使用的是遍历方式，也可以改成寻找改变量最大的第二个参数，具体<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的P129</li>
+  <li>核函数计算时，效率比较低，主要影响测试分类时的速度，如果能用到位运算，应该效率会高很多。</li>
+</ol>
+
+<p>其实上面的情况都还可以慢慢改进，最大的坑还是训练的时间太长了，我在虚拟机上装的ubuntu server运行的脚本，训练数据接近2000个，测试数据1000个，总共可能花了4个小时左右，时间太长。我之前的同事实现的ocr是居于online learing的，那么我们下一篇blog也来实现一个online learning的数字手写ocr，与今天这个对比一下。</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>主要参考了：<a href="http://www.blogjava.net/zhenandaci/archive/2009/03/26/262113.html">SVM入门（十）将SVM用于多类分类</a>。<a href="#fnref:1" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>张翔，肖小玲，徐光祐，一种确定高斯核模型参数的新方法，计算机工程，第33卷，第12期，2007年6月。<a href="#fnref:2" rel="reference">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[SMO序列最小最优化算法]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/"/>
+    <updated>2012-12-28T09:01:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo</id>
+    <content type="html"><![CDATA[<p>上一篇blog讲到了<a href="/blog/2012/12/26/svm/">svm的原理</a>，最后将需要解决问题抽象成了数学公式，但如何利用计算机，解出这些数学公式的答案。换句话说，就是怎么通过计算机算出我们的svm模型的参数呢？方法就是序列最小最优化(sequential minimal optimization, SMO)算法。</p>
+
+<p>首先回顾一下SVM模型的数学表达，即svm的对偶问题:</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+</script>
+
+<p>选择一个 $ {a^*} $ 的正分量 $ 0 \lt {a_j^*} \lt C $ , 计算（或者通过所有解求平均值）：</p>
+
+<script type="math/tex; mode=display">
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
+</script>
+
+<p>决策函数为</p>
+
+<script type="math/tex; mode=display">
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
+</script>
+
+<p>svm的学习，就是通过训练数据计算出${a^*}$和${b^*}$，然后通过决策函数判定${x_j}$的分类。其中${a^*}$是一个向量，长度与训练数据的样本数相同，如果训练数据很大，那么这个向量会很长，不过绝大部分的分量值都是0，只有支持向量的对应的分量值大于0 。</p>
+
+<p>SMO是一种启发式算法，其基本思想是：如果所有变量的解都满足了此最优化问题的KKT条件，那么这个最优化问题的解就得到了。否则，选择两个变量，固定其它变量，针对这两个变量构建一个二次规划问题，然后关于这个二次规划的问题的解就更接近原始的二次归还问题的解，因为这个解使得需要优化的问题的函数值更小。</p>
+
+<p>翻译一下：对于svm我们要求解${a^*}$，如果 ${a^*}$ 的所有分量满足svm对偶问题的KKT条件，那么这个问题的解就求出来了，我们svm模型学习也就完成了。如果没有满足KKT，那么我们就在 ${a^*}$ 中找两个分量 ${a_i}$ 和 ${a_j}$，其中 ${a_i}$ 是违反KKT条件最严重的分量，通过计算，使得 ${a_i}$ 和 ${a_j}$ 满足KKT条件，直到${a^*}$ 的所有分量都满足KKT条件。而且这个计算过程是收敛的，因为每次计算出来的新的两个分量，使得对偶问题中要优化的目标函数（就是min对应的那个函数）值更小。至于为什么是收敛的，是因为，每次求解的那两个分量，是要优化问题在这两个分量上的极小值，所以每一次优化，都会使目标函数比上一次的优化结果的值变小。</p>
+
+<!-- more -->
+
+<p>我们来看看KKT条件。</p>
+
+<h2 id="kkt">KKT</h2>
+
+<p>上面的问题，是通过svm的原始问题，构造拉格朗日函数，并通过对偶换算得出的对偶问题。与对偶问题等价的是对偶问题的KKT条件，参考<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的附录C的定理C.3。换句话说，就是只要找到对应的${a^*}$满足了下列KKT条件，那么原始问题和对偶问题就解决了。</p>
+
+<p>SVM的对偶问题对应的KKT条件为：</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{array}{l}
+\quad {a_i} = 0 \quad \Leftrightarrow \quad {y_i}g({x_i}) \ge 1\\
+0 < {a_i} < C \quad \Leftrightarrow \quad {y_i}g({x_i}) = 1\\
+\quad {a_i} = C \quad \Leftrightarrow \quad {y_i}g({x_i}) \le 1
+\end{array}
+ %]]&gt;</script>
+
+<p>其中:</p>
+
+<script type="math/tex; mode=display">
+g(x) = \sum\limits_{i = 1}^N { {a_i}{y_i}K({x_i},{x_j}) + b} 
+</script>
+
+<p>因为计算机在计算的时候是有精度范围的，所以我们引入一个计算精度值$\varepsilon$，</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\left\{ \begin{array}{l}
+{a_i} = 0 \Leftrightarrow {y_i}g({x_i}) \ge 1 - \varepsilon \\
+0 < {a_i} < C \Leftrightarrow 1 - \varepsilon  \le {y_i}g({x_i}) \le 1 + \varepsilon \\
+{a_i} = C \Leftrightarrow {y_i}g({x_i}) \le 1 + \varepsilon 
+\end{array} \right\} \Rightarrow \left\{ \begin{array}{l}
+{a_i} < C \Leftrightarrow 1 - \varepsilon  \le {y_i}g({x_i})\\
+0 < {a_i} \Leftrightarrow {y_i}g({x_i}) \le 1 + \varepsilon 
+\end{array} \right\}
+ %]]&gt;</script>
+
+<p>同时由于${y_i} =  \pm 1$，所以${y_i}*{y_i}=1$，上面的公式可以换算为</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{array}{l}
+{a_i} < C \Leftrightarrow  - \varepsilon  \le {y_i}(g({x_i}) - {y_i})\\
+        0 < {a_i} \Leftrightarrow {y_i}(g({x_i}) - {y_i}) \le  + \varepsilon 
+        \end{array}
+ %]]&gt;</script>
+
+<p>定义:</p>
+
+<script type="math/tex; mode=display">
+{E_i} = g({x_i}) - {y_i}
+</script>
+
+<p>其中，$g({x})$其实就是决策函数，所以${E_i}$可以认为是对输入的${x_i}$的预测值与真实输出${y_i}$之差。</p>
+
+<p>上面的公式就可以换算为，即KKT条件可以表示为：</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{array}{l}
+{a_i} < C \Leftrightarrow  - \varepsilon  \le {y_i}{E_i}\\
+        0 < {a_i} \Leftrightarrow {y_i}{E_i} \le  + \varepsilon 
+        \end{array}
+ %]]&gt;</script>
+
+<p>那么相应的违规KKT条件的分量应该满足下列不等式：</p>
+
+<script type="math/tex; mode=display">
+{\rm{Against\ KKT:}}
+</script>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{array}{l}
+{a_i} < C \quad \Leftrightarrow \quad  - \varepsilon  > {y_i}{E_i}\\
+0 < {a_i} \quad \Leftrightarrow \quad {y_i}{E_i} >  + \varepsilon 
+\end{array}
+ %]]&gt;</script>
+
+<p>其实上面的推导过程不必关心，只需要应用违犯KKT条件的公式就可以了。</p>
+
+<h2 id="smo">SMO算法描述</h2>
+
+<p style="text-indent:0"><em style="color:blue"> 输入：</em>训练数据集 $ T=\\{({x\_1},{y\_1}),({x\_2},{y\_2}), \cdot \cdot \cdot ,({x\_N},{y\_N})\\} $ </p>
+
+<p>其中$ {x_i} \in \chi  \in {\mathbb{R}^n}$，${y_i} \in \{-1,+1\}$，$i=1,2,\cdot\cdot\cdot,N$，精度$\varepsilon$。</p>
+
+<p style="text-indent:0"><em style="color:blue">输出：</em>近似解$\hat a$</p>
+
+<p style="text-indent:0"><em style="color:blue">算法描述：</em></p>
+
+<p>(1) 取初始值${a^{(0)}}=0$，令$K=0$</p>
+
+<p>(2) 选取优化变量 ${a_1^{(k)}}$ , ${a_2^{(k)}}$ , 针对优化问题，求得最优解 ${a_1^{(k+1)}}$ , ${a_2^{(k+1)}}$ 更新 ${a^{(k)}}$ 为 ${a^{(k+1)}}$ 。</p>
+
+<p>(3) 在精度条件范围内是否满足停机条件，即是否有变量违反KKT条件，如果违反了，则令$k=k+1$，跳转(2)，否则(4)。</p>
+
+<p>(4) 求得近似解$\hat a = a^{(k+1)}$</p>
+
+<p>上面算法的(1)、(3)、(4)步都不难理解，其中第(3)步中，是否违反KKT条件，对于$a^{(k)}$的每个分量按照上一节的违反KKT条件的公式进行验算即可。难于理解的是第(2)步，下面就重点解释优化变量选取和如何更新选取变量。</p>
+
+<h3 id="section">变量选取</h3>
+
+<p>变量选取分为两步，第一步是选取违反KKT条件最严重的${a_i}$，第二步是根据已经选取的第一个变量，选择优化程度最大的第二个变量。</p>
+
+<p>违反KKT条件最严重的变量可以按照这样的规则选取，首先看$0 \lt {a_i} \lt C$的那些分量中，是否有违反KKT条件的，如果有，则选取${y_i}g({x_i})$最小的那个做为${a_1}$。如果没有则遍历所有的样本点，在违反KKT条件的分量中选取${y_i}g({x_i})$最小的做为${a_1}$。</p>
+
+<p>当选择了${a_1}$后，如果${a_1}$对应的$E_1$为正，选择$E_i$最小的那个分量最为${a_2}$，如果$E_1$为负，选择$E_i$最大的那个分量最为${a_2}$，这是因为${a_2^{new}}$依赖于$\left| {E_1 - E_2} \right|$（后面的公式会讲到）。
+如果选择的${a_2}$，不能满足下降的最小步长，那么就遍历所有的支持向量点做为${a_2}$进行试用，如果仍然都不能满足下降的最小步长，那么就遍历所有的样本点做为${a_2}$试用。如果还算是不能满足下降的最小步长，那么就重新选择${a_1}$。</p>
+
+<h3 id="section-1">计算选取变量的新值</h3>
+
+<p>首先计算出来的新值必须满足约束条件$\sum\limits_{i = 1}^N { {a_i}{y_i} = 0}$ ，那么求出来的${a_2^{new}}$需要满足下列条件（具体推导见《统计学习方法》的7.4.1）:</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+L \le a_2^{new} \le H\\
+L = \max (0,a_2^{old} - a_1^{old}),H = \min (C,C + a_2^{old} - a_1^{old}), \qquad {y_1} \ne {y_2}\\
+L = \max (0,a_2^{old} + a_1^{old} - C),H = \min (C,a_2^{old} + a_1^{old}), \qquad {y_1} = {y_2}
+\end{array}
+</script>
+
+<p>未经过裁剪的${a_2}$的解为：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+{a_2^{new,unc}} = {a_2^{old}} + \frac{ {y_2}({E_1}-{E_2)}}{\eta} \\
+\eta = K_{11} + K_{22} - 2{K_{12}}
+\end{array}
+</script>
+
+<p>裁剪后的解为</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+a_2^{new} = \left\{ \begin{array}{l}
+H,a_2^{new,unc} > H\\
+        a_2^{new,unc},L \le a_2^{new,unc} \le H\\
+        L,a_2^{new,unc} < L
+        \end{array} \right.
+ %]]&gt;</script>
+
+<p>第一个变量的解为</p>
+
+<script type="math/tex; mode=display">
+a_1^{new} = a_1^{old} + {y_1}{y_2}(a_2^{old} - a_2^{new})
+</script>
+
+<p>还需要更新$b$:</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+b_1^{new} =  - {E_1} - {y_1}{K_{11}}(a_1^{new} - a_1^{old}) - {y_2}{K_{21}}(a_2^{new} - a_2^{old}) + {b^{old}}\\
+        b_2^{new} =  - {E_2} - {y_1}{K_{12}}(a_1^{new} - a_1^{old}) - {y_2}{K_{22}}(a_2^{new} - a_2^{old}) + {b^{old}}
+        \end{array}
+</script>
+
+<p>在更新$b$时，如果有$0 \lt a_1^{new} \lt C$, 则$b^{new}=b_1^{new}$，如果有$0 \lt a_2^{new} \lt C$, 则 $b^{new}=b_2^{new}$， 否则$b^{new}=\frac{b_1^{new} + b_2^{new}}{2}$。</p>
+
+<p>由于缓存了${E_i}$,所以需要计算新的${E_i}$:</p>
+
+<script type="math/tex; mode=display">
+E_i^{new} = \sum\limits_{j=1}^N { {y_j}{a_j}K({x_i},{x_j})} + b^{new} - y_i
+</script>
+
+<h2 id="smo-1">SMO的一个实现例子</h2>
+
+<p>我实现了一个简单的基于SMO的线性svm，是一个python脚本。实现的过程中，变量的选取并未严格按照算法讲的方法选取，选择了一个简单的选取方法。
+一次迭代中，遍历所有的${a_i}$，如果${a_i}$违反了KKT条件，那么就将它做为第一个变量，然后再遍历所有的${a_i}$，依次做为第二个变量，如果第二个变量有足够的下降，那么就更新两个变量。如果没有，就不更新。</p>
+
+<p>实现的python脚本如下：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>使用python实现的基于SMO的SVM  (smo.py)</span> <a href='/code/2012/smo/smo.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># SMO的一个简单实现</span>
+</span><span class='line'><span class="c"># implement SMO</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">svm_params</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">params</span> <span class="o">=</span> <span class="n">svm_params</span><span class="p">()</span>
+</span><span class='line'><span class="n">e_dict</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#train_data = &quot;svm.train_mix_ok&quot;</span>
+</span><span class='line'><span class="n">train_data</span> <span class="o">=</span> <span class="s">&quot;svm.train&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">loaddata</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fn</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">vlist</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+</span><span class='line'>        <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</span><span class='line'>        <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># linear</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+</span><span class='line'>        <span class="n">ret</span> <span class="o">+=</span> <span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ret</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">diff</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">diff</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">init_e_dict</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">e_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">update_e_dict</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="n">init_e_dict</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>    <span class="k">while</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">times</span> <span class="ow">and</span> <span class="n">updated</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">updated</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>        <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
+</span><span class='line'>            <span class="n">ai</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>            <span class="n">Ei</span> <span class="o">=</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>            <span class="c"># 违反KKT</span>
+</span><span class='line'>            <span class="c"># agaist the KKT</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">tolerance</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span class='line'>                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span> <span class="k">continue</span>
+</span><span class='line'>                    <span class="n">eta</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">eta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                        <span class="k">continue</span>
+</span><span class='line'>                    <span class="n">new_aj</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">eta</span>
+</span><span class='line'>                    <span class="n">L</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>                    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span>
+</span><span class='line'>                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class='line'>                    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class='line'>                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">C</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="n">H</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">H</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">L</span>
+</span><span class='line'>                    <span class="c"># 《统计学习方法》公式7.109（下同）</span>
+</span><span class='line'>                    <span class="c"># formula 7.109</span>
+</span><span class='line'>                    <span class="n">new_ai</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c"># 第二个变量下降是否达到最小步长</span>
+</span><span class='line'>                    <span class="c"># decline enough for new_aj</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+</span><span class='line'>                        <span class="k">print</span> <span class="s">&quot;j = </span><span class="si">%d</span><span class="s">, is not moving enough&quot;</span> <span class="o">%</span> <span class="n">j</span>
+</span><span class='line'>                        <span class="k">continue</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c"># formula 7.115</span>
+</span><span class='line'>                    <span class="n">new_b1</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+</span><span class='line'>                    <span class="c"># formula 7.116</span>
+</span><span class='line'>                    <span class="n">new_b2</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">new_ai</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b1</span>
+</span><span class='line'>                    <span class="k">elif</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b2</span>
+</span><span class='line'>                    <span class="k">else</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_b1</span> <span class="o">+</span> <span class="n">new_b2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ai</span>
+</span><span class='line'>                    <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_aj</span>
+</span><span class='line'>                    <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">new_b</span>
+</span><span class='line'>                    <span class="n">update_e_dict</span><span class="p">()</span>
+</span><span class='line'>                    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>                    <span class="k">print</span> <span class="s">&quot;iterate: </span><span class="si">%d</span><span class="s">, changepair: i: </span><span class="si">%d</span><span class="s">, j:</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">u&quot;x1&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u&quot;x2&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;SVM - </span><span class="si">%s</span><span class="s">, tolerance </span><span class="si">%f</span><span class="s">, C </span><span class="si">%f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">ftrain</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">ftrain</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">sam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;or&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;og&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="n">w2</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">w1</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">w2</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">w</span> <span class="o">=</span> <span class="o">-</span> <span class="n">w1</span> <span class="o">/</span> <span class="n">w2</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">b</span> <span class="o">=</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="n">w2</span>
+</span><span class='line'>    <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">w2</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">lp_x1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">lp_x2</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="n">lp_x2up</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="n">lp_x2down</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">x1</span> <span class="ow">in</span> <span class="n">lp_x1</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">lp_x2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">lp_x2up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">lp_x2down</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2up</span><span class="p">,</span> <span class="s">&#39;b--&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2down</span><span class="p">,</span> <span class="s">&#39;b--&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">loaddata</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">samples</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">labels</span>
+</span><span class='line'>    <span class="c"># 惩罚系数</span>
+</span><span class='line'>    <span class="c"># penalty for mis classify</span>
+</span><span class='line'>    <span class="n">C</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'>    <span class="c"># 计算精度</span>
+</span><span class='line'>    <span class="c"># computational accuracy </span>
+</span><span class='line'>    <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.0001</span>
+</span><span class='line'>    <span class="n">train</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;a = &quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;b = &quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span>
+</span><span class='line'>    <span class="n">support</span> <span class="o">=</span>  <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">support</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;support vector = &quot;</span><span class="p">,</span> <span class="n">support</span>
+</span><span class='line'>    <span class="n">draw</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div> </p>
+
+<p>脚本使用的训练数据可以下载<a href="https://github.com/liuhongjiang/blog_projects/tree/master/svm">SMO实现的代码</a>的svm.train文件，或者使用<a href="https://github.com/liuhongjiang/blog_projects/blob/master/svm/blog_linear.py">blog_linear.py</a>，通过改变变量<code>separable</code>可以生成能够完全划分开的样本和不能划分开的样本。</p>
+
+<p>这个smo.py脚本是一个线性的svm，替换掉脚本中<code>kernel</code>函数，就可以成为一个非线性的svm。
+下面这两张图片是用训练数据训练的结果。这一张是样本能完全分离开的:</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/svm_sep_ok.png"></p>
+
+<p>这一张是样本不能完全分离开的：</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/svm_not_sep.png"></p>
+
+<p>以上就是如何实现SMO的全部内容。之前的一个同事实现了一个简单的识别手写数字ocr，下一章，我们也来用svm实现一个简单的识别数字的ocr吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[SVM支持向量机]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/"/>
+    <updated>2012-12-26T19:40:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/12/26/svm</id>
+    <content type="html"><![CDATA[<p>是今年工作中才开始接触机器学习的，之前有所听说，但是也没有深入了解过。其实所谓的接触主要是照着李航的这本<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>学习。当时我们是几个同事每人学习一章，学完了，然后给大家办个讲座。我想既然学习了，就应该写博客把这些内容记录下来。于是，就开始写了。</p>
+
+<p>机器学习是最近十年兴起的一门学科。人工智能是计算机学界的一个公认的难题，而机器学习被认为是最有可能解决这个难题的一门学科。当然机器学习在其它很多领域都有应用，比如数据挖掘，信息检索，语言识别，图像识别等很多领域。对于机器学习的基本概念，可以看<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的第一章，发展历史可以看wikipedia的<a href="http://en.wikipedia.org/wiki/Machine_learning">Machine learning</a>。我这里就不罗嗦了。等以后再写一篇机器学习的综述文章吧。</p>
+
+<p>按照<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的划分，机器学习可以分为监督学习，无监督学习和半监督学习、强化学习等。该书讲了监督学习，总共讲了这些学习模型：感知机、k近邻法、朴素贝叶斯法、决策树、逻辑斯谛回归、最大熵、支持向量机、EM算法、隐马尔科夫模型、条件随机场。我先把我们学习过的模型写成博客吧。但其实每个模型都有很多内容，以我一个初学者的水平估计也讲不了什么，我就按照我的理解讲，每个模型争取能实现一个例子，供大家参考。</p>
+
+<p>今天第一篇，SVM（support vector machine, 支持向量机）。</p>
+
+<!-- more -->
+
+<h2 id="section">线性支持向量机</h2>
+
+<p>SVM是一个分类器，而且还只能二分，也就是回答yes or no的问题。先用图说话，</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/samples.png"></p>
+
+<p>上面的图中的红点和绿点分布代表不同的两个类别，很明显了可以用一条直线将它们分开, 例如下面的蓝线。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/samples_line.png"></p>
+
+<p>上面的蓝线就是一种分类方法，当然你也可以画一条曲线，或者用一个圆圈把红点包围起来，这些都可以。用一条直线划分，就是线性的划分方式。这样的线性划分方式，可以用感知机，也可以用线性支持向量进行划分。(关于感知机，可以参考<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的第二章，这里就不多讲了。</p>
+
+<p>其实这样的直线有很多条，例如下图中的蓝线、红线、黄线，都是可以。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/samples_3lines.png"></p>
+
+<p>那么svm是按照什么原则确定哪条划分的直线呢？svm的原则是“找到一条直线，把所有的样本点尽量分开”，换句话说，在一类样本点中，离划分直线最近点，到划分直接的距离要越大越好，那些点就被称之为支撑向量(surpport vector)。支持向量机的学习目标，就是找到那样的一条划分直线。例如下图中的蓝色实线，就是一个支持向量机。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/svm_sep.png"></p>
+
+<p>图中在蓝色虚线上的3个点，就是支持向量。现在来理解一下“距离越大越好”，这个距离是指的支持向量到划分直线的距离，对应图中的粉色线条，并不是说的两个支持向量直接的距离，即非图中的绿色线条。</p>
+
+<p>以上就是一个简单的svm的原理模型。稍微扩展一下，上面的例子中，所有的点都是二维的，那么就可以用一条直线把它们划分开，对于样本点是多维的情况，那么支持向量机算出来的是一个超平面，也称之为间隔分离超平面。</p>
+
+<p>可以将上面的问题，抽象化，即最大化间隔分离超平面，可以用下面的公式表示(推导见<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的7.1)：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\max }\limits_{w,b} \qquad \frac{\hat \gamma }{\left\| w \right\|}\\
+{\rm{s.t.}} \qquad {y_i}(w\cdot{x_i} + b) \ge \hat \gamma 
+\end{array}
+</script>
+
+<p>上面的公式中，$\hat \gamma$表示样本点到分离超平面的距离，${x_i}$为样本点，${y_i}$为样本点的分类，这里一般取1和-1。</p>
+
+<p>可以令$\hat \gamma  = 1$，另最大化$\frac{1}{\left \| w \right \|}$与最小化$\frac{1}{2}\left\| w \right\|^2$是等价的，所以上面的公式可以变化为：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\max }\limits_{w,b} \qquad \frac{1}{2}\left\| w \right\|^2\\
+{\rm{s.t.}} \qquad {y_i}(w\cdot{x_i} + b) - 1 \ge 0
+\end{array}
+</script>
+
+<p>求解上面的问题，可以通过建立拉格朗日函数，并通过对偶变化，最终将问题转换成求解下面的公式：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}({x_i}\cdot{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad{a_i} \ge 0, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+</script>
+
+<p>上面式子中的${a_i}$为拉格朗日因子, $N$为样本的数量。svm的学习实际上就是求出分离超平面，也就是求解上面公式中的${a_i}$。假设上面问题的解为 </p>
+
+<script type="math/tex; mode=display"> 
+{a^*} = {\left( {a_1^*,a_2^*, \cdot  \cdot  \cdot ,a_N^* } \right)^T} 
+</script>
+
+<p>同时存在下标$j$使得 $ a_j^* \gt 0 $ ，那么分离超平面的解为：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+{w^*} = \sum\limits_{i = 1}^N {a_i^*{y_i}{x_i}} \\
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} 
+\end{array}
+</script>
+
+<p>分离超平面可以表示为</p>
+
+<script type="math/tex; mode=display">
+\sum\limits_{i=1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} + {b^*} = 0
+</script>
+
+<p>分类的决策函数可以写成</p>
+
+<script type="math/tex; mode=display">
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} + {b^*})
+</script>
+
+<p>$sign$为符号函数，如果函数类的表达式算出来的值为正，符号函数的结果为1，对应分类的正样本，反之，符号函数的结果为-1，对应分类的负样本。</p>
+
+<h2 id="section-1">软间隔最大化</h2>
+
+<p>对于上面的例子，可以用一条直线或者说一个超平面将训练集分开，但往往问题没有那么简单。绝大多数的情况下两类样本是无法完全分来的。虽然绝大部分的点可以分开，但是还是有少部分点混合在一起无法分开。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/samples_mix.png"></p>
+
+<p>上图的例子就是这样的一个例子了。无论怎么画直线都不可能把两类点完全分开。但如果我们可以容忍一部分点出现异常，或者不完全满足大于等于1的条件，那么就可以对每个样本点引入一个松弛变量${\xi _i} \gt 0$， 同时为目标函数需要为每个${\xi _i}$付出代价，这样线性svm的目标函数就变成了这样(原始问题）</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\max }\limits_{w,b,\xi } \qquad \frac{1}{2}{\left\| w \right\|^2} + C\sum\limits_{i = 1}^N { {\xi _i}} \\
+{\rm{s.t.}} \qquad {y_i}(w \cdot {x_i} + b) \ge 1 - {\xi _i}, \qquad i = 1,2, \cdot  \cdot  \cdot ,N\\
+\qquad \qquad {\xi _i} \ge 0, \qquad i = 1,2, \cdot  \cdot  \cdot ,N
+\end{array}
+</script>
+
+<p>上式中的$C \gt 0$称为惩罚参数，由应用问题决定，通常也是模型调优时，需要重点关注的参数。$C$值大，对误分类的惩罚增大，值小，对误分类的惩罚减小。</p>
+
+<p>这样原始问题的对偶问题就变成了这样(参考<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的7.2)：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}({x_i}\cdot{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+</script>
+
+<p>引入松弛变量的对偶问题，与没有引入的对偶问题的差别很小，仅仅是拉格朗日因子${a_i}$的取值范围不同，没有引入松弛变量的为${a_i} \ge 0$, 引入的为$0 \le {a_i} \le C$, 松弛变量在数学变换中，被消除了。</p>
+
+<p>上面对偶问题求出的解和分离超平面、分类决策函数与之前求出的表达式是一直的。唯一不同的是下面的求 ${b^*}$ 表达式</p>
+
+<script type="math/tex; mode=display">
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}({x_i} \cdot {x_j})} 
+</script>
+
+<p>原来寻找下标j的条件为 $a_j^* \gt 0$, 现在变为了 $0 \lt a_j^* \lt C$</p>
+
+<p>由于引入松弛变量后的对偶问题的解有可能不能满足上面的条件，所有的解都等于$C$，计算时可以取所有解计算出来的均值，即将所有解对样的样本点带入上面求 ${b^*}$ 的公式中，计算出 ${b^*}$ 后，再求均值。</p>
+
+<p>对于上面对偶问题的解，如果 ${a^*} \gt 0$, 那么这样的解对应的样本点${x_i}$，都称之为支持向量（软间隔的支持向量），样本点${x_i}$到间隔边界的距离为$\frac{\xi _i}{\left \| w \right \|}$。可以参考《统计学习方法》的图7.5。</p>
+
+<p>下面是根据上面的例子计算出来的分离直线和间隔边界</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/svm_not_sep.png"></p>
+
+<h2 id="section-2">非线性支持向量机</h2>
+
+<p>上面讲到了线性支持向量机，但实际情况中，还有很多更混杂在一起的数据，不能用线性支持向量机，但是还可以用非线性支持向量机。看下面的一个例子。</p>
+
+<p><img class="center" src="/images/blogimages/2012/svm/draw_kernel.png"></p>
+
+<p>上图中，左边的图中的点是无法用线性函数分开的，但是非线性可以划分开，例如用一个圆可以划分开。还有一种方法，经过一定的数学映射后，数据就变得可以线性划分了。例如上图中的右图，考虑使用下面的映射后，就可以用图中的蓝线划分开，当然也就可以应用svm了。</p>
+
+<script type="math/tex; mode=display">
+({x_1},{x_2}) \to (x_1^2,x_2^2)
+</script>
+
+<p>非线性支持向量机，就是利用了和上面方法相同的思路，解决线性不可分的问题。这个方法叫核函数。</p>
+
+<p>设$\chi $是输入空间，规定了一个映射函数$\phi (x)$，如果对于所有的$x,z \in \chi $，核函数$K(x,z)$都满足</p>
+
+<script type="math/tex; mode=display">
+K(x,z) = \phi (x) \cdot \phi (z)
+</script>
+
+<p>其中$\phi (x) \cdot \phi (z)$为内积。</p>
+
+<p>有了核函数，就可以讲数据$x_i$映射到更高的维度，甚至是无穷维，但同时又满足了内积的约束，就可以使用SVM去解决这个问题。可以参考《统计学习方法》的例子7.3，这个例子就实现了将$x$映射到高纬度, 并满足核函数的定义。</p>
+
+<p>那么核函数是怎么用到svm中的呢？实际上就是替换对偶问题中的最小化的目标函数，将</p>
+
+<script type="math/tex; mode=display">
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}({x_i}\cdot{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } }
+</script>
+
+<p>用核函数替换${x_i}\cdot{x_j}$，变成</p>
+
+<script type="math/tex; mode=display">
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } }
+</script>
+
+<p>参数${b^*}$的计算公式变成了（但分量$j$的选取条件未变）：</p>
+
+<script type="math/tex; mode=display">
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
+</script>
+
+<p>而分类决策函数也相应变了</p>
+
+<script type="math/tex; mode=display">
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
+</script>
+
+<p>其余的公式都与上面的线性支持向量机相同。</p>
+
+<p>其实在实际的应用中，并不需要找映射函数，只需要使用到核函数，而且核函数也不需要我们费什么劲去找，可以直接用一些常用的核函数，例如：多项式核函数，高斯核函数，字符串核函数等。</p>
+
+<h2 id="section-3">小结</h2>
+
+<p>前面简单介绍了支持向量机，支持向量机分为线性支持向量机和非线性支持向量机。非线性支持向量机是通过核函数将一个线性不可分的问题转变成为一个线性可分的问题。其实线性支持向量机可以视为一种使用了特殊核函数$K({x_i},{x_j})=({x_i}\cdot{x_j})$的非线性支持向量机。那么SVM的对偶问题可以统一表示为下面的公式。SVM的学习，就是求出下面问题的解。</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+</script>
+
+<p>选择一个 $ {a^*} $ 的正分量 $ 0 \lt {a_j^*} \lt C $ , 计算（或者通过所有解求平均值）：</p>
+
+<script type="math/tex; mode=display">
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
+</script>
+
+<p>决策函数为</p>
+
+<script type="math/tex; mode=display">
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
+</script>
+
+<p>有了问题，如何利用计算机，解出这些数学公式的答案。换句话说，就是怎么通过计算机算出我们的svm模型的参数呢？方法就是序列最小最优化(sequential minimal optimization, SMO)算法。下一篇文章，我们就来讲解SMO。 </p>
+
+<h2 id="section-4">相关工具</h2>
+
+<p>本文中的例子和图片都是用python制作的。可以参考<a href="https://github.com/liuhongjiang/blog_projects/tree/master/svm">github上相关的代码</a>，有兴趣的同学可以讲代码拷贝过去，运行一下。</p>
+
+<ul>
+  <li><a href="https://github.com/liuhongjiang/blog_projects/blob/master/svm/blog_linear.py">blog_linear.py</a>可用于生成这篇博文中线性支持向量机的图片</li>
+  <li><a href="https://github.com/liuhongjiang/blog_projects/blob/master/svm/blog_kernel.py">blog_kernel.py</a>生成非线性支持向量机的核技巧展示图片</li>
+  <li><a href="https://github.com/liuhongjiang/blog_projects/blob/master/svm/smo.py">smo.py</a>是smo算法的实现，下一篇文章将讲到。</li>
+</ul>
+
+<p>图片使用了python的扩展库<a href="http://matplotlib.org/">matplotlib</a>。安装matplotlib方法如下：</p>
+
+<p>我使用的是ubuntu 12.04, 最简单的安装方法</p>
+
+<p><code>bash
+sudo apt-get install python-matplotlib
+</code></p>
+
+<p>但不是最新的，要安装最新，按照下面的方法</p>
+
+<p><a href="http://www.codecho.com/install-matplotlib-on-ubuntu-12-04/">Ubuntu安装Matplotlib</a></p>
+
+<p><a href="http://iefan.is-programmer.com/posts/33592.html">在ubuntu下安装scipy-numpy-matplotlib-ipython</a></p>
+
+<p><a href="http://scipy.org/Installing_SciPy/Linux">Installing SciPy / Linux</a></p>
+
+<p><a href="http://forum.ubuntu.org.cn/viewtopic.php?f=88&amp;t=391300">(转）在Ubuntu中安装Python科学计算环境</a></p>
+
+<h2 id="john-hunter-1968-2012">John Hunter (1968-2012)</h2>
+
+<p><img class="right" src="/images/blogimages/2012/svm/John-hunter-crop-2.jpg"></p>
+
+<blockquote>
+  <p>On August 28 2012, John D. Hunter, the creator of matplotlib, died from complications arising from cancer treatment, after a brief but intense battle with this terrible illness. John is survived by his wife Miriam, his three daughters Rahel, Ava and Clara, his sisters Layne and Mary, and his mother Sarah.</p>
+
+  <p>If you have benefited from John’s many contributions, please say thanks in the way that would matter most to him. Please consider making a donation to the <a href="http://numfocus.org/johnhunter">John Hunter Memorial Fund</a>.</p>
+</blockquote>
+
+<p>Thanks for creating such a great tool. May you rest in peace!</p>
+]]></content>
+  </entry>
+  
+</feed>

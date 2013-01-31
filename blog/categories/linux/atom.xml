@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: linux | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/linux/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2013-01-31T14:56:55+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[linux命令行提示符配置]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting/"/>
+    <updated>2013-01-16T09:29:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting</id>
+    <content type="html"><![CDATA[<p>linux下shell提示符可以任意配置的。</p>
+
+<p>首先看看bash的配置文件，一般在用户的HOME目录下有这样几个文件<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>：</p>
+
+<ul>
+  <li>.bash_history ：记录了您以前输入的命令，</li>
+  <li>.bash_logout ：当您退出 shell 时，要执行的命令，</li>
+  <li>.bash_profile ：当您登入 shell 时，要执行的命令，</li>
+  <li>.bashrc ：每次打开新的 shell 时，要执行的命令。</li>
+</ul>
+
+<p>这些文件是每一位用户的设置。系统级的设置存储在’/etc/profile’、’/etc/bashrc’及目录’/etc/profile.d’下的文件中。但您得习惯用各自的配置文件：编辑不需要’root’权限，还可以使您的设置更有个性。当系统级与用户级的设置发生冲突时，将采用用户的设置。</p>
+
+<p>每次当您打开一个控制台(console)或 xterm 时，最先看到的就是提示符(prompt)，类似于：</p>
+
+<p><pre class='sh-bash'><code>account@hostname ~ $</code></pre></p>
+
+<p>在默认设置下，提示符将显示您的用户名、主机名（默认是’localhost’）、当前所在目录（在Unix中，’~’表示您的home目录）。
+按照传统，最后一个字符可以标识您是普通用户（<code>$</code>），还是’root’（<code>#</code>）。
+您可以通过 <code>$PS1</code>, <code>$PS2</code> 变量来设置提示符，<code>$PS2</code>是当在多行内输入一个命令时，换行后，出现的提示符。命令</p>
+
+<!-- more -->
+
+<p><pre class='sh-bash'><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS1
+</code><code>${debian_chroot:+($debian_chroot)}\u@\h:\w$
+</code><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS2
+</code><code>&amp;gt;</code></pre></p>
+
+<p>将显示当前的设定。其中可用字符的含义在 man bash 的’PROMPTING’部分有说明，PROMPTING部分的翻译</p>
+
+<p>``` bash
+提示符(PROMPTING)
+    在 交互执行时， bash 在准备好读入一条命令时显示主提示符 PS1，在需要更多的输入来完成一条命令时显示 PS2。 Bash 允许通过插入一些反斜杠转义的特
+    殊字符来定制这些提示字符串，这些字符被如下解释：
+        \a     一个 ASCII 响铃字符 (07)
+        \d     日期，格式是 “星期 月份 日” (例如，”Tue May 26”)
+        \D{format}
+               format 被传递给 strftime(3)，结果被插入到提示字符串中；空的 format 将使用语言环境特定的时间格式。花括号是必需的
+        \e     一个 ASCII 转义字符 (033)
+        \h     主机名，第一个 ‘.’ 之前的部分
+        \H     主机名
+        \j     shell 当前管理的作业数量
+        \l     shell 的终端设备名的基本部分
+        \n     新行符
+        \r     回车
+        \s     shell 的名称， $0 的基本部分 (最后一个斜杠后面的部分)
+        \t     当前时间，采用 24小时制的 HH:MM:SS 格式
+        \T     当前时间，采用 12小时制的 HH:MM:SS 格式
+        \@     当前时间，采用 12小时制上午/下午 (am/pm) 格式
+        \A     当前时间，采用 24小时制上午/下午格式
+        \u     当前用户的用户名 the username of the current user
+        \v     bash 的版本 (例如，2.00)
+        \V     bash 的发行编号，版本号加补丁级别 (例如，2.00.0)
+        \w     当前工作目录
+        \W     当前工作目录的基本部分
+        !     此命令的历史编号
+        #     此命令的命令编号
+        $     如果有效 UID 是 0，就是 #, 其他情况下是 $
+        \nnn   对应八进制数 nnn 的字符
+        \     一个反斜杠
+        [     一个不可打印字符序列的开始，可以用于在提示符中嵌入终端控制序列
+        ]     一个不可打印字符序列的结束</p>
+
+<pre><code>命令编号和历史编号通常是不同的：历史编号是命令在历史列表中的位置，可能包含从历史文件中恢复的命令 (参见下面的 HISTORY 历史章节)，而命令编 号
+是 当 前 shell 会话中执行的命令序列中，命令的位置。字符串被解码之后，它将进行扩展，要经过 parameter expansion, command substitution, arith‐
+metic expansion 和 quote removal, 最后要经过 shell 选项 promptvars 处理 (参见下面的 shell 内建命令(SHELL BUILTIN COMMANDS) 章节中，对 命 令
+shopt 的描述)。 ```
+</code></pre>
+
+<p>例如一个默认的<code>$PS1</code>设置如下：</p>
+
+<p><pre class='sh-bash'><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS1
+</code><code>${debian_chroot:+($debian_chroot)}\u@\h:\w$</code></pre></p>
+
+<p>前面这部分<code>${debian_chroot:+($debian_chroot)}</code>是ubuntu一种特殊的运行程序的方式，可以参考<sup id="fnref:3"><a href="#fn:3" rel="footnote">2</a></sup><sup id="fnref:4"><a href="#fn:4" rel="footnote">3</a></sup>，和我们要讲的内容没有什么关系。后面这部分<code>\u@\h:\w\$</code>就是shell prompting的配置了，可以根据上面的内容翻译出来。我现在的这个配置，显示出来就像这个样子了：</p>
+
+<p><pre class='sh-bash'><code>andrew@ubuntu:~/lhj-github/tech$</code></pre></p>
+
+<p>当然还可以配置颜色，首先来看ascii字符颜色表<sup id="fnref:5"><a href="#fn:5" rel="footnote">4</a></sup><sup id="fnref:6"><a href="#fn:6" rel="footnote">5</a></sup>：</p>
+
+<table class="mytable">
+  <thead>
+    <tr>
+      <th>前景</th>
+      <th>背景</th>
+      <th>颜色</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>30</td>
+      <td>40</td>
+      <td>黑色</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>41</td>
+      <td>紅色</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>42</td>
+      <td>綠色</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>43</td>
+      <td>黃色</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>44</td>
+      <td>藍色</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>45</td>
+      <td>紫紅色</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>46</td>
+      <td>青藍色</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>47</td>
+      <td>白色</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+
+<table class="mytable">
+  <thead>
+    <tr>
+      <th>代码</th>
+      <th>意义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>OFF</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>高亮显示</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>underline</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>闪烁</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>反白显示</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>不可见</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>然后就可以设置prompting的颜色了，最简单的方法是在HOME目录下的.bashrc文件添加以下配置（这种方法只会影响当前用户），
+例如我现在的设置为</p>
+
+<p><pre class='sh-bash'><code>export PS1=”\w\e[32m$ \e[0m”</code></pre></p>
+
+<p>前面部分<code>\e[32m</code>是设置提示符的颜色，后面的<code>\e[0m</code>是恢复后面命令行输入输出的颜色，如果不用这个的话，所有的输入输出都会受到影响。</p>
+
+<p>当然也可以配置一个多个属性的，只需要用分号隔开就可以了，这是一个例子:</p>
+
+<p><pre class='sh-bash'><code>export PS1=”\w\e[32;40;4;1;7m$ \e[0m”</code></pre></p>
+
+<p>我使用的是ubuntu server 64 12.04，shell用的是bash，在配置的过过程中，唯独只有闪烁功能好像没有起作用，如果有朋友解决了这个问题麻烦给我说一下。</p>
+
+<p>在学习这个的过程中，我还找到了一篇关于提示符配置的<a href="http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html">不错的博文</a>，大家也可以阅读一下。</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="http://blog.chinaunix.net/uid-13342902-id-2901676.html">linux shell简介(3)</a><a href="#fnref:1" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:3">
+      <p><a href="https://help.ubuntu.com/community/BasicChroot">https://help.ubuntu.com/community/BasicChroot</a><a href="#fnref:3" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:4">
+      <p><a href="https://wiki.ubuntu.com/DebootstrapChroot">https://wiki.ubuntu.com/DebootstrapChroot</a><a href="#fnref:4" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:5">
+      <p><a href="http://bbs.chinaunix.net/forum.php?mod=viewthread&amp;tid=54256">http://bbs.chinaunix.net/forum.php?mod=viewthread&amp;tid=54256</a><a href="#fnref:5" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:6">
+      <p><a href="http://www.chinaunix.net/old_jh/6/54256.html">http://www.chinaunix.net/old_jh/6/54256.html</a><a href="#fnref:6" rel="reference">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pegasos算法 - 刘洪江的流水帐</title>
+  <meta name="author" content="刘洪江">
+
+  
+  <meta name="description" content="摘要： 本文介绍了svm的一种online learning算法pegasos，并基于pegasoso算法实现了一个数字手写识别脚本。 本文参考了博文Online Learning in Clojure和论文Pegasos: Primal Estimated sub-GrAdient &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/">
+  <link href="/tech/favicon.png" rel="icon">
+  <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/tech/javascripts/modernizr-2.0.js"></script>
+  <script src="/tech/javascripts/ender.js"></script>
+  <script src="/tech/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="刘洪江的流水帐" type="application/atom+xml">
+
+  <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+<!--JS for show math symbols -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <div style="float:left; width: 500px">
+    <h1><a href="/tech/">刘洪江的流水帐</a></h1>
+    
+      <h2>拾起点点滴滴, 聚沙成石.</h2>
+    
+  </div>
+  
+    <div style="float:right">
+      <p style="font-family:cursive;font-size:80%;color:yellow;font-style:oblique">
+         一个连咖啡都要趁热一饮而尽的男子 
+      </p>
+<ul id="social-links">
+  <!-- Tencent weibo -->
+  <li>
+    <a href="http://t.qq.com/andrewliu117" target="_blank">
+      <svg width="40" height="40" class="tencent-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <circle fill="#000000" cx="8.229" cy="10.478" r="2.543" />
+        <path fill="#000000" d="M8.229,18.163c-0.615,0-1.227-0.073-1.82-0.217 c-0.364-0.088-0.587-0.455-0.499-0.819c0.088-0.364,0.455-0.588,0.819-0.5c0.488,0.119,0.993,0.178,1.5,0.178 c3.49,0,6.33-2.839,6.33-6.329c0-3.49-2.839-6.33-6.33-6.33c-3.49,0-6.329,2.84-6.329,6.33c0,1.123,0.297,2.226,0.861,3.189 c0.189,0.323,0.08,0.739-0.243,0.928s-0.739,0.08-0.928-0.243c-0.685-1.172-1.046-2.511-1.046-3.875 c0-4.238,3.448-7.686,7.686-7.686c4.238,0,7.686,3.448,7.686,7.686C15.915,14.716,12.467,18.163,8.229,18.163z" />
+        <path fill="#000000" d="M2.066,24.549c-0.277,0-0.51-0.216-0.526-0.496c-0.021-0.351-0.451-8.643,5.989-13.397 c0.234-0.173,0.565-0.124,0.738,0.111c0.173,0.234,0.123,0.565-0.111,0.738C2.186,15.913,2.589,23.909,2.593,23.99 c0.018,0.29-0.204,0.541-0.495,0.558C2.087,24.548,2.077,24.549,2.066,24.549z" />
+        <circle fill="#000000" cx="22.443" cy="5.184" r="1.536" />
+        <path fill="#000000" d="M26.739,6.946c-0.141,0.344-0.322,0.669-0.538,0.967 c-0.133,0.184-0.389,0.224-0.572,0.091s-0.225-0.389-0.091-0.572c0.178-0.246,0.327-0.514,0.443-0.797 c0.8-1.951-0.136-4.188-2.086-4.988c-1.951-0.8-4.188,0.136-4.988,2.086c-0.8,1.951,0.136,4.188,2.086,4.988 c0.628,0.257,1.312,0.344,1.98,0.25c0.224-0.031,0.431,0.125,0.463,0.349c0.032,0.224-0.125,0.431-0.349,0.463 c-0.812,0.114-1.643,0.009-2.405-0.304c-2.369-0.971-3.505-3.688-2.534-6.057c0.972-2.369,3.688-3.505,6.058-2.534 C26.574,1.86,27.71,4.577,26.739,6.946z" />
+        <path fill="#000000" d="M28.895,11.854c-0.063,0.154-0.237,0.234-0.397,0.18c-0.201-0.068-4.934-1.729-6.115-6.419 c-0.043-0.17,0.061-0.343,0.231-0.386c0.171-0.043,0.344,0.06,0.388,0.231c1.095,4.348,5.656,5.956,5.703,5.971 c0.167,0.057,0.255,0.238,0.198,0.404C28.899,11.843,28.897,11.848,28.895,11.854z" />
+      </svg>
+    </a>
+  </li>
+  
+  <!-- Sina Weibo -->
+  <li>
+    <a href="http://weibo.com/andewliuhj" target="_blank">
+      <svg width="40" height="40" class="sina-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M9.641,17.231c-3.799,0.374-7.079-1.343-7.326-3.838c-0.246-2.494,2.634-4.82,6.434-5.196 c3.798-0.377,7.079,1.34,7.326,3.835C16.32,14.529,13.44,16.855,9.641,17.231 M17.24,8.952c-0.322-0.098-0.544-0.163-0.375-0.587 c0.365-0.921,0.403-1.718,0.007-2.286c-0.745-1.063-2.783-1.005-5.12-0.027c0-0.002-0.734,0.321-0.546-0.261 c0.359-1.156,0.305-2.123-0.254-2.682c-1.267-1.271-4.639,0.047-7.53,2.936C1.257,8.209,0,10.504,0,12.488 c0,3.796,4.866,6.104,9.628,6.104c6.241,0,10.393-3.627,10.393-6.506C20.021,10.347,18.557,9.358,17.24,8.952" />
+        <path fill="#000000" d="M21.384,2.005c-1.507-1.671-3.73-2.308-5.782-1.872l0,0c-0.475,0.102-0.778,0.569-0.676,1.043 c0.101,0.473,0.567,0.777,1.043,0.674c1.459-0.31,3.039,0.145,4.111,1.332c1.069,1.188,1.362,2.806,0.902,4.225v0.001 c-0.149,0.462,0.104,0.957,0.566,1.106c0.461,0.149,0.956-0.104,1.105-0.565c0,0,0-0.002,0-0.004 C23.299,5.95,22.894,3.674,21.384,2.005" />
+        <path fill="#000000" d="M19.07,4.094c-0.734-0.814-1.817-1.123-2.817-0.912c-0.409,0.088-0.671,0.49-0.581,0.899 c0.088,0.407,0.489,0.67,0.896,0.58v0.001c0.488-0.104,1.019,0.047,1.379,0.445c0.359,0.398,0.455,0.941,0.301,1.416l0,0 c-0.127,0.398,0.09,0.825,0.488,0.954c0.396,0.127,0.824-0.091,0.952-0.488C20,6.017,19.805,4.908,19.07,4.094" />
+        <path fill="#000000" d="M9.85,12.713c-0.132,0.229-0.426,0.338-0.656,0.242c-0.227-0.094-0.297-0.348-0.169-0.572 c0.132-0.221,0.416-0.328,0.64-0.239C9.895,12.227,9.978,12.483,9.85,12.713 M8.64,14.268c-0.367,0.586-1.154,0.843-1.747,0.57 c-0.584-0.265-0.756-0.945-0.389-1.518c0.362-0.568,1.124-0.824,1.712-0.574C8.811,12.998,9.001,13.675,8.64,14.268 M10.021,10.118 c-1.808-0.47-3.852,0.431-4.637,2.023c-0.8,1.624-0.026,3.428,1.801,4.017c1.892,0.612,4.122-0.324,4.898-2.078 C12.848,12.367,11.891,10.602,10.021,10.118" />
+      </svg>
+    </a>
+  </li>
+
+  <!-- GitHub -->
+  <li>
+    <a href="https://github.com/liuhongjiang" target="_blank">
+      <svg width="40" height="40" class="github" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M28.436,15.099C27.235,14.897,25.985,14.764,24.97,14.728L24.791,14.722C24.832,14.632,24.863,14.571,24.873,14.562C24.895,14.543999999999999,24.913,14.468,24.915000000000003,14.394C24.915000000000003,14.353,24.933000000000003,14.22,24.961000000000002,14.044C25.236,14.054,25.601000000000003,14.062000000000001,25.999000000000002,14.065000000000001C27.536,14.077000000000002,29.144000000000002,14.201,30.247000000000003,14.396C30.904000000000003,14.512,31.121000000000002,14.508000000000001,30.636000000000003,14.39C30.145000000000003,14.271,28.689000000000004,14.096,27.529000000000003,14.020000000000001C26.750000000000004,13.967,25.633000000000003,13.947000000000001,24.975000000000005,13.958000000000002C24.994000000000003,13.844000000000001,25.016000000000005,13.717000000000002,25.039000000000005,13.587000000000002C25.132000000000005,13.084000000000001,25.163000000000004,12.578000000000001,25.165000000000006,11.571000000000002C25.167000000000005,10.009000000000002,25.083000000000006,9.579,24.574000000000005,8.546000000000001C24.367000000000004,8.124,24.133000000000006,7.766000000000001,23.850000000000005,7.442000000000001C24.097000000000005,6.713000000000001,24.091000000000005,5.584000000000001,23.835000000000004,4.594000000000001C23.624000000000006,3.782000000000001,23.550000000000004,3.7300000000000013,22.814000000000004,3.886000000000001C22.19,4.019,21.69,4.2,21.049,4.523C20.746,4.675999999999999,20.328,4.914,20.025,5.101C19.235,4.823,18.418,4.639,17.546,4.54C16.662,4.44,14.495,4.496,13.725999999999999,4.638C12.973999999999998,4.777,12.296999999999999,4.947,11.684,5.149C11.378,4.96,10.934,4.705,10.616999999999999,4.545C9.973,4.221,9.473,4.041,8.847,3.908C8.113,3.751,8.036999999999999,3.804,7.827,4.616C7.567,5.619,7.5649999999999995,6.7669999999999995,7.822,7.494C7.852,7.577,7.87,7.636,7.877,7.682C6.835,8.994,6.495,10.462,6.721,12.511C6.78,13.045,6.871,13.535,6.998,13.984C6.333,13.98,5.3870000000000005,14.004,4.704000000000001,14.048C3.5420000000000007,14.125,2.0860000000000007,14.298,1.5950000000000006,14.417C1.1110000000000007,14.535,1.3260000000000005,14.539,1.9840000000000007,14.424C3.0870000000000006,14.229999999999999,4.696000000000001,14.104,6.232000000000001,14.093C6.522000000000001,14.092,6.793000000000001,14.086,7.026000000000002,14.08C7.096000000000002,14.317,7.176000000000002,14.543,7.267000000000001,14.758000000000001L7.26,14.759C6.245,14.794,4.996,14.927,3.795,15.129C2.894,15.28,1.564,15.581999999999999,1.4089999999999998,15.669C1.2459999999999998,15.76,1.3789999999999998,15.74,2.077,15.563C3.3499999999999996,15.241000000000001,5.005,14.994,7.055,14.822000000000001L7.284,14.802000000000001C7.724,15.824000000000002,8.402,16.604000000000003,9.36,17.212000000000003C9.946,17.585000000000004,10.885,17.968000000000004,11.357999999999999,18.028000000000002C11.488,18.044,11.866,18.122000000000003,12.197999999999999,18.200000000000003C12.530999999999999,18.278000000000002,13.181999999999999,18.395000000000003,13.643999999999998,18.462000000000003H13.654999999999998C13.645999999999997,18.468000000000004,13.637999999999998,18.472000000000005,13.629999999999997,18.478C13.069999999999997,18.769000000000002,12.705999999999998,19.222,12.460999999999997,19.935000000000002C12.350999999999997,19.968000000000004,12.213999999999997,20.013,12.065999999999997,20.064000000000004C11.536999999999997,20.244000000000003,11.330999999999998,20.281000000000002,10.794999999999998,20.285000000000004C10.238999999999997,20.289000000000005,10.106999999999998,20.265000000000004,9.774999999999999,20.109000000000005C9.291999999999998,19.884000000000004,8.841999999999999,19.470000000000006,8.541999999999998,18.976000000000006C8.040999999999999,18.150000000000006,7.174999999999998,17.566000000000006,6.452999999999998,17.566000000000006C5.835999999999998,17.566000000000006,5.718999999999998,17.816000000000006,6.164999999999997,18.181000000000004C6.836999999999997,18.730000000000004,7.338999999999997,19.290000000000006,7.544999999999997,19.718000000000004C7.660999999999997,19.958000000000002,7.838999999999997,20.329000000000004,7.9419999999999975,20.542000000000005C8.050999999999998,20.769000000000005,8.283999999999997,21.077000000000005,8.505999999999997,21.290000000000006C9.027999999999997,21.788000000000007,9.531999999999996,22.026000000000007,10.283999999999997,22.138000000000005C10.787999999999997,22.212000000000007,10.911999999999997,22.212000000000007,11.506999999999998,22.136000000000006C11.793999999999999,22.101000000000006,12.035999999999998,22.060000000000006,12.252999999999998,22.009000000000007C12.252999999999998,22.253000000000007,12.252999999999998,22.534000000000006,12.252999999999998,22.864000000000008C12.252999999999998,24.63000000000001,12.231999999999998,25.198000000000008,12.161999999999999,25.364000000000008C12.03,25.680000000000007,11.733999999999998,26.00500000000001,11.446,26.151000000000007C11.158999999999999,26.297000000000008,11.07,26.458000000000006,11.190999999999999,26.606000000000005C11.258,26.686000000000003,11.386999999999999,26.700000000000006,11.819999999999999,26.672000000000004C12.641999999999998,26.621000000000006,13.222999999999999,26.317000000000004,13.518999999999998,25.781000000000006C13.613999999999999,25.609000000000005,13.636,25.263000000000005,13.665999999999999,23.463000000000005C13.697999999999999,21.510000000000005,13.711999999999998,21.322000000000003,13.838999999999999,21.043000000000006C13.915999999999999,20.877000000000006,14.027,20.697000000000006,14.088999999999999,20.648000000000007C14.192999999999998,20.56200000000001,14.2,20.732000000000006,14.2,23.068000000000005C14.199,25.646000000000004,14.173,25.957000000000004,13.915,26.453000000000003C13.857,26.566000000000003,13.747,26.713000000000005,13.67,26.783C13.535,26.906000000000002,13.478,27.221,13.572,27.316000000000003C13.726999999999999,27.470000000000002,14.504,27.228,14.927999999999999,26.894000000000002C15.649999999999999,26.322000000000003,15.735999999999999,25.849000000000004,15.741999999999999,22.433L15.745,20.429L15.963999999999999,20.45L16.183,20.47L16.219,23.090999999999998C16.26,26.041999999999998,16.266000000000002,26.084999999999997,16.768,26.654999999999998C17.053,26.976999999999997,17.34,27.154999999999998,17.807000000000002,27.293999999999997C18.432000000000002,27.481999999999996,18.62,27.191999999999997,18.200000000000003,26.688999999999997C17.743000000000002,26.141999999999996,17.721000000000004,25.932999999999996,17.746000000000002,22.694999999999997C17.763,20.618999999999996,17.763,20.618999999999996,17.897000000000002,20.739999999999995C18.179000000000002,20.995999999999995,18.233,21.415999999999993,18.233,23.362999999999996C18.233,25.780999999999995,18.302,26.010999999999996,19.156,26.432999999999996C19.555,26.627999999999997,19.666999999999998,26.651999999999997,20.177999999999997,26.653999999999996C20.721999999999998,26.655999999999995,20.754999999999995,26.647999999999996,20.775,26.505999999999997C20.791999999999998,26.391,20.724999999999998,26.312999999999995,20.471,26.157999999999998C20.138,25.953,19.907,25.691,19.762,25.360999999999997C19.707,25.233999999999998,19.67,24.401999999999997,19.645,22.688999999999997C19.608999999999998,20.295999999999996,19.601,20.186999999999998,19.451999999999998,19.811999999999998C19.250999999999998,19.307999999999996,18.944,18.909999999999997,18.555,18.645999999999997C18.454,18.58,18.352999999999998,18.525,18.222,18.483999999999998C18.383000000000003,18.468,18.539,18.450999999999997,18.69,18.429C20.262,18.22,21.093,18.046,21.76,17.787999999999997C23.171000000000003,17.244999999999997,24.125,16.342999999999996,24.642000000000003,15.063999999999997C24.688000000000002,14.949999999999996,24.734,14.841999999999997,24.773000000000003,14.754999999999997L25.171000000000003,14.787999999999997C27.222,14.960999999999997,28.877000000000002,15.207999999999997,30.150000000000002,15.530999999999997C30.848000000000003,15.707999999999997,30.981,15.728999999999997,30.818,15.635999999999997C30.666,15.551,29.336,15.25,28.436,15.099ZM22.422,15.068C22.189,15.58,21.539,16.238,21.014,16.496C20.496,16.752,19.683999999999997,16.947,18.764,17.04C18.134999999999998,17.104,14.626999999999999,17.122999999999998,14.047999999999998,17.066C12.130999999999998,16.878,11.056999999999999,16.509,10.264999999999999,15.77C9.514999999999999,15.068,9.165,14.115,9.225999999999999,12.942C9.264999999999999,12.208,9.441999999999998,11.747,9.905,11.187000000000001C10.325999999999999,10.677000000000001,10.769,10.362000000000002,11.290999999999999,10.202000000000002C11.727999999999998,10.068000000000001,13.068999999999999,10.056000000000001,14.871999999999998,10.172000000000002C15.668999999999999,10.223000000000003,16.328,10.223000000000003,17.124,10.172000000000002C19.009999999999998,10.053000000000003,20.269,10.066000000000003,20.733999999999998,10.210000000000003C21.465,10.436000000000003,22.130999999999997,11.044000000000002,22.531,11.854000000000003C22.711,12.216000000000003,22.746,12.370000000000003,22.772,12.929000000000002C22.808,13.699,22.675,14.517,22.422,15.068ZM12.912,11.762C11.839,11.574,11.226,13.411000000000001,12.049000000000001,14.349C12.440000000000001,14.794,12.787,14.867,13.221000000000002,14.597C13.623000000000001,14.346,13.841000000000001,13.876999999999999,13.841000000000001,13.269C13.841,12.458,13.472,11.862,12.912,11.762ZM19.425,11.872C18.352,11.684,17.738,13.519,18.561,14.458C18.953,14.903,19.299,14.977,19.734,14.705C20.135,14.455,20.354000000000003,13.985,20.354000000000003,13.377C20.354,12.569,19.985,11.971,19.425,11.872ZM16.539,15.484C16.516000000000002,15.558,16.404,15.668,16.291,15.727C16.005,15.874,15.799,15.823,15.497,15.548C15.31,15.379,15.225,15.29,15.168,15.467C15.114999999999998,15.631,15.447999999999999,15.96,15.705,16.061C15.941,16.155,16.11,16.158,16.366,16.051C16.62,15.944999999999999,16.842,15.659999999999998,16.842,15.474999999999998C16.842,15.303,16.595,15.311,16.539,15.484ZM16.222,14.909C16.385,14.765,16.422,14.469000000000001,16.266000000000002,14.312000000000001S15.793000000000001,14.179000000000002,15.669000000000002,14.355C15.525000000000002,14.561,15.602000000000002,14.718,15.705000000000002,14.885C15.865,15.009,16.08,15.034,16.222,14.909Z" />
+      </svg>
+    </a>
+  </li>
+  
+ <!-- 
+  
+  <li>
+    <a href="https://twitter.com/#!/jsw0528" target="_blank">
+      <svg width="40" height="40" class="twitter" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M14.605,13.11C15.518,10.259,16.634,8.411999999999999,17.918,7.071999999999999C18.877,6.071999999999999,19.371,5.755999999999999,18.808999999999997,6.855999999999999C19.058999999999997,6.656999999999999,19.415,6.391999999999999,19.694,6.2509999999999994C21.249,5.518,21.136,6.132,20.067,6.7909999999999995C22.990000000000002,5.7459999999999996,22.887,7.076999999999999,19.796,7.739999999999999C22.323,7.786999999999999,25.009999999999998,9.395999999999999,25.783,12.817C25.888,13.291,25.762,13.245000000000001,26.247,13.331C27.294,13.517,28.277,13.504999999999999,29.238,13.200999999999999C29.134,13.908999999999999,28.198999999999998,14.367999999999999,26.741,14.671999999999999C26.2,14.783999999999999,26.09,14.754999999999999,26.736,14.900999999999998C27.535,15.079999999999998,28.426000000000002,15.126999999999999,29.37,15.082999999999998C28.636000000000003,15.928999999999998,27.465,16.360999999999997,26.016000000000002,16.378999999999998C25.112000000000002,19.688,23.040000000000003,22.057,20.42,23.543C14.268,27.035,5.312000000000001,26.527,0.8210000000000015,20.183999999999997C3.7680000000000016,22.496,8.133000000000003,23.005,11.376000000000001,19.782999999999998C9.251000000000001,19.782999999999998,8.702000000000002,18.191999999999997,10.386000000000001,17.333999999999996C8.791,17.316999999999997,7.7780000000000005,16.812999999999995,7.183000000000002,15.899999999999997C6.957000000000002,15.552999999999997,6.9540000000000015,15.525999999999996,7.323000000000001,15.259999999999996C7.7280000000000015,14.966999999999997,8.281,14.836999999999996,8.851,14.792999999999996C7.200000000000001,14.319999999999995,6.191000000000001,13.457999999999995,5.8420000000000005,12.301999999999996C5.726000000000001,11.919999999999996,5.708,11.938999999999997,6.098000000000001,11.839999999999996C6.478000000000001,11.742999999999997,6.968000000000001,11.691999999999997,7.407000000000001,11.669999999999996C6.11,10.88,5.336,9.917,5.139,8.852C4.953,7.846,5.144,8.104000000000001,5.897,8.392C9.263,9.68,12.619,11.062,14.605,13.11L14.605,13.11Z" />
+      </svg>
+    </a>
+  </li>
+-->
+  
+</ul>
+    </div>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:liuhongjiang.github.com/tech" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/tech/">博客首页</a></li>
+  <li><a href="/tech/blog/archives">文章列表</a></li>
+  <li><a href="/tech/categories">标签分类</a></li>
+  <li><a href="/tech/todo">ToDo</a></li>
+  <li><a href="/tech/about">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pegasos算法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T11:49:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/machine-nbsp-learning/'>Machine&nbsp;Learning</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= Pegasos算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+<div class="entry-content">
+    
+    <div class="abstract">
+        <table>
+            <tr>
+                <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                <td>本文介绍了svm的一种online learning算法pegasos，并基于pegasoso算法实现了一个数字手写识别脚本。</td>
+            </tr>
+        </table>
+    </div>
+    
+    <p>本文参考了博文<a href="http://mark.reid.name/sap/online-learning-in-clojure.html">Online Learning in Clojure</a>和论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>(<a href="http://www.machinelearning.org/proceedings/icml2007/papers/587.pdf">PDF</a>)</p>
+
+<h2 id="online-learning">online learning</h2>
+
+<p>Online learning的算法结构是非常简单的，下面的描述是监督的online learning算法框架，其中有经验损失函数$L$，样本流$S$，样本的格式为$(x,y)$:</p>
+
+<pre><code>Initialise a starting model w
+While there are more examples in S
+    Get the next feature vector x
+    Predict the label y' for x using the model w
+    Get the true label y for x and incur a penaly L(y,y')
+    Update the model w if y ≠ y'
+</code></pre>
+
+<p>一般来是，训练出来的模型都是一个与样本相同维度的向量。对应二分的分类器，往往涉及到的是计算内积$\langle w,x \rangle$，模型的更新是沿着损失函数的梯度下降方向的。</p>
+
+<h2 id="pegasos">Pegasos</h2>
+
+<p>论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>是一种svm的online learning算法。</p>
+
+<!-- more -->
+
+<p>首先来看svm的经验合页损失函数：</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+L(w,S) = \frac{\lambda }{2}{\left\| w \right\|^2} + \frac{1}{k}\sum\limits_{(x,y) \in S} {h(w;(x,y))} \\
+h(w;(x,y)) = \max \{ 0,1 - y \langle w,x \rangle \} 
+\end{array}
+</script>
+
+<p>上面式子中，$k$是训练集$S$的大小，$h()$是the hinge loss（合页损失函数），$\langle w, x\rangle$表示$w,x$的内积，$\lambda$是正则化项。</p>
+
+<p>在<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>这本书的7.2.4证明了合页损失函数与引入松弛变量后的损失函数是等价的，并证明了$\lambda$与惩罚系数$C$是成反比的。引入松弛变量后的损失函数为:</p>
+
+<script type="math/tex; mode=display">
+\frac{1}{2}\left \| w \right \|^{2} + C\sum_{i=1}^{N}\xi _{i}
+</script>
+
+<p>训练过程中，如果遇到了一个预测错误的样本$(x,y)$, 对模型的更新方法如下：</p>
+
+<script type="math/tex; mode=display">
+{w_{t + \frac{1}{2}}} = (1 - \frac{1}{t}){w_t} + \frac{1} { {\lambda t} } yx
+</script>
+
+<p>其中$t$表示已经训练过的样本个数，$ {w_{t + \frac{1}{2}}}$表示训练过$t$个的样本后的模型，${w_{t + \frac{1}{2} }}$ 表示新模型。
+根据pegasos算法，新模型的$l_2$范数如果超出了以 $\frac{1}{ {\sqrt \lambda  } }$ 为半径的超球面，那么需要将新模型投射到这个超球面上。即：</p>
+
+<script type="math/tex; mode=display">
+{w_{t + 1}} = \min \{ 1,\frac{1}{ {\sqrt \lambda  \left\| { {w_{t + \frac{1}{2} } } } \right\|}}\} {w_{t + \frac{1}{2}}}
+</script>
+
+<p>为什么需要讲新的模型投射到以$\frac{1}{ {\sqrt \lambda  } }$为半径的超球面上呢？论文证明了svm的最优解是在下面这个集合中的：</p>
+
+<script type="math/tex; mode=display">
+B = \{ w:\left\| w \right\| \le \frac{1}{ {\sqrt \lambda  } }\} 
+</script>
+
+<p>而且在pegasos算法的推导，以及模型初始化$w$的时候，都使用了条件</p>
+
+<script type="math/tex; mode=display">
+\left\| w \right\| \le \frac{1}{ {\sqrt \lambda  } }
+</script>
+
+<p>由上面模型的更新公式可以简单分析一下正则化参数$\lambda$的作用，它决定了训练过程中，后面出现的预测错误的样本，对应模型的修正程度。$\lambda$越大，修正程度越小，$\lambda$越小，修正程度越大。同时$\lambda$与惩罚系数$C$是成反比的，所以也可理解为，在训练过称中，出现预测错误样本时，对模型的惩罚程度。$\lambda$越大，惩罚越小，$\lambda$越小，惩罚越大。</p>
+
+<p>Pegasos的算法描述在论文”Pegasos: Primal Estimated sub-GrAdient SOlver for SVM”也是给出了的，可以参考。</p>
+
+<p>但实际上pegasos是一个线性的svm，而且还是一个没有bias的svm，训练出来的线性函数是$y=\langle w,x \rangle$，在上面的论文中的Extensions小节中也讲到了，目前pegasos还没有证明可应用于线性模型$y=\langle w,x \rangle + b$或者是非线性svm模型。</p>
+
+<h2 id="pegasos-1">Pegasos的实现例子</h2>
+
+<p>前面的博客<a href="http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr/">基于SVM的手写数字识别</a>，实现了一个基于SMO算法的svm，今天就来基于Pegasos实现数字手写识别。svm用于多分类，还是一对多的方式，手写数据还是来自<a href="http://www.manning.com/pharrington/">“Machine Learning in Action”</a>的第二章的数据。下面是实现代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>基于pegasos的数字手写识别  (pegasos.py)</span> <a href="/tech/code/2013/pegasos/pegasos.py">download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#!/usr/bin/env python</span>
+</span><span class="line"><span class="c"># -*- coding: utf-8 -*-</span>
+</span><span class="line">
+</span><span class="line"><span class="c"># Pegasos inplemented in Python</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span> <span class="nn">os</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">math</span>
+</span><span class="line">
+</span><span class="line"><span class="n">G_WEIGHT</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">parse_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span><span class="line">    <span class="n">img_map</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+</span><span class="line">        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+</span><span class="line">            <span class="n">img_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">img_map</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span class="line">    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class="line">        <span class="n">ret</span> <span class="o">+=</span> <span class="n">model</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">ret</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">train_one_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">,</span> <span class="n">modelNum</span><span class="p">):</span>
+</span><span class="line">    <span class="n">pvalue</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">],</span> <span class="n">data</span><span class="p">)</span>
+</span><span class="line">    <span class="c"># the hinge loss</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">pvalue</span> <span class="o">*</span> <span class="n">label</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class="line">        <span class="k">return</span>
+</span><span class="line">
+</span><span class="line">    <span class="c"># update model</span>
+</span><span class="line">    <span class="n">lambd</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class="line">    <span class="n">new_weight</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class="line">        <span class="c"># pegasos</span>
+</span><span class="line">        <span class="n">a</span> <span class="o">=</span> <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sampleNum</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">sampleNum</span><span class="p">))</span><span class="o">*</span><span class="n">label</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class="line">        <span class="n">new_weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="c"># projection</span>
+</span><span class="line">    <span class="n">norm2</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class="line">        <span class="n">norm2</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">new_weight</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class="line">    <span class="n">norm2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">norm2</span><span class="p">)</span>
+</span><span class="line">    <span class="k">if</span> <span class="n">norm2</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambd</span><span class="p">)):</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="o">*</span><span class="mi">32</span><span class="p">):</span>
+</span><span class="line">            <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_weight</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">norm2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambd</span><span class="p">))</span>
+</span><span class="line">    <span class="k">else</span><span class="p">:</span>
+</span><span class="line">        <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">modelNum</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_weight</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">train_one_sample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">):</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">modelNum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class="line">        <span class="n">label</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="n">modelNum</span><span class="p">:</span>
+</span><span class="line">            <span class="n">label</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class="line">        <span class="n">train_one_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">,</span> <span class="n">modelNum</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">if</span> <span class="n">__name__</span><span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class="line">        <span class="n">G_WEIGHT</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span> <span class="o">*</span> <span class="mi">32</span><span class="p">):</span>
+</span><span class="line">            <span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">dirpath</span> <span class="o">=</span> <span class="s">&quot;./trainingDigits/&quot;</span>
+</span><span class="line">    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+</span><span class="line">    <span class="n">sampleNum</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;training:&quot;</span><span class="p">,</span> <span class="nb">file</span>
+</span><span class="line">        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">dirpath</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class="line">        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class="line">        <span class="n">sampleNum</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">        <span class="n">train_one_sample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">sampleNum</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="c"># test</span>
+</span><span class="line">    <span class="n">testdir</span> <span class="o">=</span> <span class="s">&quot;./testDigits/&quot;</span>
+</span><span class="line">    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">testdir</span><span class="p">)</span>
+</span><span class="line">    <span class="n">right</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="n">wrong</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="n">can_not_classify</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class="line">    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+</span><span class="line">        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">testdir</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+</span><span class="line">        <span class="k">print</span> <span class="s">&quot;testing:&quot;</span><span class="p">,</span> <span class="nb">file</span>
+</span><span class="line">        <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class="line">        <span class="n">classify_failed</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+</span><span class="line">            <span class="n">pvalue</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">G_WEIGHT</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">data</span><span class="p">)</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">pvalue</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class="line">                <span class="n">classify_failed</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class="line">                <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;prdict:&quot;</span><span class="p">,</span> <span class="mi">1</span>
+</span><span class="line">                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
+</span><span class="line">                    <span class="n">right</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">                <span class="k">else</span><span class="p">:</span>
+</span><span class="line">                    <span class="n">wrong</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">            <span class="k">else</span><span class="p">:</span>
+</span><span class="line">                <span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;prdict:&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">classify_failed</span><span class="p">:</span>
+</span><span class="line">            <span class="n">can_not_classify</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;right=&quot;</span><span class="p">,</span> <span class="n">right</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;wrong=&quot;</span><span class="p">,</span> <span class="n">wrong</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;can_not_classify=&quot;</span><span class="p">,</span> <span class="n">can_not_classify</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&quot;total=&quot;</span><span class="p">,</span> <span class="n">total</span>
+</span><span class="line">
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>训练出来的模型测试结果如下：</p>
+
+<pre class="sh-bash"><code>right= 849
+</code><code>wrong= 46
+</code><code>can_not_classify= 72
+</code><code>total= 946</code></pre>
+
+<p>一共有946个测试样本，其中46个分类错误，72个没有找到分类，849个正确分类，正确分类率89.7%。$\lambda$取值为0.5。我也没有仔细调整$\lambda$的取值，不过看来结果还是慢不错的。但比起SMO算法实现的svm效果要差一些。但是pegasos的优势是快啊，同样的1934个训练样本，基于SMO的svm，花了3、4个小时训练，而pegasos算法只用了30多秒，逆天了。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T11:49:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/machine-nbsp-learning/'>Machine&nbsp;Learning</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= Pegasos算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/tech/blog/2013/01/23/zk-overview/" title="Previous Post: ZooKeeper Overview">&laquo; ZooKeeper Overview</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>本人</h1>
+  <p>一个码农，苦逼而卑微地活着，同时也正直、善良而坚持地活着。相信梦想，相信真理。写过C/C++，python。开发过网站服务器后端程序。<a href="/tech/about/">更多介绍...</a></p>
+  <p>声明：本站使用的图片等，甚至部分文章都来自网络，原作者享有对著作的一切权利。</p>
+  <p>欢迎在新浪微博上关注我：<wb:follow-button uid="1462341965" type="gray_3" width="100%" height="24" ></wb:follow-button></p>
+</section>
+<section>
+  <h1>最新博文</h1>
+  <ul id="Recent Posts">
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/23/zk-overview/">ZooKeeper Overview</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/22/github-https/">使用https连接github</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/19/2012/">我的2012</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a>
+      </li>
+    
+  </ul>
+</section>
+<section id="tag-clouds">
+  <h1>分类</h1>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+</section>
+<section>
+  <h1>友情链接</h1>
+  <ul id="friends-links">
+      <li class="post">
+        <a href="http://liuhongjiang.github.com/life/">小结其绳</a>
+      </li>
+      <li class="post">
+        <a href="http://arekyao.github.com/">YY Every Day</a>
+      </li>
+  </ul>
+</section>
+<section id="tag-clouds" style="text-decoration:none">
+<h1><a href="/tech/recent-comment/">最新评论</a></h1>
+    <script type="text/javascript" src="http://andrewliu117.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=16&excerpt_length=30"></script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 刘洪江 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <span style="float:right">
+    Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>
+  </span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'andrewliu117';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

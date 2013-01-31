@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: Fuck&nbsp;GFW | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/fuck-nbsp-gfw/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2013-01-31T14:56:55+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用https连接github]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/"/>
+    <updated>2013-01-22T13:08:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https</id>
+    <content type="html"><![CDATA[<p>火车票插件拖垮github的事件的结果，就是github被悲催地墙掉了。愤慨啊。Fuck GFW!</p>
+
+<p>不过有了goagent的代理，github的网站是可以上了，但是命令行上面pull，push就不灵了。新浪微博上<a href="http://www.weibo.com/neilxp">@蒋伟</a>找到了一个通过<a href="http://www.weibo.com/1791166224/zfvJvnG39">https连接github的办法</a>，总结一下如下：</p>
+
+<ol>
+  <li>安装goagent</li>
+  <li>
+    <p>导入ca.crt证书
+ 导入goagent目录下的local/CA.crt   <br />
+ ubuntu导入证书    <br />
+ http://askubuntu.com/questions/73287/how-do-i-install-a-root-certificate        </p>
+  </li>
+  <li>启动代理 python proxy.py</li>
+  <li>设置代理： export HTTPS_PROXY=”http://127.0.0.1:8087”</li>
+  <li>github配置，关键一步是remote add的时候，方法是：   <br />
+ git remote add origin https://liuhongjiang@github.com/liuhongjiang/tech.git   <br />
+ 这样就可以正常地pull和push了，麻烦的是，每次都要输入秘密。      </li>
+  <li>
+    <p>接下来就是octopress的rake deploy了：
+ 需要修改Rakefile：</p>
+
+    <pre><code> # user = repo_url.match(/:([^\/]+)/)[1]
+ user = repo_url.match(/github\.com.([^\/]+)/)[1]
+ # branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
+ branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
+ # project = (branch == 'gh-pages') ? repo_url.match(/\/([^\.]+)/)[1] : ''
+ project = (branch == 'gh-pages') ? repo_url.match(/\/([^\/^\.]+)$/)[1] : ''
+</code></pre>
+
+    <p>然后在<code>rake setup_github_pages</code>命令中填https的url地址：        <br />
+ https://liuhongjiang@github.com/liuhongjiang/tech     <br />
+ 同样在部署的时候，还是要输入密码</p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>

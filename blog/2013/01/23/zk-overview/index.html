@@ -1,0 +1,572 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ZooKeeper Overview - 刘洪江的流水帐</title>
+  <meta name="author" content="刘洪江">
+
+  
+  <meta name="description" content="摘要： 简单介绍了zookeeper的概要，主要是翻译了apache zookeeper overview的内容。 ZooKeeper 简介 ZooKeeper是Hadoop的正式子项目，它是一个针对大型分布式系统的可靠协调系统，提供的功能包括：配置维护、名字服务、分布式同步、组服务等。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/">
+  <link href="/tech/favicon.png" rel="icon">
+  <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/tech/javascripts/modernizr-2.0.js"></script>
+  <script src="/tech/javascripts/ender.js"></script>
+  <script src="/tech/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="刘洪江的流水帐" type="application/atom+xml">
+
+  <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <div style="float:left; width: 500px">
+    <h1><a href="/tech/">刘洪江的流水帐</a></h1>
+    
+      <h2>拾起点点滴滴, 聚沙成石.</h2>
+    
+  </div>
+  
+    <div style="float:right">
+      <p style="font-family:cursive;font-size:80%;color:yellow;font-style:oblique">
+         一个连咖啡都要趁热一饮而尽的男子 
+      </p>
+<ul id="social-links">
+  <!-- Tencent weibo -->
+  <li>
+    <a href="http://t.qq.com/andrewliu117" target="_blank">
+      <svg width="40" height="40" class="tencent-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <circle fill="#000000" cx="8.229" cy="10.478" r="2.543" />
+        <path fill="#000000" d="M8.229,18.163c-0.615,0-1.227-0.073-1.82-0.217 c-0.364-0.088-0.587-0.455-0.499-0.819c0.088-0.364,0.455-0.588,0.819-0.5c0.488,0.119,0.993,0.178,1.5,0.178 c3.49,0,6.33-2.839,6.33-6.329c0-3.49-2.839-6.33-6.33-6.33c-3.49,0-6.329,2.84-6.329,6.33c0,1.123,0.297,2.226,0.861,3.189 c0.189,0.323,0.08,0.739-0.243,0.928s-0.739,0.08-0.928-0.243c-0.685-1.172-1.046-2.511-1.046-3.875 c0-4.238,3.448-7.686,7.686-7.686c4.238,0,7.686,3.448,7.686,7.686C15.915,14.716,12.467,18.163,8.229,18.163z" />
+        <path fill="#000000" d="M2.066,24.549c-0.277,0-0.51-0.216-0.526-0.496c-0.021-0.351-0.451-8.643,5.989-13.397 c0.234-0.173,0.565-0.124,0.738,0.111c0.173,0.234,0.123,0.565-0.111,0.738C2.186,15.913,2.589,23.909,2.593,23.99 c0.018,0.29-0.204,0.541-0.495,0.558C2.087,24.548,2.077,24.549,2.066,24.549z" />
+        <circle fill="#000000" cx="22.443" cy="5.184" r="1.536" />
+        <path fill="#000000" d="M26.739,6.946c-0.141,0.344-0.322,0.669-0.538,0.967 c-0.133,0.184-0.389,0.224-0.572,0.091s-0.225-0.389-0.091-0.572c0.178-0.246,0.327-0.514,0.443-0.797 c0.8-1.951-0.136-4.188-2.086-4.988c-1.951-0.8-4.188,0.136-4.988,2.086c-0.8,1.951,0.136,4.188,2.086,4.988 c0.628,0.257,1.312,0.344,1.98,0.25c0.224-0.031,0.431,0.125,0.463,0.349c0.032,0.224-0.125,0.431-0.349,0.463 c-0.812,0.114-1.643,0.009-2.405-0.304c-2.369-0.971-3.505-3.688-2.534-6.057c0.972-2.369,3.688-3.505,6.058-2.534 C26.574,1.86,27.71,4.577,26.739,6.946z" />
+        <path fill="#000000" d="M28.895,11.854c-0.063,0.154-0.237,0.234-0.397,0.18c-0.201-0.068-4.934-1.729-6.115-6.419 c-0.043-0.17,0.061-0.343,0.231-0.386c0.171-0.043,0.344,0.06,0.388,0.231c1.095,4.348,5.656,5.956,5.703,5.971 c0.167,0.057,0.255,0.238,0.198,0.404C28.899,11.843,28.897,11.848,28.895,11.854z" />
+      </svg>
+    </a>
+  </li>
+  
+  <!-- Sina Weibo -->
+  <li>
+    <a href="http://weibo.com/andewliuhj" target="_blank">
+      <svg width="40" height="40" class="sina-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M9.641,17.231c-3.799,0.374-7.079-1.343-7.326-3.838c-0.246-2.494,2.634-4.82,6.434-5.196 c3.798-0.377,7.079,1.34,7.326,3.835C16.32,14.529,13.44,16.855,9.641,17.231 M17.24,8.952c-0.322-0.098-0.544-0.163-0.375-0.587 c0.365-0.921,0.403-1.718,0.007-2.286c-0.745-1.063-2.783-1.005-5.12-0.027c0-0.002-0.734,0.321-0.546-0.261 c0.359-1.156,0.305-2.123-0.254-2.682c-1.267-1.271-4.639,0.047-7.53,2.936C1.257,8.209,0,10.504,0,12.488 c0,3.796,4.866,6.104,9.628,6.104c6.241,0,10.393-3.627,10.393-6.506C20.021,10.347,18.557,9.358,17.24,8.952" />
+        <path fill="#000000" d="M21.384,2.005c-1.507-1.671-3.73-2.308-5.782-1.872l0,0c-0.475,0.102-0.778,0.569-0.676,1.043 c0.101,0.473,0.567,0.777,1.043,0.674c1.459-0.31,3.039,0.145,4.111,1.332c1.069,1.188,1.362,2.806,0.902,4.225v0.001 c-0.149,0.462,0.104,0.957,0.566,1.106c0.461,0.149,0.956-0.104,1.105-0.565c0,0,0-0.002,0-0.004 C23.299,5.95,22.894,3.674,21.384,2.005" />
+        <path fill="#000000" d="M19.07,4.094c-0.734-0.814-1.817-1.123-2.817-0.912c-0.409,0.088-0.671,0.49-0.581,0.899 c0.088,0.407,0.489,0.67,0.896,0.58v0.001c0.488-0.104,1.019,0.047,1.379,0.445c0.359,0.398,0.455,0.941,0.301,1.416l0,0 c-0.127,0.398,0.09,0.825,0.488,0.954c0.396,0.127,0.824-0.091,0.952-0.488C20,6.017,19.805,4.908,19.07,4.094" />
+        <path fill="#000000" d="M9.85,12.713c-0.132,0.229-0.426,0.338-0.656,0.242c-0.227-0.094-0.297-0.348-0.169-0.572 c0.132-0.221,0.416-0.328,0.64-0.239C9.895,12.227,9.978,12.483,9.85,12.713 M8.64,14.268c-0.367,0.586-1.154,0.843-1.747,0.57 c-0.584-0.265-0.756-0.945-0.389-1.518c0.362-0.568,1.124-0.824,1.712-0.574C8.811,12.998,9.001,13.675,8.64,14.268 M10.021,10.118 c-1.808-0.47-3.852,0.431-4.637,2.023c-0.8,1.624-0.026,3.428,1.801,4.017c1.892,0.612,4.122-0.324,4.898-2.078 C12.848,12.367,11.891,10.602,10.021,10.118" />
+      </svg>
+    </a>
+  </li>
+
+  <!-- GitHub -->
+  <li>
+    <a href="https://github.com/liuhongjiang" target="_blank">
+      <svg width="40" height="40" class="github" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M28.436,15.099C27.235,14.897,25.985,14.764,24.97,14.728L24.791,14.722C24.832,14.632,24.863,14.571,24.873,14.562C24.895,14.543999999999999,24.913,14.468,24.915000000000003,14.394C24.915000000000003,14.353,24.933000000000003,14.22,24.961000000000002,14.044C25.236,14.054,25.601000000000003,14.062000000000001,25.999000000000002,14.065000000000001C27.536,14.077000000000002,29.144000000000002,14.201,30.247000000000003,14.396C30.904000000000003,14.512,31.121000000000002,14.508000000000001,30.636000000000003,14.39C30.145000000000003,14.271,28.689000000000004,14.096,27.529000000000003,14.020000000000001C26.750000000000004,13.967,25.633000000000003,13.947000000000001,24.975000000000005,13.958000000000002C24.994000000000003,13.844000000000001,25.016000000000005,13.717000000000002,25.039000000000005,13.587000000000002C25.132000000000005,13.084000000000001,25.163000000000004,12.578000000000001,25.165000000000006,11.571000000000002C25.167000000000005,10.009000000000002,25.083000000000006,9.579,24.574000000000005,8.546000000000001C24.367000000000004,8.124,24.133000000000006,7.766000000000001,23.850000000000005,7.442000000000001C24.097000000000005,6.713000000000001,24.091000000000005,5.584000000000001,23.835000000000004,4.594000000000001C23.624000000000006,3.782000000000001,23.550000000000004,3.7300000000000013,22.814000000000004,3.886000000000001C22.19,4.019,21.69,4.2,21.049,4.523C20.746,4.675999999999999,20.328,4.914,20.025,5.101C19.235,4.823,18.418,4.639,17.546,4.54C16.662,4.44,14.495,4.496,13.725999999999999,4.638C12.973999999999998,4.777,12.296999999999999,4.947,11.684,5.149C11.378,4.96,10.934,4.705,10.616999999999999,4.545C9.973,4.221,9.473,4.041,8.847,3.908C8.113,3.751,8.036999999999999,3.804,7.827,4.616C7.567,5.619,7.5649999999999995,6.7669999999999995,7.822,7.494C7.852,7.577,7.87,7.636,7.877,7.682C6.835,8.994,6.495,10.462,6.721,12.511C6.78,13.045,6.871,13.535,6.998,13.984C6.333,13.98,5.3870000000000005,14.004,4.704000000000001,14.048C3.5420000000000007,14.125,2.0860000000000007,14.298,1.5950000000000006,14.417C1.1110000000000007,14.535,1.3260000000000005,14.539,1.9840000000000007,14.424C3.0870000000000006,14.229999999999999,4.696000000000001,14.104,6.232000000000001,14.093C6.522000000000001,14.092,6.793000000000001,14.086,7.026000000000002,14.08C7.096000000000002,14.317,7.176000000000002,14.543,7.267000000000001,14.758000000000001L7.26,14.759C6.245,14.794,4.996,14.927,3.795,15.129C2.894,15.28,1.564,15.581999999999999,1.4089999999999998,15.669C1.2459999999999998,15.76,1.3789999999999998,15.74,2.077,15.563C3.3499999999999996,15.241000000000001,5.005,14.994,7.055,14.822000000000001L7.284,14.802000000000001C7.724,15.824000000000002,8.402,16.604000000000003,9.36,17.212000000000003C9.946,17.585000000000004,10.885,17.968000000000004,11.357999999999999,18.028000000000002C11.488,18.044,11.866,18.122000000000003,12.197999999999999,18.200000000000003C12.530999999999999,18.278000000000002,13.181999999999999,18.395000000000003,13.643999999999998,18.462000000000003H13.654999999999998C13.645999999999997,18.468000000000004,13.637999999999998,18.472000000000005,13.629999999999997,18.478C13.069999999999997,18.769000000000002,12.705999999999998,19.222,12.460999999999997,19.935000000000002C12.350999999999997,19.968000000000004,12.213999999999997,20.013,12.065999999999997,20.064000000000004C11.536999999999997,20.244000000000003,11.330999999999998,20.281000000000002,10.794999999999998,20.285000000000004C10.238999999999997,20.289000000000005,10.106999999999998,20.265000000000004,9.774999999999999,20.109000000000005C9.291999999999998,19.884000000000004,8.841999999999999,19.470000000000006,8.541999999999998,18.976000000000006C8.040999999999999,18.150000000000006,7.174999999999998,17.566000000000006,6.452999999999998,17.566000000000006C5.835999999999998,17.566000000000006,5.718999999999998,17.816000000000006,6.164999999999997,18.181000000000004C6.836999999999997,18.730000000000004,7.338999999999997,19.290000000000006,7.544999999999997,19.718000000000004C7.660999999999997,19.958000000000002,7.838999999999997,20.329000000000004,7.9419999999999975,20.542000000000005C8.050999999999998,20.769000000000005,8.283999999999997,21.077000000000005,8.505999999999997,21.290000000000006C9.027999999999997,21.788000000000007,9.531999999999996,22.026000000000007,10.283999999999997,22.138000000000005C10.787999999999997,22.212000000000007,10.911999999999997,22.212000000000007,11.506999999999998,22.136000000000006C11.793999999999999,22.101000000000006,12.035999999999998,22.060000000000006,12.252999999999998,22.009000000000007C12.252999999999998,22.253000000000007,12.252999999999998,22.534000000000006,12.252999999999998,22.864000000000008C12.252999999999998,24.63000000000001,12.231999999999998,25.198000000000008,12.161999999999999,25.364000000000008C12.03,25.680000000000007,11.733999999999998,26.00500000000001,11.446,26.151000000000007C11.158999999999999,26.297000000000008,11.07,26.458000000000006,11.190999999999999,26.606000000000005C11.258,26.686000000000003,11.386999999999999,26.700000000000006,11.819999999999999,26.672000000000004C12.641999999999998,26.621000000000006,13.222999999999999,26.317000000000004,13.518999999999998,25.781000000000006C13.613999999999999,25.609000000000005,13.636,25.263000000000005,13.665999999999999,23.463000000000005C13.697999999999999,21.510000000000005,13.711999999999998,21.322000000000003,13.838999999999999,21.043000000000006C13.915999999999999,20.877000000000006,14.027,20.697000000000006,14.088999999999999,20.648000000000007C14.192999999999998,20.56200000000001,14.2,20.732000000000006,14.2,23.068000000000005C14.199,25.646000000000004,14.173,25.957000000000004,13.915,26.453000000000003C13.857,26.566000000000003,13.747,26.713000000000005,13.67,26.783C13.535,26.906000000000002,13.478,27.221,13.572,27.316000000000003C13.726999999999999,27.470000000000002,14.504,27.228,14.927999999999999,26.894000000000002C15.649999999999999,26.322000000000003,15.735999999999999,25.849000000000004,15.741999999999999,22.433L15.745,20.429L15.963999999999999,20.45L16.183,20.47L16.219,23.090999999999998C16.26,26.041999999999998,16.266000000000002,26.084999999999997,16.768,26.654999999999998C17.053,26.976999999999997,17.34,27.154999999999998,17.807000000000002,27.293999999999997C18.432000000000002,27.481999999999996,18.62,27.191999999999997,18.200000000000003,26.688999999999997C17.743000000000002,26.141999999999996,17.721000000000004,25.932999999999996,17.746000000000002,22.694999999999997C17.763,20.618999999999996,17.763,20.618999999999996,17.897000000000002,20.739999999999995C18.179000000000002,20.995999999999995,18.233,21.415999999999993,18.233,23.362999999999996C18.233,25.780999999999995,18.302,26.010999999999996,19.156,26.432999999999996C19.555,26.627999999999997,19.666999999999998,26.651999999999997,20.177999999999997,26.653999999999996C20.721999999999998,26.655999999999995,20.754999999999995,26.647999999999996,20.775,26.505999999999997C20.791999999999998,26.391,20.724999999999998,26.312999999999995,20.471,26.157999999999998C20.138,25.953,19.907,25.691,19.762,25.360999999999997C19.707,25.233999999999998,19.67,24.401999999999997,19.645,22.688999999999997C19.608999999999998,20.295999999999996,19.601,20.186999999999998,19.451999999999998,19.811999999999998C19.250999999999998,19.307999999999996,18.944,18.909999999999997,18.555,18.645999999999997C18.454,18.58,18.352999999999998,18.525,18.222,18.483999999999998C18.383000000000003,18.468,18.539,18.450999999999997,18.69,18.429C20.262,18.22,21.093,18.046,21.76,17.787999999999997C23.171000000000003,17.244999999999997,24.125,16.342999999999996,24.642000000000003,15.063999999999997C24.688000000000002,14.949999999999996,24.734,14.841999999999997,24.773000000000003,14.754999999999997L25.171000000000003,14.787999999999997C27.222,14.960999999999997,28.877000000000002,15.207999999999997,30.150000000000002,15.530999999999997C30.848000000000003,15.707999999999997,30.981,15.728999999999997,30.818,15.635999999999997C30.666,15.551,29.336,15.25,28.436,15.099ZM22.422,15.068C22.189,15.58,21.539,16.238,21.014,16.496C20.496,16.752,19.683999999999997,16.947,18.764,17.04C18.134999999999998,17.104,14.626999999999999,17.122999999999998,14.047999999999998,17.066C12.130999999999998,16.878,11.056999999999999,16.509,10.264999999999999,15.77C9.514999999999999,15.068,9.165,14.115,9.225999999999999,12.942C9.264999999999999,12.208,9.441999999999998,11.747,9.905,11.187000000000001C10.325999999999999,10.677000000000001,10.769,10.362000000000002,11.290999999999999,10.202000000000002C11.727999999999998,10.068000000000001,13.068999999999999,10.056000000000001,14.871999999999998,10.172000000000002C15.668999999999999,10.223000000000003,16.328,10.223000000000003,17.124,10.172000000000002C19.009999999999998,10.053000000000003,20.269,10.066000000000003,20.733999999999998,10.210000000000003C21.465,10.436000000000003,22.130999999999997,11.044000000000002,22.531,11.854000000000003C22.711,12.216000000000003,22.746,12.370000000000003,22.772,12.929000000000002C22.808,13.699,22.675,14.517,22.422,15.068ZM12.912,11.762C11.839,11.574,11.226,13.411000000000001,12.049000000000001,14.349C12.440000000000001,14.794,12.787,14.867,13.221000000000002,14.597C13.623000000000001,14.346,13.841000000000001,13.876999999999999,13.841000000000001,13.269C13.841,12.458,13.472,11.862,12.912,11.762ZM19.425,11.872C18.352,11.684,17.738,13.519,18.561,14.458C18.953,14.903,19.299,14.977,19.734,14.705C20.135,14.455,20.354000000000003,13.985,20.354000000000003,13.377C20.354,12.569,19.985,11.971,19.425,11.872ZM16.539,15.484C16.516000000000002,15.558,16.404,15.668,16.291,15.727C16.005,15.874,15.799,15.823,15.497,15.548C15.31,15.379,15.225,15.29,15.168,15.467C15.114999999999998,15.631,15.447999999999999,15.96,15.705,16.061C15.941,16.155,16.11,16.158,16.366,16.051C16.62,15.944999999999999,16.842,15.659999999999998,16.842,15.474999999999998C16.842,15.303,16.595,15.311,16.539,15.484ZM16.222,14.909C16.385,14.765,16.422,14.469000000000001,16.266000000000002,14.312000000000001S15.793000000000001,14.179000000000002,15.669000000000002,14.355C15.525000000000002,14.561,15.602000000000002,14.718,15.705000000000002,14.885C15.865,15.009,16.08,15.034,16.222,14.909Z" />
+      </svg>
+    </a>
+  </li>
+  
+ <!-- 
+  
+  <li>
+    <a href="https://twitter.com/#!/jsw0528" target="_blank">
+      <svg width="40" height="40" class="twitter" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M14.605,13.11C15.518,10.259,16.634,8.411999999999999,17.918,7.071999999999999C18.877,6.071999999999999,19.371,5.755999999999999,18.808999999999997,6.855999999999999C19.058999999999997,6.656999999999999,19.415,6.391999999999999,19.694,6.2509999999999994C21.249,5.518,21.136,6.132,20.067,6.7909999999999995C22.990000000000002,5.7459999999999996,22.887,7.076999999999999,19.796,7.739999999999999C22.323,7.786999999999999,25.009999999999998,9.395999999999999,25.783,12.817C25.888,13.291,25.762,13.245000000000001,26.247,13.331C27.294,13.517,28.277,13.504999999999999,29.238,13.200999999999999C29.134,13.908999999999999,28.198999999999998,14.367999999999999,26.741,14.671999999999999C26.2,14.783999999999999,26.09,14.754999999999999,26.736,14.900999999999998C27.535,15.079999999999998,28.426000000000002,15.126999999999999,29.37,15.082999999999998C28.636000000000003,15.928999999999998,27.465,16.360999999999997,26.016000000000002,16.378999999999998C25.112000000000002,19.688,23.040000000000003,22.057,20.42,23.543C14.268,27.035,5.312000000000001,26.527,0.8210000000000015,20.183999999999997C3.7680000000000016,22.496,8.133000000000003,23.005,11.376000000000001,19.782999999999998C9.251000000000001,19.782999999999998,8.702000000000002,18.191999999999997,10.386000000000001,17.333999999999996C8.791,17.316999999999997,7.7780000000000005,16.812999999999995,7.183000000000002,15.899999999999997C6.957000000000002,15.552999999999997,6.9540000000000015,15.525999999999996,7.323000000000001,15.259999999999996C7.7280000000000015,14.966999999999997,8.281,14.836999999999996,8.851,14.792999999999996C7.200000000000001,14.319999999999995,6.191000000000001,13.457999999999995,5.8420000000000005,12.301999999999996C5.726000000000001,11.919999999999996,5.708,11.938999999999997,6.098000000000001,11.839999999999996C6.478000000000001,11.742999999999997,6.968000000000001,11.691999999999997,7.407000000000001,11.669999999999996C6.11,10.88,5.336,9.917,5.139,8.852C4.953,7.846,5.144,8.104000000000001,5.897,8.392C9.263,9.68,12.619,11.062,14.605,13.11L14.605,13.11Z" />
+      </svg>
+    </a>
+  </li>
+-->
+  
+</ul>
+    </div>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:liuhongjiang.github.com/tech" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/tech/">博客首页</a></li>
+  <li><a href="/tech/blog/archives">文章列表</a></li>
+  <li><a href="/tech/categories">标签分类</a></li>
+  <li><a href="/tech/todo">ToDo</a></li>
+  <li><a href="/tech/about">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ZooKeeper Overview</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-23T17:05:00+08:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/3rd-nbsp-tools/'>3rd&nbsp;tools</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= ZooKeeper Overview  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+<div class="entry-content">
+    
+    <div class="abstract">
+        <table>
+            <tr>
+                <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                <td>简单介绍了zookeeper的概要，主要是翻译了apache zookeeper overview的内容。</td>
+            </tr>
+        </table>
+    </div>
+    
+    <h2 id="zookeeper-">ZooKeeper 简介</h2>
+
+<p>ZooKeeper是Hadoop的正式子项目，它是一个针对大型分布式系统的可靠协调系统，提供的功能包括：配置维护、名字服务、分布式同步、组服务等。ZooKeeper的目标就是封装好复杂易出错的关键服务，将简单易用的接口和性能高效、功能稳定的系统提供给用户。<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
+
+<p>Zookeeper是Google的Chubby一个开源的实现，关于Chubby，可以google一下，有论文介绍的。zookeeper是高有效和可靠的协同工作系统。Zookeeper能够用来leader选举，配置信息维护等。在一个分布式的环境中，我们需要一个Master实例或存储一些配置信息，确保文件写入的一致性等。</p>
+
+<p>ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，包含一个简单的原语集，是Hadoop和Hbase的重要组件。目前提供Java和C的接口。</p>
+
+<p>在Zookeeper中，znode是一个跟Unix文件系统路径相似的节点,可以往这个节点存储或获取数据.如果在创建znode时Flag设置为EPHEMERAL,那么当这个创建这个znode的节点和Zookeeper失去连接后,这个znode将不再存在在Zookeeper 里.Zookeeper使用Watcher察觉事件信息,当客户端接收到事件信息,比如连接超时,节点数据改变,子节点改变,可以调用相应的行为来处理数 据.Zookeeper的Wiki页面展示了如何使用Zookeeper来处理事件通知,队列,优先队列,锁,共享锁,可撤销的共享锁,两阶段提交.</p>
+
+<p>znodes与Unix文件系统路径相似相似，但是还是不同的，znode的中间节点是可以保存数据的，对应于文件系统，就即是文件又是目录。为了达到高吞吐的能力，znode在zookeeper中是放在内存中的。</p>
+
+<p>ZooKeeper是以Fast Paxos算法为基础的，paxos算法存在活锁的问题，即当有多个proposer交错提交时，有可能互相排斥导致没有一个proposer能提交成功，而Fast Paxos作了一些优化，通过选举产生一个leader，只有leader才能提交propose，具体算法可见Fast Paxos。因此，要想弄懂ZooKeeper首先得对Fast Paxos有所了解。</p>
+
+<p>ZooKeeper的基本运转流程：</p>
+
+<pre><code>1、选举Leader。
+2、同步数据。
+3、选举Leader过程中算法有很多，但要达到的选举标准是一致的。
+4、Leader要具有最高的zxid。
+5、集群中大多数的机器得到响应并follow选出的Leader。
+</code></pre>
+
+<!-- more -->
+
+<h2 id="zookeeper-overview">ZooKeeper Overview</h2>
+
+<h3 id="section">结构</h3>
+
+<p>zookeeper service本身就是一个分布式集群，这一点和chubby是一样的。一个典型的集群由5个节点组成，他们之间选举出一个leader。构成zookeeper service的server有个前提条件，就是这些server是相互能够感知的。所有的server都保存了一个zookeeper的数据和状态的一个镜像，而且为了获得高吞吐能力，这个镜像是存放在内存中的。这个镜像是通过事务日志和某一时刻全部数据的快照生成的。</p>
+
+<p>Zookeeper的客户端连接到zookeeper的server上，客户端保持一个与server之间的TCP连接，并通过这个TCP链接发送请求，获取响应，获取watch事件，和发送心跳。如果连接断掉了，那么客户端将会自动连接到另外一个server。</p>
+
+<p><img class="center" src="/tech/images/blogimages/2013/zk-overview/zkservice.jpg" /> </p>
+
+<p>zookeeper的操作是有顺序的，zookeeper为每一个操作添加一个数字，通过这个数字可以体现出所有ZooKeeper transactions的顺序。后续的操作，可以通过这个种顺序去实现更上层的应用，例如同步操作。</p>
+
+<p>zookeeper的数据模型，类似文件系统，通过定一个了Hierarchical Namespace的概念，一个name就是路径，每一个节点znode都是通过一个路径来定义的。ZooKeeper&#8217;s Hierarchical Namespace的一个示例：</p>
+
+<p><img class="center" src="/tech/images/blogimages/2013/zk-overview/zknamespace.jpg" /> </p>
+
+<h3 id="section-1">节点和临时节点</h3>
+
+<p>在zookeeper中，每个节点(znode)可以包含数据信息。就像传统的文件系统中，允许既可以是文件，又可以是目录。
+zookeeper的设计目的就是存放同步信息：状态信息，配置，位置信息等等。所以每个节点存放的数据都是非常小的。具体实现是，可能是一个路径对应DB中的一项数据，例如chubby就是使用Berkeley DB来保存Node的信息。</p>
+
+<p>znode实际上包含的是一个有状态的数据，它包含了数据变更的版本号，ACL(Access Control List)变更的版本号，时间戳。每次数据变更时，version就是增加。例如，每次客户端查找收到一个node的数据，同时还会收到这个数据的版本号。</p>
+
+<p>znode的数据操作是原子性的，读操作将会获取znode的所有数据，写操作操作将会覆盖所有的数据。而且没有节点的都通过ACL来限制谁可以操作。</p>
+
+<p>zookeeper还支持临时节点，当创建临时节点的session结束时，临时节点也会被zookeeper删除。例如，可以利用这种机制监控系统中有哪些client不存在了。</p>
+
+<h3 id="conditional-updates-and-watches">Conditional updates and watches</h3>
+
+<p>zookeeper支持watch事件，客户端可以向一个znode注册一个watch事件。当这个节点发生改变时，这个watch事件将被激活，同时被注销。当一个watch事件触发是，zookeeper将会给客户端发送一个通知消息。如果客户端和zookeeper servers直接的连接断掉了，那么客户端会收到本地的一条连接断掉的消息。</p>
+
+<h3 id="guarantees">保证(Guarantees)</h3>
+
+<p>zookeeper非常简单快速，它的设计目的，是在它之上可以构造复杂的服务，例如同步。那么zookeeper就应该向上提供一些保证：</p>
+
+<ul>
+  <li>序列一致性：从一个客户端发送的一系列更新操作，讲会按照发送顺序执行。</li>
+  <li>原子性：更新要么成功，要么失败，没有中间状态，不会一部分成功，一部分失败。</li>
+  <li>数据一致性：在客户端看来，所有的服务和数据都是一样的，无论它连接到哪个服务器。</li>
+  <li>可靠性：一旦更新成功，那么这种更新将是永久性的，直到下次更新。</li>
+  <li>时效性：在client看来，一个更新操作后，zookeeper将在一个固定的时间内，更新所有的zookeeper server。</li>
+</ul>
+
+<h3 id="simple-api">Simple API</h3>
+
+<p>ZooKeeper提供了非常简单的编程接口，它仅仅支持以下操作:</p>
+
+<ul>
+  <li>create 创建一个znode节点</li>
+  <li>delete 删除一个znode节点</li>
+  <li>exists 测试一个znode节点是否存在</li>
+  <li>get data 读取一个znode节点的数据</li>
+  <li>set data 写一个znode节点的数据</li>
+  <li>get children 写一个znode节点的children列表</li>
+  <li>sync 等待znode节点的数据，在zookeeper server中同步</li>
+</ul>
+
+<h3 id="implementations">Implementations</h3>
+
+<p>下图展示了ZK的模块图，这个模块图是非常顶层和概要的。除了request processor不相同以外，其余的所有的ZK service中的server都有每个模块的一模一样的副本。</p>
+
+<p><img class="center" src="/tech/images/blogimages/2013/zk-overview/zkcomponents.jpg" /></p>
+
+<p>replicated database 存放了所有的数据，并且存放在内存中。所有的更新就会以日志的形式记录到磁盘中，以便可以用于灾后重建，所有的写操作，都先序列化到磁盘中，然后再写到内存中的database中。</p>
+
+<p>每个zk server为zk clients服务，zk客户端连接到一台zk服务器上，而且只能连接到一台，并向服务器发送请求。所有的读请求，都有zk server从本地的replica database中直接获取数据。所有写请求，或是改变服务状态的请求，zk会基于一个agreement protocol进行处理。</p>
+
+<p>agreement protocol的一部分，就是所有的来自客户端的写请求，就讲被转发到一个特定的zk server上（这个zk server被称为leader，其余的zk server称为followers）这时，所有的followers就会接收到来自leader的一个“提议消息”，并且同意这个消息。</p>
+
+<p>替换leader或同步followers的工作是有messaging layer完成的。</p>
+
+<h3 id="performance">Performance</h3>
+
+<p>ZooKeeper的一个目标就是高性能。由雅虎研究院开发zookeeper的小组所做的测试实验证明了zk的高性能。下图是他们的实验结果：
+ZooKeeper Throughput as the Read-Write Ratio Varies
+<img class="center" src="/tech/images/blogimages/2013/zk-overview/zkperfRW-3.2.jpg" /></p>
+
+<p>当读请求远远高于写请求时zk的性能会更好。因为写请求需要同步所有的zk server。通常情况下当读写比例为10：1时，性能就可以达到一个比较好的效果了。</p>
+
+<h3 id="reliability">Reliability</h3>
+
+<p>在zookeeper的介绍页面，还有关于failure的一个实验。实验表明zk在存在failure的情况下，依然可以保证比较高的吞吐能力。但更重要的是，leader选举算法可以保证系统能够很快从错误中恢复正常。在实验中观察，选举出新的leader的耗时少于200毫秒。当follower恢复正常后，zk的吞吐能力马上就上去了。</p>
+
+<h3 id="section-2">连接库</h3>
+
+<p>zookeeper可以通过多种方式连接，正式发布包里面包含了java和C种方式进行连接（就是客户端），C连接方式，有个库，单线程的zookeeper_st和多线程的zookeeper_mt。
+zookeeper_st放弃了事件循环，可在事件驱动的应用程序中使用。而zookeeper_mt更加易用，与Java API类似，创建一个网络IO线程和一个事件分发线程，用来维护连接和执行回调。
+在具体使用上，zookeeper_st仅提供了异步API与回调，用以集成至应用程序的事件循环。它只是为了支持pthread库不可用或不稳定的平台而存在，例如FreeBSD 4.x。除此以外的其他情况，应使用提供同步与异步两种API的zookeeper_mt。[^1]</p>
+
+<p>当然还有其它语言非正式发布的连接库：<a href="https://cwiki.apache.org/confluence/display/ZOOKEEPER/ZKClientBindings">ZKClientBindings</a>。</p>
+
+<h3 id="zk">zk集群</h3>
+
+<p>配置zookeeper集群其实也是比较简单地的。配置方法就是standalone mode的配置文件基础上添加几个配置项，下面是一个示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">tickTime=2000
+</span><span class="line">dataDir=/var/lib/zookeeper
+</span><span class="line">clientPort=2181
+</span><span class="line">initLimit=5
+</span><span class="line">syncLimit=2
+</span><span class="line">server.1=zoo1:2888:3888
+</span><span class="line">server.2=zoo2:2888:3888
+</span><span class="line">server.3=zoo3:2888:3888</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>单机版中包含了<code>tickTime</code>，<code>dataDir</code>，<code>clientPort</code>三个配置项。<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup></p>
+
+<ul>
+  <li>tickTime 是zk的时钟周期，单位是毫秒。Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔，也就是每个 tickTime时间就会发送一个心跳。tickTime以毫秒为单位。</li>
+  <li>dataDir 保存数据的目录，默认情况下，Zookeeper将写数据的日志文件也保存在这个目录里。</li>
+  <li>clientPort 客户端连接 Zookeeper 服务器的端口，Zookeeper 会监听这个端口，接受客户端的访问请求。</li>
+</ul>
+
+<p>在集群配置中多出来了，<code>initLimit</code>，<code>syncLimit</code>，<code>server.x</code>配置项。</p>
+
+<ul>
+  <li>initLimit 集群中的follower服务器(F)与leader服务器(L)之间初始连接时能容忍的最多心跳数（tickTime的数量）。</li>
+  <li>syncLimit 集群中的follower服务器与leader服务器之间请求和应答之间能容忍的最多心跳数（tickTime的数量）。</li>
+  <li>server.X  集群信息（服务器编号，服务器地址，Leader Followers通信端口，选举端口）     <br />
+  这个配置项的书写格式比较特殊，规则如下：  <br />
+      server.N=YYY:A:B   <br />
+  其中N表示服务器编号，YYY表示服务器的IP地址，A为leader followers(LF)通信端口，表示该服务器与集群中的leader交换的信息的端口。B为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader），连接方式也是tcp。一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。但是当所采用的为伪集群时（所有的zk server在一台服务器上），IP地址都一样，只能时A端口和B端口不一样。     <br />
+  当一台zk服务器启动时，它通过查看myid文件，可以知道自己是这些配置中的哪一台服务器。myid文件包含了服务器的数字编号。</li>
+</ul>
+
+<h2 id="section-3">试用</h2>
+
+<p>先装一个zookeeper Standalone来试试。安装和配置还是十分简单的，参考<a href="http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html">ZooKeeper Getting Started Guide</a>上面讲到地，进行就可以了。配置完后，就可以启动zookeeper了，启动命令可以参考前面的Guide。</p>
+
+<p>zooker启动后可以使用客户端连接zookeeper service了，有两种客户端使用，一是java版，另外一个是c版的。可以先使用java版的练习一下。</p>
+
+<p>实际上启动了java的client后，看到的是一个类是shell的交互式界面了，通过这个shell可以做很多事情，通过命令<code>help</code>来查看。</p>
+
+<pre><code>[zkshell: 0] help
+    ZooKeeper host:port cmd args
+    get path [watch]
+    ls path [watch]
+    set path data [version]
+    delquota [-n|-b] path
+    quit
+    printwatches on|off
+    createpath data acl
+    stat path [watch]
+    listquota path
+    history
+    setAcl path acl
+    getAcl path
+    sync path
+    redo cmdno
+    addauth scheme auth
+    delete path [version]
+    setquota -n|-b val path
+</code></pre>
+
+<p><a href="http://zookeeper.apache.org/doc/r3.4.5/zookeeperStarted.html">ZooKeeper Getting Started Guide</a>还举一个通过zkshell进行znode的创建、查看、更新、删除等操作。</p>
+
+<h2 id="section-4">总结</h2>
+
+<p>上面简单介绍了zookeeper，包括zookeeper的一些概念和框架等，绝大部分是直接翻译了<a href="http://zookeeper.apache.org/doc/trunk/zookeeperOver.html">zookeeper Overview</a>。下一篇文章就讲讲<a href="http://zookeeper.apache.org/doc/r3.4.5/zookeeperProgrammers.html">ZooKeeper Programmer’s Guide</a>，当然重点是C binding。</p>
+
+<p>在网上查找zookeeper的资料时，找到了几篇不错的文章<sup id="fnref:3"><a href="#fn:3" rel="footnote">3</a></sup><sup id="fnref:4"><a href="#fn:4" rel="footnote">4</a></sup><sup id="fnref:5"><a href="#fn:5" rel="footnote">5</a></sup><sup id="fnref:6"><a href="#fn:6" rel="footnote">6</a></sup>，大家可以一读。另外还找到一篇介绍google的chubby的不错的blog——<a href="http://blog.csdn.net/historyasamirror/article/details/3870168">Google利器之Chubby</a>，这个blog还写了关于google的分布式重用的5篇论文的文章，第一篇是<a href="http://blog.csdn.net/historyasamirror/article/details/3861144">Google利器之Google Cluster</a>，如果大家有兴趣可以顺着读下去看一看。</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="http://baike.baidu.com/view/3061646.htm">http://baike.baidu.com/view/3061646.htm</a><a href="#fnref:1" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p><a href="http://blog.csdn.net/poechant/article/details/6650249">http://blog.csdn.net/poechant/article/details/6650249</a><a href="#fnref:2" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:3">
+      <p><a href="http://www.cnblogs.com/caosiyang/archive/2012/11/09/2763190.html">ZooKeeper编程笔记</a><a href="#fnref:3" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:4">
+      <p><a href="http://www.oschina.net/p/zookeeper">http://www.oschina.net/p/zookeeper</a><a href="#fnref:4" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:5">
+      <p><a href="http://bbs.zoomla.cn/archiver/showtopic-15086.aspx">http://bbs.zoomla.cn/archiver/showtopic-15086.aspx</a><a href="#fnref:5" rel="reference">&#8617;</a></p>
+    </li>
+    <li id="fn:6">
+      <p><a href="http://liyanblog.cn/articles/2012/09/28/1348814456421.html">http://liyanblog.cn/articles/2012/09/28/1348814456421.html</a><a href="#fnref:6" rel="reference">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-23T17:05:00+08:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/3rd-nbsp-tools/'>3rd&nbsp;tools</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= ZooKeeper Overview  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/tech/blog/2013/01/22/github-https/" title="Previous Post: 使用https连接github">&laquo; 使用https连接github</a>
+      
+      
+        <a class="basic-alignment right" href="/tech/blog/2013/01/31/svm-pegasos/" title="Next Post: Pegasos算法">Pegasos算法 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>本人</h1>
+  <p>一个码农，苦逼而卑微地活着，同时也正直、善良而坚持地活着。相信梦想，相信真理。写过C/C++，python。开发过网站服务器后端程序。<a href="/tech/about/">更多介绍...</a></p>
+  <p>声明：本站使用的图片等，甚至部分文章都来自网络，原作者享有对著作的一切权利。</p>
+  <p>欢迎在新浪微博上关注我：<wb:follow-button uid="1462341965" type="gray_3" width="100%" height="24" ></wb:follow-button></p>
+</section>
+<section>
+  <h1>最新博文</h1>
+  <ul id="Recent Posts">
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/23/zk-overview/">ZooKeeper Overview</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/22/github-https/">使用https连接github</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/19/2012/">我的2012</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a>
+      </li>
+    
+  </ul>
+</section>
+<section id="tag-clouds">
+  <h1>分类</h1>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+</section>
+<section>
+  <h1>友情链接</h1>
+  <ul id="friends-links">
+      <li class="post">
+        <a href="http://liuhongjiang.github.com/life/">小结其绳</a>
+      </li>
+      <li class="post">
+        <a href="http://arekyao.github.com/">YY Every Day</a>
+      </li>
+  </ul>
+</section>
+<section id="tag-clouds" style="text-decoration:none">
+<h1><a href="/tech/recent-comment/">最新评论</a></h1>
+    <script type="text/javascript" src="http://andrewliu117.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=16&excerpt_length=30"></script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 刘洪江 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <span style="float:right">
+    Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>
+  </span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'andrewliu117';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

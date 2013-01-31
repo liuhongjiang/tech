@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: Vi | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/vi/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2013-01-31T14:56:55+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[读Vim手册笔记]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/"/>
+    <updated>2012-11-22T10:22:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim</id>
+    <content type="html"><![CDATA[<h2 id="section">书籍</h2>
+<pre class="sh-bash"><code>《VIM用户手册》  
+作者: Bram Moolenaar  
+翻译: ZhaoRuFei&lt;slimzhao@hotmail.com&gt;  
+版本: 7.0  
+</code></pre>
+
+<h2 id="section-1">笔记</h2>
+<ol>
+  <li><strong>要退出Vim, 用命令”ZZ”. 该命令保存当前文件并退出Vim.</strong></li>
+  <li>如果你在放弃所有修改后还想以该文件的初始内容作为开始继续编辑, 还可以用”:e!”命令放弃所有修改并重新载入该文件的原始内容.</li>
+</ol>
+
+<h2 id="section-2">奇技淫巧</h2>
+
+<ol>
+  <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

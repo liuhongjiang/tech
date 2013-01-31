@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: octopress | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2013-01-31T14:56:55+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[博客的样式]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/24/blog-styles/"/>
+    <updated>2012-11-24T14:23:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/11/24/blog-styles</id>
+    <content type="html"><![CDATA[<p>使用的markdown解析工具为kramdown。  </p>
+
+<!-- more -->
+
+<h2 id="section">引用块</h2>
+
+<p>引用块的样式借用了<a href="http://kramdown.rubyforge.org/syntax.html#link-definitions">kramdown语法文档</a>中的样式。</p>
+
+<p>在<code>/sass/custom/_style.scss</code>中添加样式定义</p>
+
+<p><code>css  
+/* 引用 */
+#content blockquote.information {
+  border-left: 12px solid #080;
+  background-color: #bfb;
+  padding: 12px 12px 12px 0;
+  margin-left: -48px;
+  padding-left: 48px; 
+}
+</code></p>
+
+<p>然后在markdown文件中的写法如下</p>
+
+<p class="information">``` plain<br />
+&gt; This is a blockquote. 
+&gt; 这是一个引用块。   </p>
+<p>```</p>
+
+<p>就会显示成这个样子</p>
+
+<blockquote class="information">
+  <p>This is a blockquote. <br />
+这是一个引用块。</p>
+</blockquote>
+
+<h2 id="section-1">表格</h2>
+
+<p>参考<a href="http://kramdown.rubyforge.org/syntax.html#tables">kramdown关于表格的参考手册</a>，或者是<a href="http://kramdown.rubyforge.org/quickref.html#tables">kramdown关于表格的快速参考手册</a>。下面表格的样式也是在这个基础上修改的。  <br />
+首先看一下表格样式的定义，在<code>/sass/custom/_styles.scss</code>中定义样式</p>
+
+<p><code> css 
+/* 表格 */
+#content table.mytable {
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  /*border: solid 1px black;*/
+ /* width: 100%; */
+}
+#content table.mytable td, #content table.mytable th {
+    padding: 3px 5px; 
+    border: solid 1px #070;
+}
+#content table.mytable th {
+    background-color: #080;
+    color: white; 
+}
+</code></p>
+
+<p>然后可以用以下代码显示表格</p>
+
+<p class="mytable">``` plain
+| Header1 | Header2 | Header3 |
+|:——–|:——-:|——–:|
+| cell1   | cell2   | cell3   |
+| cell4   | cell5   | cell6   |
+|—-
+| cell1   | cell2   | cell3   |
+| cell4   | cell5   | cell6   |
+|=====
+| Foot1   | Foot2   | Foot3</p>
+<p>```</p>
+
+<p>显示的表格为</p>
+
+<table class="mytable">
+  <thead>
+    <tr>
+      <th style="text-align: left">Header1</th>
+      <th style="text-align: center">Header2</th>
+      <th style="text-align: right">Header3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">cell1</td>
+      <td style="text-align: center">cell2</td>
+      <td style="text-align: right">cell3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">cell4</td>
+      <td style="text-align: center">cell5</td>
+      <td style="text-align: right">cell6</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td style="text-align: left">cell1</td>
+      <td style="text-align: center">cell2</td>
+      <td style="text-align: right">cell3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">cell4</td>
+      <td style="text-align: center">cell5</td>
+      <td style="text-align: right">cell6</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="text-align: left">Foot1</td>
+      <td style="text-align: center">Foot2</td>
+      <td style="text-align: right">Foot3</td>
+    </tr>
+  </tfoot>
+</table>
+
+<p><br /></p>
+
+<p>kramdown参考文档中的其它几个例子</p>
+
+<p class="mytable">```
+|—————–+————+—————–+—————-|
+| Default aligned |Left aligned| Center aligned  | Right aligned  |
+|—————–|:———–|:—————:|—————:|
+| First body part |Second cell | Third cell      | fourth cell    |
+| Second line     |foo         | <strong>strong</strong>      | baz            |
+| Third line      |quux        | baz             | bar            |
+|—————–+————+—————–+—————-|
+| Second body     |            |                 |                |
+| 2 line          |            |                 |                |
+|=================+============+=================+================|
+| Footer row      |            |                 |                |
+|—————–+————+—————–+—————-|</p>
+<p>```</p>
+
+<p>注意里面的对齐方式的定义（代码的第三行），还有第7,10行中关于表格分块的定义，显示</p>
+
+<table class="mytable">
+  <thead>
+    <tr>
+      <th>Default aligned</th>
+      <th style="text-align: left">Left aligned</th>
+      <th style="text-align: center">Center aligned</th>
+      <th style="text-align: right">Right aligned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>First body part</td>
+      <td style="text-align: left">Second cell</td>
+      <td style="text-align: center">Third cell</td>
+      <td style="text-align: right">fourth cell</td>
+    </tr>
+    <tr>
+      <td>Second line</td>
+      <td style="text-align: left">foo</td>
+      <td style="text-align: center"><strong>strong</strong></td>
+      <td style="text-align: right">baz</td>
+    </tr>
+    <tr>
+      <td>Third line</td>
+      <td style="text-align: left">quux</td>
+      <td style="text-align: center">baz</td>
+      <td style="text-align: right">bar</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>Second body</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td>2 line</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>Footer row</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+  </tfoot>
+</table>
+
+<p>当然也有屌丝专用的丑陋，但简单的方式，与上面的表格一样</p>
+
+<p class="mytable">```
+|—
+| Default aligned | Left aligned | Center aligned | Right aligned
+|-|:-|:-:|-:
+| First body part | Second cell | Third cell | fourth cell
+| Second line |foo | <strong>strong</strong> | baz
+| Third line |quux | baz | bar
+|—
+| Second body
+| 2 line
+|===
+| Footer row</p>
+<p>```</p>
+
+<p>最后的显示的表格与上面是一样的。</p>
+
+<table class="mytable">
+  <thead>
+    <tr>
+      <th>Default aligned</th>
+      <th style="text-align: left">Left aligned</th>
+      <th style="text-align: center">Center aligned</th>
+      <th style="text-align: right">Right aligned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>First body part</td>
+      <td style="text-align: left">Second cell</td>
+      <td style="text-align: center">Third cell</td>
+      <td style="text-align: right">fourth cell</td>
+    </tr>
+    <tr>
+      <td>Second line</td>
+      <td style="text-align: left">foo</td>
+      <td style="text-align: center"><strong>strong</strong></td>
+      <td style="text-align: right">baz</td>
+    </tr>
+    <tr>
+      <td>Third line</td>
+      <td style="text-align: left">quux</td>
+      <td style="text-align: center">baz</td>
+      <td style="text-align: right">bar</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>Second body</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td>2 line</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>Footer row</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+  </tfoot>
+</table>
+
+<p>当然还可以有没有那么复杂的直接上最简单的表格的方式</p>
+
+<p class="mytable">```
+| First cell|Second cell|Third cell
+| First | Second | Third |
+First | Second | | Fourth |</p>
+<p>```</p>
+
+<p>显示为</p>
+
+<table class="mytable">
+  <tbody>
+    <tr>
+      <td>First cell</td>
+      <td>Second cell</td>
+      <td>Third cell</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>First</td>
+      <td>Second</td>
+      <td>Third</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>First</td>
+      <td>Second</td>
+      <td> </td>
+      <td>Fourth</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+
+<h2 id="section-2">首行缩进</h2>
+
+<p>blog的样式中是没有缩进的，这样多少还是有点难看。加入的方法如下，在<code>/sass/custom/_styles.scss</code>中加入如下代码</p>
+
+<p><code>css
+#content .entry-content &gt; p {
+	text-indent: 2em;
+}
+</code></p>
+
+<p>然后就有了现在的缩进样式。需要注意，在markdown文件中，如果在一行的后面加入空格来换行的话，生成的html文件中，是用&lt;br/&gt;来换行的，不是用&lt;p&gt;换行，就没有缩进的样式了。正确的方法是在两行文字之间插入空行。</p>
+
+<p>但后来发现一个问题，在一行里面加入的代码块也有了缩进的样式, 就像这样子<code style="text-indent:2em">这里有了缩进</code>, 我用了比较土的方法解决，还是在上面的custom/_styles.scss中加入</p>
+
+<p><code>css
+#content .entry-content &gt; p &gt; code {
+	text-indent: 0em;
+}
+</code></p>
+
+<p>这种解决办法不是很好，因为总有可能导致其它标签里面意外出现缩进，但我也不熟悉css，只有先这么办了，先解决眼前的问题。</p>
+
+<h2 id="section-3">添加豆瓣的侧边栏</h2>
+
+<p><a href="http://www.douban.com/service/badgemakerjs">豆瓣收藏秀</a>可以为你的博客生成一个侧边栏，放入到你的博客中。访问这个网址<a href="">http://www.douban.com/service/badgemakerjs</a>，可以生成一段js代码，然后讲这段代码嵌入到侧边栏的html中即可。</p>
+
+<p>具体的做法，显示在收藏秀的页面里面选择好需要显示的内容，例如：我选择了，我想看的、书、每次随机选择、共显示9个 每行3个、图片小，下面两个选择隐藏，然后生成了这样的JS代码</p>
+
+<p><code>js
+&lt;script type="text/javascript" src="http://www.douban.com/service/badge/63148093/?show=wishlist&amp;amp;select=random&amp;amp;n=9&amp;amp;columns=3&amp;amp;hidelogo=yes&amp;amp;hideself=yes&amp;amp;cat=book" &gt;&lt;/script&gt; 
+</code></p>
+
+<p>然后创建文件<code>/source/_includes/custom/asides/douban-wishreading.html</code>, 在这个html文件中加入如下代码</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>豆瓣想读的书  (douban-wishreading.html)</span> <a href='/code/2012/blog_style/douban-wishreading.html'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">&quot;well&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;douban-wish&quot;</span> <span class="na">class=</span><span class="s">&quot;nav nav-list&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;</span>想读的书<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;http://www.douban.com/service/badge/63148093/?show=wishlist&amp;amp;select=random&amp;amp;n=9&amp;amp;columns=3&amp;amp;hidelogo=yes&amp;amp;hideself=yes&amp;amp;cat=book&quot;</span> <span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://www.douban.com/people/63148093&quot;</span><span class="nt">&gt;</span>@左左哥<span class="nt">&lt;/a&gt;</span> on Douban
+</span><span class='line'><span class="nt">&lt;/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>其中第5行为豆瓣收藏秀生成的JS代码，其它的样式代码为blog的样式, 用于不同的blog可能需要修改。然后需要在<code>_config.yml</code>里修改配置，在<code>default_asides</code>中加入<code>custom/asides/douban-wishreading.html</code>，就像这样</p>
+
+<p><code>yml
+default_asides: [asides/recent_posts.html, custom/asides/douban-reading.html, custom/asides/douban-wishreading.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+</code></p>
+
+<p>最后展现的样子可以参考<a href="http://liuhongjiang.github.com/life/">猪猫的生活</a>。</p>
+
+<h2 id="section-4">文章摘要</h2>
+
+<p>当文章比较长的时候，如果在文章的前面有一个摘要，就会方便很多。下面就就是一个添加摘要的简单方法。</p>
+
+<p>首先在文章的markdown文件中添加一个变量<code>abstract</code>如下</p>
+
+<h2 id="section-5">```</h2>
+<p>layout: post
+title: “博客的样式”
+date: 2012-11-24 14:23
+comments: true
+categories: octopress
+abstract: “本文就介绍了这个blog搭建过程中，一些样式如何设置的。包括：引用块的样式，表格的样式，首行缩进，添加豆瓣侧边栏, 文章摘要。”
+—
+```</p>
+
+<p>然后修改<code>source/_include/article.html</code></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>修改article.html  (article.diff)</span> <a href='/code/2012/blog_style/article.diff'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gh">diff --git a/source/_includes/article.html b/source/_includes/article.html</span>
+</span><span class='line'><span class="gh">index 4a477e0..f377d2c 100644</span>
+</span><span class='line'><span class="gd">--- a/source/_includes/article.html</span>
+</span><span class='line'><span class="gi">+++ b/source/_includes/article.html</span>
+</span><span class='line'><span class="gu">@@ -32,7 +32,19 @@</span>
+</span><span class='line'>   &lt;/header&gt;
+</span><span class='line'> {% endunless %}
+</span><span class='line'> {% if index %}
+</span><span class='line'><span class="gd">-  &lt;div class=&quot;entry-content&quot;&gt;{{ content | excerpt }}&lt;/div&gt;</span>
+</span><span class='line'><span class="gi">+    &lt;div class=&quot;entry-content&quot;&gt;</span>
+</span><span class='line'><span class="gi">+        {% if post.abstract %}</span>
+</span><span class='line'><span class="gi">+        &lt;div class=&quot;abstract&quot;&gt;</span>
+</span><span class='line'><span class="gi">+            &lt;table&gt;</span>
+</span><span class='line'><span class="gi">+                &lt;tr&gt;</span>
+</span><span class='line'><span class="gi">+                    &lt;td style=&quot;font-size:18px;font-weight:bold;width:60px&quot;&gt;摘要：&lt;/td&gt;</span>
+</span><span class='line'><span class="gi">+                    &lt;td&gt;{{ post.abstract }}&lt;/td&gt;</span>
+</span><span class='line'><span class="gi">+                &lt;/tr&gt;</span>
+</span><span class='line'><span class="gi">+            &lt;/table&gt;</span>
+</span><span class='line'><span class="gi">+        &lt;/div&gt;</span>
+</span><span class='line'><span class="gi">+        {% endif %}</span>
+</span><span class='line'><span class="gi">+        {{ content | excerpt }}</span>
+</span><span class='line'><span class="gi">+    &lt;/div&gt;</span>
+</span><span class='line'>   {% capture excerpted %}{{ content | has_excerpt }}{% endcapture %}
+</span><span class='line'>   {% if excerpted == &#39;true&#39; %}
+</span><span class='line'>     &lt;footer&gt;
+</span><span class='line'><span class="gu">@@ -40,5 +52,16 @@</span>
+</span><span class='line'>     &lt;/footer&gt;
+</span><span class='line'>   {% endif %}
+</span><span class='line'> {% else %}
+</span><span class='line'><span class="gd">-&lt;div class=&quot;entry-content&quot;&gt;{{ content }}&lt;/div&gt;</span>
+</span><span class='line'><span class="gi">+&lt;div class=&quot;entry-content&quot;&gt;</span>
+</span><span class='line'><span class="gi">+    {% if page.abstract %}</span>
+</span><span class='line'><span class="gi">+    &lt;div class=&quot;abstract&quot;&gt;</span>
+</span><span class='line'><span class="gi">+        &lt;table&gt;</span>
+</span><span class='line'><span class="gi">+            &lt;tr&gt;</span>
+</span><span class='line'><span class="gi">+                &lt;td style=&quot;font-size:18px;font-weight:bold;width:60px&quot;&gt;摘要：&lt;/td&gt;</span>
+</span><span class='line'><span class="gi">+                &lt;td&gt;{{ page.abstract }}&lt;/td&gt;</span>
+</span><span class='line'><span class="gi">+            &lt;/tr&gt;</span>
+</span><span class='line'><span class="gi">+        &lt;/table&gt;</span>
+</span><span class='line'><span class="gi">+    &lt;/div&gt;</span>
+</span><span class='line'><span class="gi">+    {% endif %}</span>
+</span><span class='line'><span class="gi">+    {{ content }}&lt;/div&gt;</span>
+</span><span class='line'> {% endif %}
+</span></code></pre></td></tr></table></div></figure></notextile></div> </p>
+
+<p>之后修改样式文件<code>sass/custom/_styles.scss</code>, 添加如下的样式</p>
+
+<p>``` css
+.abstract, .warning{
+border:none;
+padding:0.6em 1.25em 0.6em 1.25em;
+    margin-top:0.25em;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    -box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+}</p>
+
+<p>.abstract{
+    background:#d5e9f6;
+}
+```</p>
+
+<p>就可以显示和本文开始一样的摘要了。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用Octopress搭建博客]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog/"/>
+    <updated>2012-11-21T10:40:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog</id>
+    <content type="html"><![CDATA[<h2 id="blog">如何搭建blog</h2>
+<ul>
+  <li>这个blog是使用<a href="http://octopress.org/">Octopress</a>搭建的，它是一种基于<a href="https://github.com/mreid/jekyll/">Jekyll</a>的博客框架。</li>
+  <li>存放在<a href="https://github.com/">github</a>上。</li>
+  <li>markdown解析器用的<a href="http://kramdown.rubyforge.org/">kramdown</a></li>
+  <li>数学公式解析器用的<a href="http://www.mathjax.org/">MathJax</a></li>
+</ul>
+
+<!-- more -->
+
+<p>相关信息如下：</p>
+
+<ul>
+  <li><a href="https://github.com/">github</a></li>
+  <li><a href="http://pages.github.com/">github pages</a></li>
+  <li><a href="http://octopress.org/">Octopress</a></li>
+  <li><a href="http://octopress.org/docs/">Octopress手册</a></li>
+</ul>
+
+<h2 id="section">值得借鉴的站点</h2>
+
+<p>下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。</p>
+
+<ul>
+  <li><a href="http://luikore.github.com/2011/09/good-things-learned-from-octopress/">这个小站很不错</a></li>
+  <li><a href="http://yanping.me/">yanping.me</a></li>
+  <li><a href="http://www.yangzhiping.com/">http://www.yangzhiping.com/</a></li>
+  <li><a href="http://colors4.us/">http://colors4.us/</a></li>
+  <li><a href="http://mark.reid.name/">http://mark.reid.name/</a></li>
+  <li><a href="http://www.worldhello.net">http://www.worldhello.net</a></li>
+  <li><a href="http://jakevdp.github.com/">http://jakevdp.github.com/</a></li>
+  <li><a href="http://threeofakind.ca/blog/2012/06/russells-6-8-months/">head的照片</a> </li>
+  <li><a href="http://blog.satrex.jp/">head的渐变色</a></li>
+  <li><a href="http://mrzhang.me/">一个前端大牛的博客：wǒ_is神仙</a></li>
+  <li><a href="http://www.dongwm.com/">3d云标签，豆瓣阅读的侧边栏</a></li>
+</ul>
+
+<p>其它的收集</p>
+
+<ul>
+  <li><a href="http://justineo.github.com/slideshows/font/#/">这个slideshows太亮了</a></li>
+  <li><a href="http://mrzhang.me/blog/using-shjs-for-jekyll.html">另外一种博客语法高亮:Using SHJS for Jekyll</a></li>
+</ul>
+
+<h2 id="blog-1">在blog中显示公式</h2>
+
+<p>数学公式解析器用的<a href="http://www.mathjax.org/">MathJax</a>, 这是一个JS脚本，渲染Latex格式的数学公式。请参考以下几篇文章。</p>
+
+<ul>
+  <li><a href="http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/">在Octopress中使用LaTeX</a></li>
+  <li><a href="http://steshaw.org/blog/2012/02/09/hello-mathjax/">Hello MathJax</a></li>
+  <li><a href="http://jakevdp.github.com/blog/2012/09/05/quantum-python/">blog写公式的例子</a></li>
+</ul>
+
+<h2 id="section-1">标签</h2>
+
+<p>标签云主要使用<a href="https://github.com/tokkonopapa/octopress-tagcloud">标签云的插件</a>。</p>
+
+<p>在<code>_config.yml</code>的sidebar中加入<code>tag_cloud.html</code>，就标签出现在侧边栏中。</p>
+
+<p>```
+default_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]</p>
+
+<p>blog_index_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]</p>
+
+<p>post_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+```</p>
+
+<h2 id="section-2">拷贝本站</h2>
+
+<p>或者你也可以拷贝这个项目到你的github的pages的项目中，然后删除source/_post下面的所有文章。修改部分配置即可。</p>
+
+<ul>
+  <li><a href="https://github.com/liuhongjiang/liuhongjiang.github.com">本站的源代码</a></li>
+</ul>
+
+<p><strong style="color:red">注意：</strong>clone的是source分支，不是master。</p>
+
+<p>需要修改的地方：</p>
+
+<ul>
+  <li>_config.yml文件</li>
+</ul>
+
+<p><code>
+url: http://liuhongjiang.github.com
+title: 刘洪江的流水帐
+subtitle: 拾起点点滴滴, 聚沙成石.
+author: 刘洪江
+simple_search: http://google.com/search
+description: 他是一个程序员，已婚，有个儿子，字“左烦子”，号“李真棒”.
+</code></p>
+
+<ul>
+  <li>
+    <p>自我介绍</p>
+
+    <ul>
+      <li>source/about/index.markdown </li>
+      <li>source/_includes/custom/asides/about.html</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="section-3">博客样式</h2>
+
+<p>另外关于本博客的一些样式可以参考<a href="/blog/2012/11/24/blog-styles/">博客的样式</a></p>
+
+<h2 id="section-4">感谢</h2>
+<p>在本站的搭建过程中，参考了<a href="http://yanping.me/cn/">http://yanping.me/cn/</a>。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。</p>
+
+<h2 id="section-5">好文章</h2>
+
+<p><a href="http://www.yangzhiping.com/tech/github.html">如何高效利用GitHub</a></p>
+
+]]></content>
+  </entry>
+  
+</feed>
