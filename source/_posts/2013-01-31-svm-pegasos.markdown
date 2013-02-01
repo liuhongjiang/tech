@@ -98,4 +98,4 @@ total= 946
 
 实现例子的代码和数据可以[在github上下载](https://github.com/liuhongjiang/blog_projects/tree/master/pegasos)。pegasos有两个版本，pegasos2.py是pegasos.py的升级版，用了numpy库，使得代码更精简好看，同时运行效率更高。
 
-PS：发现numpy和scipy、matplotlib真实好东西啊，python数学运算离不开。另外发现了一个讲numpy/scipy翻译为中文的网站[用Python做科学计算](http://pyscin.appspot.com/html/index.html)，好东西啊。
+PS：发现numpy和scipy、matplotlib真是好东西啊，python数学运算离不开。另外发现了一个讲numpy/scipy文档翻译为中文的网站[用Python做科学计算](http://pyscin.appspot.com/html/index.html)，好东西啊。
