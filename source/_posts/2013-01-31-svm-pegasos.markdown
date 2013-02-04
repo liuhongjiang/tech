@@ -96,6 +96,8 @@ total= 946
 
 一共有946个测试样本，其中46个分类错误，72个没有找到分类，849个正确分类，正确分类率89.7%。$\lambda$取值为0.5。我也没有仔细调整$\lambda$的取值，不过看来结果还是慢不错的。但比起SMO算法实现的svm效果要差一些。但是pegasos的优势是快啊，同样的1934个训练样本，基于SMO的svm，花了3、4个小时训练，而pegasos算法只用了30多秒，逆天了。
 
-实现例子的代码和数据可以[在github上下载](https://github.com/liuhongjiang/blog_projects/tree/master/pegasos)。pegasos有两个版本，pegasos2.py是pegasos.py的升级版，用了numpy库，使得代码更精简好看，同时运行效率更高。
+实现例子的代码和数据可以[在github上下载](https://github.com/liuhongjiang/blog_projects/tree/master/pegasos)。pegasos有两个版本，pegasos2.py是pegasos.py的升级版，用了numpy库，使得代码更精简好看，同时运行效率更高。这个目录下还包含了论文的pdf文档Pegasos.pdf。
 
 PS：发现numpy和scipy、matplotlib真是好东西啊，python数学运算离不开。另外发现了一个讲numpy/scipy文档翻译为中文的网站[用Python做科学计算](http://pyscin.appspot.com/html/index.html)，好东西啊。
+
+还发现了一个和机器学习相关的网站<http://hunch.net/>，有很不多不错的学术方面的东西。
