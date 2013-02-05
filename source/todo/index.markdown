@@ -48,6 +48,7 @@ todo-toggle: true
 * [highcharts](http://www.highcharts.com/)/open flash chart
 * [mockup](http://www.balsamiq.com/products/mockups)
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
+* breast app and chrome plugin
 {: .toggle-box }
 
 ### Done
