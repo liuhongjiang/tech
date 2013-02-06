@@ -329,7 +329,8 @@ div.sharing{
 }
 
 .toggle-box blockquote a {
-    color: #888888;
+  color: #888888;
+  @include link-colors(#888888, $hover: $link-color-hover, $focus: $link-color-hover, $visited: $link-color-visited, $active: $link-color-active);
 }
 
 ul.toggle-box { &, ul { margin-left: 2em; }}

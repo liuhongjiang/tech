@@ -49,6 +49,10 @@ todo-toggle: true
 * [mockup](http://www.balsamiq.com/products/mockups)
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
 * breast app and chrome plugin
+
+    > [adamsp/wookmark](https://github.com/adamsp/wookmark)     
+    > <http://www.chromi.org/archives/13915>        
+    > <http://open.chrome.360.cn/extension_dev/overview.html>       
 {: .toggle-box }
 
 ### Done
