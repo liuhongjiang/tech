@@ -12,7 +12,11 @@ todo-toggle: true
 ### Learning
 {: .toggle-title .title-unfold}
 
-* PHP(w3school 教程)
+* android breast app and chrome plugin
+
+    > [adamsp/wookmark](https://github.com/adamsp/wookmark)     
+    > <http://www.chromi.org/archives/13915>        
+    > <http://open.chrome.360.cn/extension_dev/overview.html>       
 {: .toggle-box}
 
 ### Plan
@@ -48,16 +52,12 @@ todo-toggle: true
 * [highcharts](http://www.highcharts.com/)/open flash chart
 * [mockup](http://www.balsamiq.com/products/mockups)
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
-* breast app and chrome plugin
-
-    > [adamsp/wookmark](https://github.com/adamsp/wookmark)     
-    > <http://www.chromi.org/archives/13915>        
-    > <http://open.chrome.360.cn/extension_dev/overview.html>       
 {: .toggle-box }
 
 ### Done
 {: .toggle-title .title-fold}
 
+* PHP(w3school 教程)
 * Elasticsearch
 * HTML DOM(w3school 教程)
 * JQuery(w3school 教程)
