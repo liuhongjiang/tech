@@ -162,6 +162,12 @@ todo-toggle: true
     > <http://www.blogjava.net/qileilove/archive/2012/05/23/378903.html>    
     > <http://www.2cto.com/os/201109/103758.html>   
     > <http://blog.csdn.net/jiang1013nan/article/details/5721675>
+* Bloom Filter及其变种  
+
+    > [Bloom Filter的来历](http://blog.csdn.net/jiaomeng/article/details/1496329)
+    > [标准Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1495500)
+    > [Counting Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1498283)
+    > [Partial Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1502910)
 {: .toggle-box}
 
 ### Done
