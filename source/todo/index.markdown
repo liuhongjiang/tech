@@ -52,6 +52,8 @@ todo-toggle: true
 * [highcharts](http://www.highcharts.com/)/open flash chart
 * [mockup](http://www.balsamiq.com/products/mockups)
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
+* [Hacker news source code](https://github.com/nex3/arc/)
+* Lisp
 {: .toggle-box }
 
 ### Done
