@@ -9,6 +9,12 @@
     > [adamsp/wookmark](https://github.com/adamsp/wookmark)     
     > <http://www.chromi.org/archives/13915>        
     > <http://open.chrome.360.cn/extension_dev/overview.html>       
+* Lisp
+
+    > <http://wiki.ubuntu.org.cn/Common_LISP_Hints>     
+    > [为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)        
+    > <http://www.cnblogs.com/cute/archive/2011/08/16/2140530.html>     
+    > <http://www.linuxidc.com/Linux/2012-06/63554.htm>     
 {: .toggle-box}
 
 ### Plan
@@ -45,12 +51,7 @@
 * [mockup](http://www.balsamiq.com/products/mockups)
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
 * [Hacker news source code](https://github.com/nex3/arc/)
-* Lisp
-
-    > <http://wiki.ubuntu.org.cn/Common_LISP_Hints>     
-    > [为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)        
-    > <http://www.cnblogs.com/cute/archive/2011/08/16/2140530.html>     
-    > <http://www.linuxidc.com/Linux/2012-06/63554.htm>     
+* [如何高效利用GitHub](http://www.yangzhiping.com/tech/github.html)
 {: .toggle-box }
 
 ### Done
