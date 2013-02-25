@@ -52,6 +52,7 @@
 * [numpy/scipy cookbook](http://www.scipy.org/Cookbook)
 * [Hacker news source code](https://github.com/nex3/arc/)
 * [如何高效利用GitHub](http://www.yangzhiping.com/tech/github.html)
+* [hacker news 源码](https://github.com/nex3/arc/)
 {: .toggle-box }
 
 ### Done
