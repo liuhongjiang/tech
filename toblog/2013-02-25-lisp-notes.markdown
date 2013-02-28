@@ -18,6 +18,8 @@ Lisp 与众不同的部分原因是，它被设计成能够自己进化。你能
 
 文章《[为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)》比较系统地介绍了lisp的特点，可以一读。        
 
+Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方言，[英语里面用的是dialects](http://en.wikipedia.org/wiki/Lisp_%28programming_language%29))。
+其中common lisp就是其中的一种方言。
 
 ### 默认参数
 
@@ -70,3 +72,12 @@ NIL
     (+ x y))
 3
 {% endsh %}
+
+### prog系列
+
+`prog`系列有`prog prog* prog1 prog2 progn`。他们都处理一个代码块。`progn`为“Built-in Method Combination Types”，其余的为宏。
+
+`prog1 prog2 progn`的区别是使用不同的语句的返回值作为代码块的返回值，分别对应第一条语句的返回值，第二条语句的返回值和最后一条语句的返回值。
+
+`prog prog*` 与上面三个是不一样的，带有初始化语句，且使用return语句的返回值。`prog*`中，初始化语句按照顺序初始化，所有一个语句可以使用前面一个语句中的变量，而`prog`则不能这样。如果没有return语句，程序返回nil。
+
