@@ -16,10 +16,14 @@ abstract:
 
 Lisp 与众不同的部分原因是，它被设计成能够自己进化。你能用 Lisp 定义新的 Lisp 操作符。当新的抽象概念风行时（如面向对象程序设计），我们总是发现这些新概念在 Lisp 是最容易来实现的。Lisp 就像生物的 DNA 一样，这样的语言永远不会过时。
 
-文章《[为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)》比较系统地介绍了lisp的特点，可以一读。        
-
 Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方言，[英语里面用的是dialects](http://en.wikipedia.org/wiki/Lisp_%28programming_language%29))。
 其中common lisp就是其中的一种方言。
+
+下面几篇关于lisp的文章值得一读：
+
+* 《[为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)》比较系统地介绍了lisp的特点，可以一读。        
+* [用sbcl,asdf和cl-launch编写可分发的lisp程序](http://tianchunbinghe.blog.163.com/blog/static/7001200692314249376/)
+
 
 ### 默认参数
 
