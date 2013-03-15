@@ -9,6 +9,9 @@ http://wiki.apache.org/hadoop/GangliaMetrics
 * ganglia how to [very good]
 http://www.ibm.com/developerworks/wikis/display/WikiPtype/ganglia
 
+* extend ganglia for more metrics
+https://developer.nvidia.com/ganglia-monitoring-system
+
 * RRDtool
 http://oss.oetiker.ch/rrdtool/index.en.html
 
