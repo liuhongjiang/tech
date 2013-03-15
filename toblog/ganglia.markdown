@@ -34,6 +34,7 @@ http://www.youtube.com/watch?v=RfvghKzVF_w
 http://munin-monitoring.org/wiki/HowToContact
 
 * introduction to RRDtool
+It's under GPL
 given that you already have a nagios installation, consider nagiosgraph or pnp4nagios.
 
 * nagios
