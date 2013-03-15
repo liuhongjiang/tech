@@ -12,6 +12,12 @@ http://www.ibm.com/developerworks/wikis/display/WikiPtype/ganglia
 * extend ganglia for more metrics
 https://developer.nvidia.com/ganglia-monitoring-system
 
+* Ganglia web example
+http://ac.ncsa.uiuc.edu/ganglia/?m=load_one&r=week&s=descending&hc=4&mc=2
+
+* plugin for gmond
+One of the new features of Ganglia 3.1.x is the ability to create C/Python metric gathering modules. These modules can be plugged directly into gmond to monitor user-specified metrics.
+
 * RRDtool
 http://oss.oetiker.ch/rrdtool/index.en.html
 
