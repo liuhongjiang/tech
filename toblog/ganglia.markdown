@@ -20,7 +20,10 @@ One of the new features of Ganglia 3.1.x is the ability to create C/Python metri
 
 * RRDtool
 http://oss.oetiker.ch/rrdtool/index.en.html
-Cunitor used Jrobin for storage and graphing, Jrobin is a java port of RRDtool, so it also under GPL 
+Cunitor used Jrobin for storage and graphing, Jrobin is a java port of RRDtool, it's under LGPL 
+
+* a blog for ganglia
+http://www.igvita.com/2010/01/28/cluster-monitoring-with-ganglia-ruby/
 
 * ganglia on Youtube
 http://www.youtube.com/watch?v=RfvghKzVF_w
