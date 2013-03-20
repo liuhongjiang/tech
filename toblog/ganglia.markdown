@@ -1,3 +1,6 @@
+* ganglia introdution
+http://duanple.blog.163.com/blog/static/70971767201183092413177/
+
 * who's using ganglia?
 http://www.ehow.com/info_12209999_ganglia-vs-munin.html
 Ganglia is used by Twitter, the San Diego Supercomputing Center, Industrial Light & Magic, Virginia Tech, Microsoft, NASA, National Institutes of Health, Harvard and CERN.
