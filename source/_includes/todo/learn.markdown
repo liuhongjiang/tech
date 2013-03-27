@@ -54,6 +54,7 @@
 * [如何高效利用GitHub](http://www.yangzhiping.com/tech/github.html)
 * [hacker news 源码](https://github.com/nex3/arc/)
 * [觅链源代码](https://github.com/QLeelulu/ohlala)
+* [经典论文翻译导读之《Google File System》](http://kb.cnblogs.com/page/174130/)
 {: .toggle-box }
 
 ### Done

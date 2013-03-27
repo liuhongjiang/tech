@@ -20,4 +20,8 @@ categories: Vi
 ## 奇技淫巧
 
 1. d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 
-
+2. gu/gU 大小写转化，gu小写，gU转为大写.      
+    gg gu G：整篇文章大写转化为小写。    
+    gU0 ：从光标所在位置到行首变为大写    
+    gU$ ：从光标所在位置到行尾变为大写    
+3. [vundle 管理vim插件](http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html)
