@@ -91,6 +91,30 @@ description: 他是一个程序员，已婚，有个儿子，字“左烦子”�
 	* source/about/index.markdown 
 	* source/_includes/custom/asides/about.html
 
+## 预览
+
+写了新文章以后可以进行预览，最简单的命令就是
+
+```
+rake preview
+```
+
+如果是在github的个人主页上的博客，那么使用`http://localhost:4000`既可以访问了，如果是项目主页那么就要用`http://localhost:4000/{project-name}/`访问。
+
+还有一个预览方式，就是通过`jekyll`命令
+
+对于个人主页，是使用下面命令，访问的网址`http://localhost:4000`
+
+```
+jekyll --server
+```
+
+对于项目主页，使用以下命令，访问的网址是`http://localhost:4000/{project-name}/`
+
+```
+jekyll --server --base-url /{project-name}/
+```
+
 ## 博客样式
 
 另外关于本博客的一些样式可以参考[博客的样式](/blog/2012/11/24/blog-styles/)
