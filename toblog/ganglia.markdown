@@ -12,13 +12,32 @@ http://wiki.apache.org/hadoop/GangliaMetrics
 * ganglia how to [very good]
 http://www.ibm.com/developerworks/wikis/display/WikiPtype/ganglia
 
+* extend ganglia for more metrics
+https://developer.nvidia.com/ganglia-monitoring-system
+
+* Ganglia web example
+http://ac.ncsa.uiuc.edu/ganglia/?m=load_one&r=week&s=descending&hc=4&mc=2
+http://ganglia.wikimedia.org/latest/ [good]
+from http://www.igvita.com/2010/01/28/cluster-monitoring-with-ganglia-ruby/
+
+* plugin for gmond
+One of the new features of Ganglia 3.1.x is the ability to create C/Python metric gathering modules. These modules can be plugged directly into gmond to monitor user-specified metrics.
+
 * RRDtool
 http://oss.oetiker.ch/rrdtool/index.en.html
+Cunitor used Jrobin for storage and graphing, Jrobin is a java port of RRDtool, it's under LGPL 
+
+* a blog for ganglia
+http://www.igvita.com/2010/01/28/cluster-monitoring-with-ganglia-ruby/
+
+* ganglia on Youtube
+http://www.youtube.com/watch?v=RfvghKzVF_w
 
 * sending alarm
 http://munin-monitoring.org/wiki/HowToContact
 
 * introduction to RRDtool
+It's under GPL
 given that you already have a nagios installation, consider nagiosgraph or pnp4nagios.
 
 * nagios
