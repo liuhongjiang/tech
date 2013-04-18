@@ -29,10 +29,10 @@ Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方
 
 使用`&optional`设置函数默认参数
 
-{% sh :lisp %}
+```
 (defun ha (&optional (x 1))
     (list x))
-{% endsh %}
+```
 
 ### &rest
 
@@ -55,7 +55,7 @@ NIL
 
 在let语句中，如果有多个赋值语句，后面的赋值语句不能应用前面赋值语句中的变量，例如下面就是有问题的
 
-``` lisp
+```
 (defun quarter-turn (arr)
     (let ((dim1 (array-dimensions arr))
           (barr (make-array dim1))) 
@@ -66,6 +66,7 @@ NIL
                 (setf (aref barr i j) (aref arr j i))))
         barr))
 ```
+
 当中的`(barr (make-array dim1))`会报错。
 
 如果希望有上面的功能，就要使用`let*`

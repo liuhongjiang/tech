@@ -139,6 +139,15 @@ export PS1="\w\e[32;40;4;1;7m\$ \e[0m"
 
 在学习这个的过程中，我还找到了一篇关于提示符配置的[不错的博文](http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html)，大家也可以阅读一下。
 
+## python 输出有颜色的字符
+
+也可以使用python输出有颜色的字符，下面是例子代码
+
+``` python
+print '\033[43;32m{0}\033[0m'.format("yellow background, green font")
+print '\033[42;31m{0}\033[0m'.format("green background, red font")
+```
+
 [^1]: [linux shell简介(3)](http://blog.chinaunix.net/uid-13342902-id-2901676.html)
 [^2]: <http://forum.ubuntu.org.cn/viewtopic.php?p=858115>
 [^3]: <https://help.ubuntu.com/community/BasicChroot>
