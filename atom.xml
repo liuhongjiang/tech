@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2013-02-25T16:52:48+08:00</updated>
+  <updated>2013-04-18T11:12:12+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[lisp笔记]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2013/02/25/lisp-notes/"/>
+    <updated>2013-02-25T17:31:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2013/02/25/lisp-notes</id>
+    <content type="html"><![CDATA[<p>下面是在看《<a href="http://acl.readthedocs.org/en/latest/index.html">ANSI common lisp</a>》这本书和做习题的时候的一些笔记。</p>
+
+<h2 id="lisp">lisp</h2>
+
+<p>约翰麦卡锡和他的学生于 1958 年展开 Lisp 的初次实现工作。 Lisp 是继 FORTRAN 之后，仍在使用的最古老的程序语言。 更值得注意的是，它仍走在程序语言技术的最前面。懂 Lisp 的程序员会告诉你，有某种东西使 Lisp 与众不同。</p>
+
+<p>Lisp 与众不同的部分原因是，它被设计成能够自己进化。你能用 Lisp 定义新的 Lisp 操作符。当新的抽象概念风行时（如面向对象程序设计），我们总是发现这些新概念在 Lisp 是最容易来实现的。Lisp 就像生物的 DNA 一样，这样的语言永远不会过时。</p>
+
+<p>Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方言，<a href="http://en.wikipedia.org/wiki/Lisp_%28programming_language%29">英语里面用的是dialects</a>)。
+其中common lisp就是其中的一种方言。</p>
+
+<p>下面几篇关于lisp的文章值得一读：</p>
+
+<ul>
+  <li>《<a href="http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html">为什么Lisp语言如此先进</a>》比较系统地介绍了lisp的特点，可以一读。        </li>
+  <li><a href="http://tianchunbinghe.blog.163.com/blog/static/7001200692314249376/">用sbcl,asdf和cl-launch编写可分发的lisp程序</a></li>
+</ul>
+
+<h3 id="section">默认参数</h3>
+
+<p>使用<code>&amp;optional</code>设置函数默认参数</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">(defun ha (&amp;optional (x 1))
+</span><span class="line">    (list x))</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="rest">&amp;rest</h3>
+
+<p>函数的参数<code>&amp;rest</code>关键字，返回的是一个列表，里面的元素为空，用null测试，返回nil</p>
+
+<pre class="sh-lisp"><code>[3]&gt; (defun bb1 (&amp;rest args) (null args))
+</code><code>BB1
+</code><code>[4]&gt; (bb1 nil)
+</code><code>NIL</code></pre>
+
+<h3 id="append-and-push">append and push</h3>
+
+<p><code>append</code> 会返回一个新的list，所以如果要往一个已有list中加元素，使用<code>push</code></p>
+
+<p><code>push</code>的第二参数必须是变量</p>
+
+<h3 id="let">let</h3>
+
+<p>在let语句中，如果有多个赋值语句，后面的赋值语句不能应用前面赋值语句中的变量，例如下面就是有问题的</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">(defun quarter-turn (arr)
+</span><span class="line">    (let ((dim1 (array-dimensions arr))
+</span><span class="line">          (barr (make-array dim1))) 
+</span><span class="line">        (do ((i 0 (+ i 1)))
+</span><span class="line">            ((= i (car dim)))
+</span><span class="line">            (do ((j 0 (+ j 1)))
+</span><span class="line">                ((= j (car dim)))
+</span><span class="line">                (setf (aref barr i j) (aref arr j i))))
+</span><span class="line">        barr))</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>当中的<code>(barr (make-array dim1))</code>会报错。</p>
+
+<p>如果希望有上面的功能，就要使用<code>let*</code></p>
+
+<pre class="sh-lisp"><code>&gt; (let* ((x 1)
+</code><code>         (y (+ x 1)))
+</code><code>    (+ x y))
+</code><code>3</code></pre>
+
+<h3 id="prog">prog系列</h3>
+
+<p><code>prog</code>系列有<code>prog prog* prog1 prog2 progn</code>。他们都处理一个代码块。<code>progn</code>为“Built-in Method Combination Types”，其余的为宏。</p>
+
+<p><code>prog1 prog2 progn</code>的区别是使用不同的语句的返回值作为代码块的返回值，分别对应第一条语句的返回值，第二条语句的返回值和最后一条语句的返回值。</p>
+
+<p><code>prog prog*</code> 与上面三个是不一样的，带有初始化语句，且使用return语句的返回值。<code>prog*</code>中，初始化语句按照顺序初始化，所有一个语句可以使用前面一个语句中的变量，而<code>prog</code>则不能这样。如果没有return语句，程序返回nil。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Pegasos算法]]></title>
@@ -967,6 +1057,16 @@ zookeeper_st放弃了事件循环，可在事件驱动的应用程序中使用�
 <p>我使用的是ubuntu server 64 12.04，shell用的是bash，在配置的过过程中，唯独只有闪烁功能好像没有起作用，如果有朋友解决了这个问题麻烦给我说一下。</p>
 
 <p>在学习这个的过程中，我还找到了一篇关于提示符配置的<a href="http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html">不错的博文</a>，大家也可以阅读一下。</p>
+
+<h2 id="python-">python 输出有颜色的字符</h2>
+
+<p>也可以使用python输出有颜色的字符，下面是例子代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[43;32m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;yellow background, green font&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[42;31m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;green background, red font&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <div class="footnotes">
   <ol>
@@ -5893,6 +5993,22 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
 <ol>
   <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
+  <li>gu/gU 大小写转化，gu小写，gU转为大写.    <br />
+ u/U： 选中区域，直接进行大小写转换
+ gg gu G：整篇文章大写转化为小写。  <br />
+ gU0 ：从光标所在位置到行首变为大写  <br />
+ gU$ ：从光标所在位置到行尾变为大写    </li>
+  <li><a href="http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html">vundle 管理vim插件</a></li>
+  <li>vim查看编译错误
+ <code>:make</code>     进行编译，需要在makefile所在的目录下打开文件
+ <code>:cw</code>       带开quickfix窗口
+ cn          （next）下一条
+ cp          (previous) 上一条
+ cw          (显示warning)
+ cc          显示错误
+ col         前一个旧的错误 勘误表
+ col         后一个旧的勘误表
+ cnew        后一个较新的错误列表 ( :help :cnew )</li>
 </ol>
 
 ]]></content>
@@ -6362,14 +6478,35 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   </li>
 </ul>
 
-<h2 id="section-3">博客样式</h2>
+<h2 id="section-3">预览</h2>
+
+<p>写了新文章以后可以进行预览，最简单的命令就是</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">rake preview</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果是在github的个人主页上的博客，那么使用<code>http://localhost:4000</code>既可以访问了，如果是项目主页那么就要用<code>http://localhost:4000/{project-name}/</code>访问。</p>
+
+<p>还有一个预览方式，就是通过<code>jekyll</code>命令</p>
+
+<p>对于个人主页，是使用下面命令，访问的网址<code>http://localhost:4000</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对于项目主页，使用以下命令，访问的网址是<code>http://localhost:4000/{project-name}/</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server --base-url /{project-name}/</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-4">博客样式</h2>
 
 <p>另外关于本博客的一些样式可以参考<a href="http://liuhongjiang.github.com/tech/blog/2012/11/24/blog-styles/">博客的样式</a></p>
 
-<h2 id="section-4">感谢</h2>
+<h2 id="section-5">感谢</h2>
 <p>在本站的搭建过程中，参考了<a href="http://yanping.me/cn/">http://yanping.me/cn/</a>。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。</p>
 
-<h2 id="section-5">好文章</h2>
+<h2 id="section-6">好文章</h2>
 
 <p><a href="http://www.yangzhiping.com/tech/github.html">如何高效利用GitHub</a></p>
 

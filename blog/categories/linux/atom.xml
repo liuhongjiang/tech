@@ -4,7 +4,7 @@
   <title><![CDATA[分类: linux | 刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2013-02-25T16:52:48+08:00</updated>
+  <updated>2013-04-18T11:12:12+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -201,6 +201,15 @@ shopt 的描述)。 ```
 <p>我使用的是ubuntu server 64 12.04，shell用的是bash，在配置的过过程中，唯独只有闪烁功能好像没有起作用，如果有朋友解决了这个问题麻烦给我说一下。</p>
 
 <p>在学习这个的过程中，我还找到了一篇关于提示符配置的<a href="http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html">不错的博文</a>，大家也可以阅读一下。</p>
+
+<h2 id="python-">python 输出有颜色的字符</h2>
+
+<p>也可以使用python输出有颜色的字符，下面是例子代码</p>
+
+<p><code>python
+print '\033[43;32m{0}\033[0m'.format("yellow background, green font")
+print '\033[42;31m{0}\033[0m'.format("green background, red font")
+</code></p>
 
 <div class="footnotes">
   <ol>

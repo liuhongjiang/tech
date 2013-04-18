@@ -285,14 +285,35 @@
   </li>
 </ul>
 
-<h2 id="section-3">博客样式</h2>
+<h2 id="section-3">预览</h2>
+
+<p>写了新文章以后可以进行预览，最简单的命令就是</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">rake preview</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果是在github的个人主页上的博客，那么使用<code>http://localhost:4000</code>既可以访问了，如果是项目主页那么就要用<code>http://localhost:4000/{project-name}/</code>访问。</p>
+
+<p>还有一个预览方式，就是通过<code>jekyll</code>命令</p>
+
+<p>对于个人主页，是使用下面命令，访问的网址<code>http://localhost:4000</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对于项目主页，使用以下命令，访问的网址是<code>http://localhost:4000/{project-name}/</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server --base-url /{project-name}/</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-4">博客样式</h2>
 
 <p>另外关于本博客的一些样式可以参考<a href="/tech/blog/2012/11/24/blog-styles/">博客的样式</a></p>
 
-<h2 id="section-4">感谢</h2>
+<h2 id="section-5">感谢</h2>
 <p>在本站的搭建过程中，参考了<a href="http://yanping.me/cn/">http://yanping.me/cn/</a>。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。</p>
 
-<h2 id="section-5">好文章</h2>
+<h2 id="section-6">好文章</h2>
 
 <p><a href="http://www.yangzhiping.com/tech/github.html">如何高效利用GitHub</a></p>
 
@@ -375,6 +396,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
       </li>
     
@@ -388,10 +413,6 @@
     
       <li class="post">
         <a href="/tech/blog/2013/01/19/2012/">我的2012</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a>
       </li>
     
   </ul>

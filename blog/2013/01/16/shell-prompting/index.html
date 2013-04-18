@@ -393,6 +393,16 @@
 
 <p>在学习这个的过程中，我还找到了一篇关于提示符配置的<a href="http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html">不错的博文</a>，大家也可以阅读一下。</p>
 
+<h2 id="python-">python 输出有颜色的字符</h2>
+
+<p>也可以使用python输出有颜色的字符，下面是例子代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[43;32m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;yellow background, green font&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[42;31m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;green background, red font&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
 <div class="footnotes">
   <ol>
     <li id="fn:1">
@@ -491,6 +501,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
       </li>
     
@@ -504,10 +518,6 @@
     
       <li class="post">
         <a href="/tech/blog/2013/01/19/2012/">我的2012</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a>
       </li>
     
   </ul>

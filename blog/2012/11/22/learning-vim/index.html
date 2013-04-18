@@ -192,6 +192,22 @@
 
 <ol>
   <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
+  <li>gu/gU 大小写转化，gu小写，gU转为大写.    <br />
+ u/U： 选中区域，直接进行大小写转换
+ gg gu G：整篇文章大写转化为小写。  <br />
+ gU0 ：从光标所在位置到行首变为大写  <br />
+ gU$ ：从光标所在位置到行尾变为大写    </li>
+  <li><a href="http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html">vundle 管理vim插件</a></li>
+  <li>vim查看编译错误
+ <code>:make</code>     进行编译，需要在makefile所在的目录下打开文件
+ <code>:cw</code>       带开quickfix窗口
+ cn          （next）下一条
+ cp          (previous) 上一条
+ cw          (显示warning)
+ cc          显示错误
+ col         前一个旧的错误 勘误表
+ col         后一个旧的勘误表
+ cnew        后一个较新的错误列表 ( :help :cnew )</li>
 </ol>
 
 </div>
@@ -273,6 +289,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
       </li>
     
@@ -286,10 +306,6 @@
     
       <li class="post">
         <a href="/tech/blog/2013/01/19/2012/">我的2012</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a>
       </li>
     
   </ul>
