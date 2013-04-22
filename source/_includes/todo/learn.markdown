@@ -56,6 +56,7 @@
 * [觅链源代码](https://github.com/QLeelulu/ohlala)
 * [经典论文翻译导读之《Google File System》](http://kb.cnblogs.com/page/174130/)
 * gcov
+* [android开发讲座](http://www.infoq.com/cn/presentations/android-taobao-clients-user-experience-practice?utm_source=infoq&utm_medium=related_content_link&utm_campaign=relatedContent_interviews_clk)
 {: .toggle-box }
 
 ### Done
