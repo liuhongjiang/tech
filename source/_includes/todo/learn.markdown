@@ -9,12 +9,6 @@
     > [adamsp/wookmark](https://github.com/adamsp/wookmark)     
     > <http://www.chromi.org/archives/13915>        
     > <http://open.chrome.360.cn/extension_dev/overview.html>       
-* Lisp
-
-    > <http://wiki.ubuntu.org.cn/Common_LISP_Hints>     
-    > [为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)        
-    > <http://www.cnblogs.com/cute/archive/2011/08/16/2140530.html>     
-    > <http://www.linuxidc.com/Linux/2012-06/63554.htm>     
 {: .toggle-box}
 
 ### Plan
@@ -70,4 +64,10 @@
 * Json(w3school 教程)
 * CSS(w3school 教程)
 * HTML(w3school 教程)
+* Lisp
+
+    > <http://wiki.ubuntu.org.cn/Common_LISP_Hints>     
+    > [为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)        
+    > <http://www.cnblogs.com/cute/archive/2011/08/16/2140530.html>     
+    > <http://www.linuxidc.com/Linux/2012-06/63554.htm>     
 {: .toggle-box .toggle-del}

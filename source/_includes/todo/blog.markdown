@@ -31,7 +31,7 @@
     > python的机器学习工具  
     > <http://scikit-learn.org/stable/>
 
-* B+树
+* B树，B-树，B+树
 * flex and bison
 
     > <http://book.douban.com/subject/6109479/>
@@ -78,6 +78,8 @@
     > [标准Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1495500)
     > [Counting Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1498283)
     > [Partial Bloom Filter](http://blog.csdn.net/jiaomeng/article/details/1502910)
+* [storm](http://storm-project.net/)
+* [mongoose](http://code.google.com/p/mongoose/)
 {: .toggle-box}
 
 ### Done
