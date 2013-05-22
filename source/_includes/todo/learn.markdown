@@ -53,6 +53,7 @@
 * [android开发讲座](http://www.infoq.com/cn/presentations/android-taobao-clients-user-experience-practice?utm_source=infoq&utm_medium=related_content_link&utm_campaign=relatedContent_interviews_clk)
 * [Anwsion 问答](http://www.wecenter.com/downloads/)
 * [42区](http://42qu.com/channel)
+* [趣点](http://qudian.so/)
 {: .toggle-box }
 
 ### Done
