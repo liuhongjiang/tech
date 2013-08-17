@@ -1,3 +1,12 @@
+---
+layout: post
+title: "数据结构--树"
+date: 2013-08-18 00:23
+comments: true
+categories: data&nbsp;structure 
+math: 
+abstract: 本文介绍了一种重要的数据结构树。绝大部分内容都是收集于网络博客。
+---
 
 树，计算机中比较纠结的一种数据结构。种类太多了，涉及到的算法也太多了。主要目的是汇总一下。参考了网上的几篇博客。[^1][^2]
 
