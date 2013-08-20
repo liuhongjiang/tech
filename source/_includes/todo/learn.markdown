@@ -57,6 +57,7 @@
 * esper
 * LSM tree(Log-Structured Merge Tree), or Cola tree
 * 跳表
+* 遗传算法，机器学习的调参数的算法
 {: .toggle-box }
 
 ### Done
