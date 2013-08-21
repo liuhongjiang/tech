@@ -31,7 +31,6 @@
     > python的机器学习工具  
     > <http://scikit-learn.org/stable/>
 
-* B树，B-树，B+树
 * flex and bison
 
     > <http://book.douban.com/subject/6109479/>
@@ -98,5 +97,6 @@
 
     > <http://blog.csdn.net/wuhui_gdnt/article/details/6141405>      
     > <http://baiy.cn/doc/cpp/inside_rtti.htm>
+* B树，B-树，B+树
 {: .toggle-box .toggle-del}
 
