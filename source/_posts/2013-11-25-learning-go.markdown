@@ -423,50 +423,67 @@ type IStream interface {
     Read(buf []byte) (n int , err error) 
 }
 ```
+
 任何实现了one.ReadWriter接口的类，均实现了two.IStream ； 
-   任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
-   在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
+
+	* 任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
+	* 在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
+
 以下这些代码可编译通过： 
+
+```
 var  file1 two.IStream =  new (File) 
 var  file2 one.ReadWriter = file1 
 var  file3 two.IStream = file2
-
+```
 
 接口查询：
+
+```
 if file5, ok := file1.(two.IStream); ok { 
     ... 
 }
+```
 
-Any 类型
+* Any 类型
+
 由于Go语言中任何对象实例都满足空接口interface{}，所以 interface{} 看起来像是可
 以指向任何对象的Any 类型，如下： 
+
+```
 var  v1 interface{} = 1       //  将int 类型赋值给interface{} 
 var  v2 interface{} = "abc"   //  将string类型赋值给interface{} 
 var  v3 interface{} = &v2     //  将*interface{}类型赋值给interface{} 
 var  v4 interface{} = struct { X int  }{1} 
 var  v5 interface{} = & struct { X int  }{1}
+```
 
-fmt包中的Print定义
+fmt包中的Print定义，可以看出any类型的优势。
+
+```
 func Print(a ...interface{}) (n int, err error)
 func Printf(fmt string , args ...interface{}) 
 func Println(args ...interface{})
+```
 
+## 并发编程
 
-并发编程
-   多进程
-   多线程
-   基于回调的非阻塞/ 异步IO
-   协程
-协程（Coroutine）本质上是一种用户态线程，不需要操作系统来进行抢占式调度，
-且在真正的实现中寄存于线程中，因此，系统开销极小，可以有效提高线程的任务并发
-性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的
-支持，如果不支持，则需要用户在程序中自行实现调度器。目前，原生支持协程的语言
-还很少。
-http://zh.wikipedia.org/wiki/%E5%8D%8F%E7%A8%8B
-http://en.wikipedia.org/wiki/Coroutine
-子例程(线程)的起始处是惟一的入口点，一旦退出即完成了子程序的执行，子程序的一个实例只会返回一次。
-协程可以通过yield来调用其它协程。通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
-协程的起始处是第一个入口点，在协程里，返回点之后是接下来的入口点。
+并发编程的模型一般有：
+
+* 多进程
+* 多线程
+* 基于回调的非阻塞/ 异步IO
+* 协程
+	协程（Coroutine）本质上是一种用户态线程，不需要操作系统来进行抢占式调度，
+	且在真正的实现中寄存于线程中，因此，系统开销极小，可以有效提高线程的任务并发
+	性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的
+	支持，如果不支持，则需要用户在程序中自行实现调度器。目前，原生支持协程的语言
+	还很少。
+	http://zh.wikipedia.org/wiki/%E5%8D%8F%E7%A8%8B
+	http://en.wikipedia.org/wiki/Coroutine
+	子例程(线程)的起始处是惟一的入口点，一旦退出即完成了子程序的执行，子程序的一个实例只会返回一次。
+	协程可以通过yield来调用其它协程。通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
+	协程的起始处是第一个入口点，在协程里，返回点之后是接下来的入口点。
 生产者协程
    loop
        while q is not full
@@ -482,6 +499,8 @@ http://en.wikipedia.org/wiki/Coroutine
 
 
 一个python的例子：
+
+```
 def h():
     print 'Wen Chuan',
     m = yield 5  # Fighting!
@@ -493,10 +512,13 @@ c = h()
 m = c.next()  #m 获取了yield 5 的参数值 5
 d = c.send('Fighting!')  #d 获取了yield 12 的参数值12
 print 'We will never forget the date', m, '.', d
+```
 
 输出结果：
+```
 Wen Chuan Fighting!
 We will never forget the date 5 . 12
+```
 
 Go 语言在语言级别支持轻量级线程，叫goroutine 。
 一个函数调用前加上go关键字，这次调用就会在一个新的goroutine 中并发执行。当被调用的函数返回时，这个goroutine 也自动结束了。需要注意的是，如果这个函数有返回值，那么这个返回值会被丢弃。
