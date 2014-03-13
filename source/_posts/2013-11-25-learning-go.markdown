@@ -476,16 +476,16 @@ func Println(args ...interface{})
 * 多线程
 * 基于回调的非阻塞/ 异步IO
 * 协程
-	协程（Coroutine）本质上是一种用户态线程，不需要操作系统来进行抢占式调度，
-	且在真正的实现中寄存于线程中，因此，系统开销极小，可以有效提高线程的任务并发
-	性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的
-	支持，如果不支持，则需要用户在程序中自行实现调度器。目前，原生支持协程的语言
-	还很少。
-	http://zh.wikipedia.org/wiki/%E5%8D%8F%E7%A8%8B
-	http://en.wikipedia.org/wiki/Coroutine
-	子例程(线程)的起始处是惟一的入口点，一旦退出即完成了子程序的执行，子程序的一个实例只会返回一次。
-	协程可以通过yield来调用其它协程。通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
-	协程的起始处是第一个入口点，在协程里，返回点之后是接下来的入口点。
+
+[协程](http://zh.wikipedia.org/wiki/%E5%8D%8F%E7%A8%8B)[(coroutine)](http://en.wikipedia.org/wiki/Coroutine)本质上是一种用户态线程，不需要操作系统来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器。目前，原生支持协程的语言还很少。
+
+子例程(线程)的起始处是惟一的入口点，一旦退出即完成了子程序的执行，子程序的一个实例只会返回一次。
+协程可以通过yield来调用其它协程。通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
+协程的起始处是第一个入口点，在协程里，返回点之后是接下来的入口点。
+
+以下是协程的一段伪代码
+
+```
 生产者协程
    loop
        while q is not full
@@ -498,7 +498,7 @@ func Println(args ...interface{})
            remove some items from q
            use the items
        yield to produce
-
+```
 
 一个python的例子：
 
@@ -525,6 +525,7 @@ We will never forget the date 5 . 12
 Go 语言在语言级别支持轻量级线程，叫goroutine 。
 一个函数调用前加上go关键字，这次调用就会在一个新的goroutine 中并发执行。当被调用的函数返回时，这个goroutine 也自动结束了。需要注意的是，如果这个函数有返回值，那么这个返回值会被丢弃。
 
+```
 package main 
  
 import  "fmt" 
@@ -535,54 +536,73 @@ func Add(x, y int ) {
 }   
  
 func main() { 
- for i := 0; i < 10; i++ { 
-  go Add(i, i) 
+	for i := 0; i < 10; i++ { 
+ 		go Add(i, i) 
     }  
 }
+```
 
-goroutine1.go
-goroutine2.go
+代码源文件
+gorount1.go
+gorouti2.go
 
-channel
+* channel
+
 channel是Go语言在语言级别提供的goroutine 间的通信方式。我们可以使用channel在两个或多个goroutine 之间传递消息。channel是进程内的通信方式，因此通过channel传递对象的过程和调用函数时的参数传递行为比较一致，比如也可以传递指针等。
 
 channel是类型相关的。也就是说，一个channel只能传递一种类型的值，这个类型需要在声明channel时指定。如果对Unix 管道有所了解的话，就不难理解channel，可以将其认为是一种类型安全的管道。
 
-查看文件channel.go
-
 语法：
+```
 var  chanName chan ElementType
 var  ch chan int
 var  m  map [ string ] chan bool
 ch :=  make( chan int )
-在channel的用法中，最常见的包括写入和读出。将一个数据写入（发送）至channel的语法很直观，如下： 
-ch <- value 
-向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是 
-value := <-ch  
-如果channel之前没有写入数据，那么从channel中读取数据也会导致程序阻塞，直到channel
-中被写入数据为止。
+```
 
+在channel的用法中，最常见的包括写入和读出。将一个数据写入（发送）至channel的语法很直观，如下：
+
+	ch <- value 
+
+向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是 
+
+	value := <-ch  
+
+如果channel之前没有写入数据，那么从channel中读取数据也会导致程序阻塞，直到channel中被写入数据为止。
+
+```
 Select
 select  { 
- case <-chan1: 
- // 如果chan1成功读到数据，则进行该case处理语句 
- case chan2 <- 1: 
- // 如果成功向chan2 写入数据，则进行该case处理语句 
-  default: 
- // 如果上面都没有成功，则进入default处理流程 
+	case <-chan1: 
+	// 如果chan1成功读到数据，则进行该case处理语句 
+ 	case chan2 <- 1: 
+	// 如果成功向chan2 写入数据，则进行该case处理语句 
+ 	default: 
+	// 如果上面都没有成功，则进入default处理流程 
 }
-缓冲机制
+```
+
+* 缓冲机制
+
 给channel带上缓冲，从而达到消息队列的效果。 要创建一个带缓冲的channel，其实也非常容易： 
-c := make( chan int , 1024)
-从带缓冲的channel中读取数据可以使用与常规非缓冲channel完全一致的方法，但我们也可以使用range关键来实现更为简便的循环读取： 
+
+	c := make( chan int , 1024)
+
+从带缓冲的channel中读取数据可以使用与常规非缓冲channel完全一致的方法，但我们也可以使用range关键来实现更为简便的循环读取：
+
+``` 
 for  i :=  range c { 
     fmt.Println("Received:", i) 
 }
+```
 
-需要注意的是，在Go语言中channel本身也是一个原生类型，与map 之类的类型地位一样，因此channel本身在定义后也可以通过channel来传递。
-超时机制
+需要注意的是，在Go语言中channel本身也是一个原生类型，与map之类的类型地位一样，因此channel本身在定义后也可以通过channel来传递。
+
+* 超时机制
+
 Go语言没有提供直接的超时处理机制，但我们可以利用select机制。
 
+```
 //  首先，我们实现并执行一个匿名的超时等待函数 
 timeout :=  make( chan bool, 1) 
 go func() { 
@@ -592,54 +612,72 @@ go func() {
  
 //  然后我们把timeout这个channel利用起来 
 select  { 
- case <-ch: 
-  // 从ch中读取到数据 
- case <-timeout: 
-  // 一直没有从ch中读取到数据，但从timeout中读取到了数据 
+	case <-ch: 
+	// 从ch中读取到数据 
+	case <-timeout: 
+	// 一直没有从ch中读取到数据，但从timeout中读取到了数据 
 }
+```
 
-单向channel
+* 单向channel
+
+```
 var  ch1 chan int  // ch1 是一个正常的channel，不是单向的 
 var  ch2 chan<-  float64// ch2 是单向channel，只用于写float64数据 
 var  ch3 <-chan int  // ch3 是单向channel，只用于读取int 数据
+```
 
-只有在介绍了单向channel的概念后，读者才会明白类型转换对于
-channel的意义：就是在单向channel和双向channel之间进行转换。示例如下： 
+只有在介绍了单向channel的概念后，读者才会明白类型转换对于channel的意义：就是在单向channel和双向channel之间进行转换。示例如下： 
+
+```
 ch4 := make( chan int ) 
 ch5 := <-chan int (ch4) // ch5就是一个单向的读取channel 
 ch6 := chan<-  int (ch4) // ch6  是一个单向的写入channel
+```
 
 关闭channel
-close(ch)
+
+	close(ch)
 
 关闭后：
-x, ok := <-ch 
+
+	x, ok := <-ch 
+
 这个用法与map 中的按键获取value的过程比较类似，只需要看第二个bool返回值即可，如果返回值是false 则表示ch已经被关闭。
 
 多核并行化，让出时间片
 Parallel.go
-同步
+
+* 同步
+
 Go语言包中的sync包提供了两种锁类型：sync.Mutex和sync.RWMutex。
 RWMutex相对友好些，是经典的单写多读模型
 
 Go语言提供了一个Once类型来保证全局的唯一性操作，
-var  a  string  
-var  once sync.Once   
+
+```
+var a string  
+var once sync.Once   
  
 func setup() { 
-  a = "hello, world" 
+ 	a = "hello, world" 
 }   
  
 func doprint() { 
- once.Do(setup) 
- print(a)  
+	once.Do(setup) 
+	print(a)  
 }   
  
 func twoprint() { 
- go doprint() 
- go doprint()  
+	go doprint() 
+	go doprint()
 }
 
+```
 
 goroutine 和channel 是支撑起Go语言的并发模型的基石，让Go语言在如今集群化与多核化的时代成为一道极为亮丽的风景
 
+
+## 一点感悟
+
+以上这篇博文时间上是在看书的笔记。整个过程中，其实也没有对go语言进行深入的了解。仅仅是停留在对语法的简单了解。
