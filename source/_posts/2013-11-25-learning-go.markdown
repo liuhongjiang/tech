@@ -384,9 +384,11 @@ func (foo *Foo) Bar() {
 要使某个符号对其他包（package）可见（即可以访问），需要将该符号定义为以大写字母开头
 
 * 接口
+
     非侵入式接口:
     将对象实例赋值给接口；将一个接口赋值给另一个接口。
     我们定义一个Integer类型的对象实例，怎么将其赋值给LessAdder
+
 ```
 type Integer int  
  
@@ -423,28 +425,39 @@ type IStream interface {
     Read(buf []byte) (n int , err error) 
 }
 ```
+
 任何实现了one.ReadWriter接口的类，均实现了two.IStream ； 
-   任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
-   在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
+1. 任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
+2. 在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
+
 以下这些代码可编译通过： 
+
+```
 var  file1 two.IStream =  new (File) 
 var  file2 one.ReadWriter = file1 
 var  file3 two.IStream = file2
-
+```
 
 接口查询：
+
+```
 if file5, ok := file1.(two.IStream); ok { 
     ... 
 }
+```
 
-Any 类型
+* Any 类型
+
 由于Go语言中任何对象实例都满足空接口interface{}，所以 interface{} 看起来像是可
 以指向任何对象的Any 类型，如下： 
+
+```
 var  v1 interface{} = 1       //  将int 类型赋值给interface{} 
 var  v2 interface{} = "abc"   //  将string类型赋值给interface{} 
 var  v3 interface{} = &v2     //  将*interface{}类型赋值给interface{} 
 var  v4 interface{} = struct { X int  }{1} 
 var  v5 interface{} = & struct { X int  }{1}
+```
 
 fmt包中的Print定义
 func Print(a ...interface{}) (n int, err error)
