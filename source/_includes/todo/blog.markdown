@@ -4,6 +4,8 @@
 ### To blog
 {: .toggle-title .title-unfold}
 
+* 尝试写关于openstack的书
+
 * C++对象的内存分布
 
     > <http://blog.csdn.net/pathuang68/article/details/4101970>        
