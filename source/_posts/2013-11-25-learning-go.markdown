@@ -1,22 +1,32 @@
 ---
 layout: post
-title: "learning-go"
+title: "go语言学习"
 date: 2013-11-25 18:28
 comments: true
-categories: 
+categories: Language
 math: 
 abstract: 
 ---
+## 一点体会
+
+下面这篇博文是在看[《go语言编程》](http://book.douban.com/subject/11577300/)书的笔记。
+在看书的过程中，其实也没有对go语言进行深入的学习。仅仅是停留在对语法的简单了解。
+
+总的来说，go语言没有它多的新东西，仅仅是将各个语言比较有特色的内容，集中到以一个语言中，而且还是基于C语言的，因为go语言的作者就是C语言的作者。哪些比较有特色的呢，例如闭包，接口，垃圾回收，还有必然语言级别支持协程。这种炒大杂烩的方式，个人感觉不可能会成功。只不过go语言已一个比较强大的干爹google，所有才多多少少掀起了几个波浪。
+
+很有意思的一件事情是，虽然这个语言生在美国，生在google，但是目前go语言的社区最活跃的，还是我们中国的屌丝程序员。我认为这是一件极好的事情，说明了我们中国在IT方面对新事物的开明态度和勇于追逐，虽然成功可能不在go语言，但是有这种态度，终会有所作为。
+
+## go语言简介
 
 go语言是google推出的一个可以提高并发编程的语言，它着不同一般的背景。
 
 * 回溯至1969 年, 肯·汤普逊（Ken Thompson）和丹尼斯·里奇（Dennis Ritchie ）在贝尔实验室的计算科学研究中心里开发出了Unix ，还因为开发Unix而衍生——C语言。
-* 80年代，开始Plan 9 的操作系统研究é¹目，解决Unix 中的一些问题, 又演变出了Inferno 的项目分支，以及一个名为Limbo 的编程语言
+* 80年代，开始Plan 9 的操作系统研究项目，解决Unix 中的一些问题, 又演变出了Inferno 的项目分支，以及一个名为Limbo 的编程语言
 * Limbo是用于开发运行在小型计算机上的分布式应用的编程语言，它支持模块化编程，编译期和运行时的强类型检查，进程内基于具有类型的通信通道，原子性垃圾收集和简单的抽象数据类型。它被设计为：即便是在没有硬件内存保护的小型设备上，也能安全运行。
 * Limbo 语言被认为是Go语言的前身，不仅仅因为是同一批人设计的语言，而是Go语言确实从Limbo 语言中继承了众多优秀的特性。
 * 贝尔实验室后来经历了多次的动荡，包括肯·汤普逊在内的Plan 9 项目原班人马加入了Google 。在Google ，他们创造了Go语言。
 * 2007 年9月，Go语言还是这帮大牛的20% 自由时间的实验项目
-* 2008 年5月，Google 发现了Go语言的巨大潜力，从而开始全力支持这个é¹目
+* 2008 年5月，Google 发现了Go语言的巨大潜力，从而开始全力支持这个项目
 * 2009年11 月，发布第一个版本在
 * 2012年3月28 日，发布第一个正式版本
 
@@ -49,7 +59,7 @@ go语言是google推出的一个可以提高并发编程的语言，它着不同
 
 ## 变量
 
-```go
+```
 var  v1 int  
 var  v2 string  
 var  v3 [10] int     //  数组 
@@ -60,7 +70,6 @@ var v5 struct {
 var  v6 *int       //  指针 
 var  v7 map [ string ] int  // map ，key 为string 类型，value 为int 类型 
 var  v8 func(a  int ) int 
-
 
 var v1  int  = 10
 var v2 = 10  //  编译器自动推导出v2 的类型 
@@ -84,7 +93,7 @@ i, j = j, i     //交换值
 3.2+12i      // 复数类型的常量 
 true      //  布尔类型的常量 
 "foo"     //  字符串常量
-``
+```
 
 go语言的数字类型有：
 `int`、`uint`、`int32`、`int64`、`float32`、`float64`、`complex64`、`complex128`
@@ -102,23 +111,33 @@ const a, b, c = 3, 4, "foo"   // a = 3, b = 4, c = "foo",  无类型整型和字
 
 ## 类型
 
-* 布尔类型：bool。 
-    var v1 bool 
-    v1 = true
+* 布尔类型：bool 
+
+```
+var v1 bool 
+v1 = true
+```
+
 * 整型：int8、byte、int16 、int 、uint、uintptr等。 
-    支持位运算
-    uintptr is an integer type that is large enough to hold the bit pattern of any pointer.
+
+go语言支持位运算
+
+且有一个特殊类型：uintptr: 
+uintptr is an integer type that is large enough to hold the bit pattern of any pointer.
+
 * 浮点类型：float32、float64。
 * 复数类型：complex64、complex128。
 
-    ```
-    var value1 complex64       //  由2 个float32构成的复数类型 
-    value1 = 3.2 + 12i 
-    value2 := 3.2 + 12i        // value2 是complex128类型 
-    value3 := complex(3.2, 12)  // value3结果同 value2  
-    ```
-    对于一个复数z = complex(x, y) ，就可以通过Go语言内置函数real(z)获得该复数的实部，也就是x，通过imag(z)获得该复数的虚部，也就是y
-* 字符串：string。 
+```
+var value1 complex64       //  由2 个float32构成的复数类型 
+value1 = 3.2 + 12i 
+value2 := 3.2 + 12i        // value2 是complex128类型 
+value3 := complex(3.2, 12)  // value3结果同 value2  
+```
+
+对于一个复数z = complex(x, y) ，就可以通过Go语言内置函数real(z)获得该复数的实部，也就是x，通过imag(z)获得该复数的虚部，也就是y
+
+* 字符串：string。
     Go编译器支持UTF-8 的源代码文件格式
 * 字符类型：rune。 
 * 错误类型：error 。 
@@ -126,168 +145,173 @@ const a, b, c = 3, 4, "foo"   // a = 3, b = 4, c = "foo",  无类型整型和字
 此外，Go语言也支持以下这些复合类型： 
 * 指针（pointer ） 
 * 数组（array） 
-    ```
-    [32]byte       //  长度为32 的数组，每个元素为一个字节 
-    [2*N]  struct  { x, y  int32 } //  复杂类型数组 
-    [1000]*float64    //  指针数组 
-    [3][5] int      //  二维数组 
-    [2][2][2]float64    //  等同于[2]([2]([2]float64))
-    ```
-* 切片（slice ） 
-    myArray[:5]
+
+```
+[32]byte       //  长度为32 的数组，每个元素为一个字节 
+[2*N]  struct  { x, y  int32 } //  复杂类型数组 
+[1000]*float64    //  指针数组 
+[3][5] int      //  二维数组 
+[2][2][2]float64    //  等同于[2]([2]([2]float64))
+```
+
+* 切片（slice ） `myArray[:5]`
 * 字典（map） 
     
-    ```
-    var  myMap map [ string ] PersonInfo
-    // myMap是声明的map 变量名，string是键的类型，PersonInfo则是其中所存放的值类型。
-    myMap =  make( map [ string ] PersonInfo)
-    myMap =  map [ string ] PersonInfo{ 
-      "1234": PersonInfo{"1", "Jack", "Room 101,..."}, 
-    }
-    myMap["1234"] = PersonInfo{"1", "Jack", "Room 101,..."}
-    delete(myMap, "1234")
-    value, ok := myMap["1234"]  
-    if ok { // 找到了 
-        // 处理找到的value  
-    }
-    ```
+```
+var  myMap map [ string ] PersonInfo
+// myMap是声明的map 变量名，string是键的类型，PersonInfo则是其中所存放的值类型。
+myMap =  make( map [ string ] PersonInfo)
+myMap =  map [ string ] PersonInfo{ 
+	"1234": PersonInfo{"1", "Jack", "Room 101,..."}, 
+}
+myMap["1234"] = PersonInfo{"1", "Jack", "Room 101,..."}
+delete(myMap, "1234")
+value, ok := myMap["1234"]  
+if ok { // 找到了 
+	// 处理找到的value  
+}
+```
+
 * 通道（chan ） 
 channel是Go语言在语言级别提供的goroutine 间的通信方式。我们可以使用channel在两个或多个goroutine 之间传递消息。channel是进程内的通信方式，因此通过channel传递对象的过程和调用函数时的参数传递行为比较一致，比如也可以传递指针等。
 
-    ```
-    var  ch chan int
-    ch :=  make( chan int )
-    ch <- value
-    向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是
-    value := <-ch
-    ```
+```
+var  ch chan int
+ch :=  make( chan int )
+ch <- value
+向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是
+value := <-ch
+```
 
 * 结构体（struct） 
 
-    ```
-    type Rect  struct  { 
-        x, y float64 
-        width, height  float64 
-    }
-    ```
+```
+type Rect  struct  { 
+    x, y float64 
+    width, height  float64 
+}
+```
+
 * 接口（interface ）
 * 流程控制
 
-    ```
-    if a < 5 { 
-        return 0 
-    } else { 
-        return 1 
-    }
+```
+if a < 5 { 
+    return 0 
+} else { 
+    return 1 
+}
 
-    switch  i { 
-        case 0: 
-            fmt.Printf("0") 
-        case 1: 
-            fmt.Printf("1") 
-        case 2: 
-             fallthrough 
-        case 3: 
-            fmt.Printf("3") 
-        case 4, 5, 6: 
-            fmt.Printf("4, 5, 6") 
-        default: 
-            fmt.Printf("Default") 
-    }
-    ```
-    注意上面的switch语句里面没有break语句
+switch  i { 
+    case 0: 
+        fmt.Printf("0") 
+    case 1: 
+        fmt.Printf("1") 
+    case 2: 
+         fallthrough 
+    case 3: 
+        fmt.Printf("3") 
+    case 4, 5, 6: 
+        fmt.Printf("4, 5, 6") 
+    default: 
+        fmt.Printf("Default") 
+}
+```
 
-    ```
-    sum := 0 
-    for  i := 0; i < 10; i++ { 
-        sum += i 
-    }  
-    
-    a := []int {1, 2, 3, 4, 5, 6} 
-    for  i, j := 0, len(a) – 1; i < j; i, j = i + 1, j – 1 { 
-        a[i], a[j] = a[j], a[i] 
-    }
-    ```
+注意上面的switch语句里面没有break语句
 
-go语言包含goto语句
+```
+sum := 0 
+for  i := 0; i < 10; i++ { 
+    sum += i 
+}  
+
+a := []int {1, 2, 3, 4, 5, 6} 
+for  i, j := 0, len(a) – 1; i < j; i, j = i + 1, j – 1 { 
+    a[i], a[j] = a[j], a[i] 
+}
+```
+
+且go语言包含goto语句
 
 * 函数
 
-    ```
-    package mymath 
-    import "errors" 
-     
-    func Add(a int , b int ) (ret int , err error) { 
-        if a < 0 || b < 0 { //  假设这个函数只支持两个非负数字的加法 
-            err= errors.New("Should be non-negative numbers!") 
-            return 
-        } 
-     
-        return  a + b,  nil  //  支持多重返回值 
-    }
-    ```
+```
+package mymath 
+import "errors" 
+ 
+func Add(a int , b int ) (ret int , err error) { 
+    if a < 0 || b < 0 { //  假设这个函数只支持两个非负数字的加法 
+        err= errors.New("Should be non-negative numbers!") 
+        return 
+    } 
+ 
+    return  a + b,  nil  //  支持多重返回值 
+}
+```
 
 * 不定参数类型
 
-    ```
-    func myfunc(args ... int ) { 
-        for  _, arg :=  range args { 
-          fmt.Println(arg) 
-        }  
-    }
-    
-    n, _ := f.Read(buf)
-    ```
+```
+func myfunc(args ... int ) { 
+    for  _, arg :=  range args { 
+		fmt.Println(arg) 
+    }  
+}
+
+n, _ := f.Read(buf)
+```
 
 * 闭包
 
-    ```
-    package main   
-     
-    import  ( 
-     "fmt" 
-    )   
-     
-    func main() { 
-        var  j  int  = 5 
-     
-        a := func()( func()) { 
-             var  i  int  = 10 
-             return func () { 
-                fmt.Printf("i, j: %d, %d\n", i, j) 
-            } 
-        }() 
-     
-        a() 
-     
-        j *= 2 
-     
-        a() 
-    }
-    ```
+```
+package main   
+ 
+import  ( 
+	"fmt" 
+)   
+ 
+func main() { 
+    var  j  int  = 5 
+ 
+    a := func()( func()) { 
+         var  i  int  = 10 
+         return func () { 
+            fmt.Printf("i, j: %d, %d\n", i, j) 
+        } 
+    }() 
+ 
+    a() 
+ 
+    j *= 2 
+ 
+    a() 
+}
+```
 
 * defer
     解决释放资源的问题, 可以通过defer字段实现资源的自动释放 
 
-    ```
-    func CopyFile(dst, src string ) (w int64, err error) { 
-        srcFile, err := os.Open(src) 
-        if err !=  nil  { 
-             return 
-        } 
-     
-        defer srcFile.Close() 
-     
-        dstFile, err := os.Create(dstName) 
-        if err !=  nil  { 
-             return 
-        } 
-     
-        defer dstFile.Close() 
-     
-        return  io.Copy(dstFile, srcFile)  
-    }
-    ```
+```
+func CopyFile(dst, src string ) (w int64, err error) { 
+    srcFile, err := os.Open(src) 
+    if err !=  nil  { 
+         return 
+    } 
+ 
+    defer srcFile.Close() 
+ 
+    dstFile, err := os.Create(dstName) 
+    if err !=  nil  { 
+         return 
+    } 
+ 
+    defer dstFile.Close() 
+ 
+    return  io.Copy(dstFile, srcFile)  
+}
+```
+
 * panic()和recover()
 
 panic()函数时，正常的函数执行流程将立即终止，但函数中之前使用defer 关键字延迟执行的语句将正常展开执行，之后该函数将返回到调用函数，并导致逐层向上执行panic流程，直至所属的goroutine 中所有正在执行的函数被终止。
@@ -304,12 +328,12 @@ recover()函数用于终止错误处理流程。
 type Integer int  
  
 func (a Integer) Less(b Integer) bool { 
-    return  a < b 
+	return  a < b 
 }
 
 var  a Integer = 1 
 if a.Less(2) { 
-   fmt.Println(a, "Less 2") 
+	fmt.Println(a, "Less 2") 
 }
 ```
 
@@ -334,17 +358,19 @@ fmt.Println(a, b)
 
 Go语言中的大多数类型都基于值语义
 
-基本类型，如byte、int 、bool、float32、float64和string等；  
+`基本类型`：如byte、int 、bool、float32、float64和string等；  
 
-复合类型，如数组（array）、结构体（struct）和指针（pointer ）等。
+`复合类型`：如数组（array）、结构体（struct）和指针（pointer ）等。
 
 Go语言中有4个类型比较特别，看起来像引用类型
 
-数组切片：指向数组（array）的一个区间。 
-map：极其常见的数据结构，提供键值查询能力。 
-channel：执行体（goroutine ）间的通信设施。 
-接口（interface ）：对一组满足某个契约的类型的抽象。
+`数组切片`：指向数组（array）的一个区间。 
 
+`map`：极其常见的数据结构，提供键值查询能力。 
+
+`channel`：执行体（goroutine ）间的通信设施。 
+
+`接口（interface ）`：对一组满足某个契约的类型的抽象。
 
 * 结构体 
 
@@ -385,9 +411,10 @@ func (foo *Foo) Bar() {
 
 * 接口
 
-    非侵入式接口:
-    将对象实例赋值给接口；将一个接口赋值给另一个接口。
-    我们定义一个Integer类型的对象实例，怎么将其赋值给LessAdder
+非侵入式接口:
+将对象实例赋值给接口；将一个接口赋值给另一个接口。
+
+我们定义一个Integer类型的对象实例，怎么将其赋值给LessAdder
 
 ```
 type Integer int  
@@ -428,8 +455,8 @@ type IStream interface {
 
 任何实现了one.ReadWriter接口的类，均实现了two.IStream ； 
 
-	* 任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
-	* 在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
+1. 任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； 
+2. 在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 
 
 以下这些代码可编译通过： 
 
@@ -502,7 +529,7 @@ func Println(args ...interface{})
 
 一个python的例子：
 
-```
+```python
 def h():
     print 'Wen Chuan',
     m = yield 5  # Fighting!
@@ -517,6 +544,7 @@ print 'We will never forget the date', m, '.', d
 ```
 
 输出结果：
+
 ```
 Wen Chuan Fighting!
 We will never forget the date 5 . 12
@@ -553,6 +581,7 @@ channel是Go语言在语言级别提供的goroutine 间的通信方式。我们�
 channel是类型相关的。也就是说，一个channel只能传递一种类型的值，这个类型需要在声明channel时指定。如果对Unix 管道有所了解的话，就不难理解channel，可以将其认为是一种类型安全的管道。
 
 语法：
+
 ```
 var  chanName chan ElementType
 var  ch chan int
@@ -677,7 +706,3 @@ func twoprint() {
 
 goroutine 和channel 是支撑起Go语言的并发模型的基石，让Go语言在如今集群化与多核化的时代成为一道极为亮丽的风景
 
-
-## 一点感悟
-
-以上这篇博文时间上是在看书的笔记。整个过程中，其实也没有对go语言进行深入的了解。仅仅是停留在对语法的简单了解。
