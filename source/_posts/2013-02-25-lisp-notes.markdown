@@ -24,6 +24,7 @@ Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方
 * 《[为什么Lisp语言如此先进](http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html)》比较系统地介绍了lisp的特点，可以一读。        
 * [用sbcl,asdf和cl-launch编写可分发的lisp程序](http://tianchunbinghe.blog.163.com/blog/static/7001200692314249376/)
 
+<!-- more -->
 
 ### 默认参数
 
