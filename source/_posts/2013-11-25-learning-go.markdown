@@ -7,6 +7,7 @@ categories: Language
 math: 
 abstract: 
 ---
+
 ## 一点体会
 
 下面这篇博文是在看[《go语言编程》](http://book.douban.com/subject/11577300/)书的笔记。
@@ -571,8 +572,11 @@ func main() {
 ```
 
 代码源文件
-gorount1.go
-gorouti2.go
+
+{% include_code 协程示例1 2013/go/goroutine1.go %}
+
+{% include_code 协程示例2 2013/go/goroutine1.go %}
+
 
 * channel
 
@@ -675,7 +679,9 @@ ch6 := chan<-  int (ch4) // ch6  是一个单向的写入channel
 这个用法与map 中的按键获取value的过程比较类似，只需要看第二个bool返回值即可，如果返回值是false 则表示ch已经被关闭。
 
 多核并行化，让出时间片
-Parallel.go
+
+
+{% include_code 多核并行示例  2013/go/parallel.go %}
 
 * 同步
 
@@ -706,3 +712,4 @@ func twoprint() {
 
 goroutine 和channel 是支撑起Go语言的并发模型的基石，让Go语言在如今集群化与多核化的时代成为一道极为亮丽的风景
 
+最后，我写的关于一些简单的go语言的例子，可以在[这里](https://github.com/liuhongjiang/tech/tree/source/source/code/2013/go)
