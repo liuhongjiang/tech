@@ -712,4 +712,4 @@ func twoprint() {
 
 goroutine 和channel 是支撑起Go语言的并发模型的基石，让Go语言在如今集群化与多核化的时代成为一道极为亮丽的风景
 
-最后，我写的关于一些简单的go语言的例子，可以在[这里](https://github.com/liuhongjiang/tech/tree/source/source/code/2013/go)
+最后，看书的过程中，写的关于一些简单的go语言的例子，在[这里](https://github.com/liuhongjiang/tech/tree/source/source/code/2013/go).
