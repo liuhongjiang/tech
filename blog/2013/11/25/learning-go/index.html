@@ -1,0 +1,1502 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>go语言学习 - 刘洪江的流水帐</title>
+  <meta name="author" content="刘洪江">
+
+  
+  <meta name="description" content="一点体会 下面这篇博文是在看《go语言编程》书的笔记。
+在看书的过程中，其实也没有对go语言进行深入的学习。仅仅是停留在对语法的简单了解。 总的来说，go语言没有它多的新东西，仅仅是将各个语言比较有特色的内容，集中到以一个语言中，而且还是基于C语言的，因为go语言的作者就是C语言的作者。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/">
+  <link href="/tech/favicon.png" rel="icon">
+  <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/tech/javascripts/modernizr-2.0.js"></script>
+  <script src="/tech/javascripts/ender.js"></script>
+  <script src="/tech/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="刘洪江的流水帐" type="application/atom+xml">
+
+  <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+
+
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <div style="float:left; width: 500px">
+    <h1><a href="/tech/">刘洪江的流水帐</a></h1>
+    
+      <h2>拾起点点滴滴, 聚沙成石.</h2>
+    
+  </div>
+  
+    <div style="float:right">
+      <p style="font-family:cursive;font-size:80%;color:yellow;font-style:oblique">
+         一个连咖啡都要趁热一饮而尽的男子 
+      </p>
+<ul id="social-links">
+  <!-- Tencent weibo -->
+  <li>
+    <a href="http://t.qq.com/andrewliu117" target="_blank">
+      <svg width="40" height="40" class="tencent-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <circle fill="#000000" cx="8.229" cy="10.478" r="2.543" />
+        <path fill="#000000" d="M8.229,18.163c-0.615,0-1.227-0.073-1.82-0.217 c-0.364-0.088-0.587-0.455-0.499-0.819c0.088-0.364,0.455-0.588,0.819-0.5c0.488,0.119,0.993,0.178,1.5,0.178 c3.49,0,6.33-2.839,6.33-6.329c0-3.49-2.839-6.33-6.33-6.33c-3.49,0-6.329,2.84-6.329,6.33c0,1.123,0.297,2.226,0.861,3.189 c0.189,0.323,0.08,0.739-0.243,0.928s-0.739,0.08-0.928-0.243c-0.685-1.172-1.046-2.511-1.046-3.875 c0-4.238,3.448-7.686,7.686-7.686c4.238,0,7.686,3.448,7.686,7.686C15.915,14.716,12.467,18.163,8.229,18.163z" />
+        <path fill="#000000" d="M2.066,24.549c-0.277,0-0.51-0.216-0.526-0.496c-0.021-0.351-0.451-8.643,5.989-13.397 c0.234-0.173,0.565-0.124,0.738,0.111c0.173,0.234,0.123,0.565-0.111,0.738C2.186,15.913,2.589,23.909,2.593,23.99 c0.018,0.29-0.204,0.541-0.495,0.558C2.087,24.548,2.077,24.549,2.066,24.549z" />
+        <circle fill="#000000" cx="22.443" cy="5.184" r="1.536" />
+        <path fill="#000000" d="M26.739,6.946c-0.141,0.344-0.322,0.669-0.538,0.967 c-0.133,0.184-0.389,0.224-0.572,0.091s-0.225-0.389-0.091-0.572c0.178-0.246,0.327-0.514,0.443-0.797 c0.8-1.951-0.136-4.188-2.086-4.988c-1.951-0.8-4.188,0.136-4.988,2.086c-0.8,1.951,0.136,4.188,2.086,4.988 c0.628,0.257,1.312,0.344,1.98,0.25c0.224-0.031,0.431,0.125,0.463,0.349c0.032,0.224-0.125,0.431-0.349,0.463 c-0.812,0.114-1.643,0.009-2.405-0.304c-2.369-0.971-3.505-3.688-2.534-6.057c0.972-2.369,3.688-3.505,6.058-2.534 C26.574,1.86,27.71,4.577,26.739,6.946z" />
+        <path fill="#000000" d="M28.895,11.854c-0.063,0.154-0.237,0.234-0.397,0.18c-0.201-0.068-4.934-1.729-6.115-6.419 c-0.043-0.17,0.061-0.343,0.231-0.386c0.171-0.043,0.344,0.06,0.388,0.231c1.095,4.348,5.656,5.956,5.703,5.971 c0.167,0.057,0.255,0.238,0.198,0.404C28.899,11.843,28.897,11.848,28.895,11.854z" />
+      </svg>
+    </a>
+  </li>
+  
+  <!-- Sina Weibo -->
+  <li>
+    <a href="http://weibo.com/andewliuhj" target="_blank">
+      <svg width="40" height="40" class="sina-weibo" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M9.641,17.231c-3.799,0.374-7.079-1.343-7.326-3.838c-0.246-2.494,2.634-4.82,6.434-5.196 c3.798-0.377,7.079,1.34,7.326,3.835C16.32,14.529,13.44,16.855,9.641,17.231 M17.24,8.952c-0.322-0.098-0.544-0.163-0.375-0.587 c0.365-0.921,0.403-1.718,0.007-2.286c-0.745-1.063-2.783-1.005-5.12-0.027c0-0.002-0.734,0.321-0.546-0.261 c0.359-1.156,0.305-2.123-0.254-2.682c-1.267-1.271-4.639,0.047-7.53,2.936C1.257,8.209,0,10.504,0,12.488 c0,3.796,4.866,6.104,9.628,6.104c6.241,0,10.393-3.627,10.393-6.506C20.021,10.347,18.557,9.358,17.24,8.952" />
+        <path fill="#000000" d="M21.384,2.005c-1.507-1.671-3.73-2.308-5.782-1.872l0,0c-0.475,0.102-0.778,0.569-0.676,1.043 c0.101,0.473,0.567,0.777,1.043,0.674c1.459-0.31,3.039,0.145,4.111,1.332c1.069,1.188,1.362,2.806,0.902,4.225v0.001 c-0.149,0.462,0.104,0.957,0.566,1.106c0.461,0.149,0.956-0.104,1.105-0.565c0,0,0-0.002,0-0.004 C23.299,5.95,22.894,3.674,21.384,2.005" />
+        <path fill="#000000" d="M19.07,4.094c-0.734-0.814-1.817-1.123-2.817-0.912c-0.409,0.088-0.671,0.49-0.581,0.899 c0.088,0.407,0.489,0.67,0.896,0.58v0.001c0.488-0.104,1.019,0.047,1.379,0.445c0.359,0.398,0.455,0.941,0.301,1.416l0,0 c-0.127,0.398,0.09,0.825,0.488,0.954c0.396,0.127,0.824-0.091,0.952-0.488C20,6.017,19.805,4.908,19.07,4.094" />
+        <path fill="#000000" d="M9.85,12.713c-0.132,0.229-0.426,0.338-0.656,0.242c-0.227-0.094-0.297-0.348-0.169-0.572 c0.132-0.221,0.416-0.328,0.64-0.239C9.895,12.227,9.978,12.483,9.85,12.713 M8.64,14.268c-0.367,0.586-1.154,0.843-1.747,0.57 c-0.584-0.265-0.756-0.945-0.389-1.518c0.362-0.568,1.124-0.824,1.712-0.574C8.811,12.998,9.001,13.675,8.64,14.268 M10.021,10.118 c-1.808-0.47-3.852,0.431-4.637,2.023c-0.8,1.624-0.026,3.428,1.801,4.017c1.892,0.612,4.122-0.324,4.898-2.078 C12.848,12.367,11.891,10.602,10.021,10.118" />
+      </svg>
+    </a>
+  </li>
+
+  <!-- GitHub -->
+  <li>
+    <a href="https://github.com/liuhongjiang" target="_blank">
+      <svg width="40" height="40" class="github" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M28.436,15.099C27.235,14.897,25.985,14.764,24.97,14.728L24.791,14.722C24.832,14.632,24.863,14.571,24.873,14.562C24.895,14.543999999999999,24.913,14.468,24.915000000000003,14.394C24.915000000000003,14.353,24.933000000000003,14.22,24.961000000000002,14.044C25.236,14.054,25.601000000000003,14.062000000000001,25.999000000000002,14.065000000000001C27.536,14.077000000000002,29.144000000000002,14.201,30.247000000000003,14.396C30.904000000000003,14.512,31.121000000000002,14.508000000000001,30.636000000000003,14.39C30.145000000000003,14.271,28.689000000000004,14.096,27.529000000000003,14.020000000000001C26.750000000000004,13.967,25.633000000000003,13.947000000000001,24.975000000000005,13.958000000000002C24.994000000000003,13.844000000000001,25.016000000000005,13.717000000000002,25.039000000000005,13.587000000000002C25.132000000000005,13.084000000000001,25.163000000000004,12.578000000000001,25.165000000000006,11.571000000000002C25.167000000000005,10.009000000000002,25.083000000000006,9.579,24.574000000000005,8.546000000000001C24.367000000000004,8.124,24.133000000000006,7.766000000000001,23.850000000000005,7.442000000000001C24.097000000000005,6.713000000000001,24.091000000000005,5.584000000000001,23.835000000000004,4.594000000000001C23.624000000000006,3.782000000000001,23.550000000000004,3.7300000000000013,22.814000000000004,3.886000000000001C22.19,4.019,21.69,4.2,21.049,4.523C20.746,4.675999999999999,20.328,4.914,20.025,5.101C19.235,4.823,18.418,4.639,17.546,4.54C16.662,4.44,14.495,4.496,13.725999999999999,4.638C12.973999999999998,4.777,12.296999999999999,4.947,11.684,5.149C11.378,4.96,10.934,4.705,10.616999999999999,4.545C9.973,4.221,9.473,4.041,8.847,3.908C8.113,3.751,8.036999999999999,3.804,7.827,4.616C7.567,5.619,7.5649999999999995,6.7669999999999995,7.822,7.494C7.852,7.577,7.87,7.636,7.877,7.682C6.835,8.994,6.495,10.462,6.721,12.511C6.78,13.045,6.871,13.535,6.998,13.984C6.333,13.98,5.3870000000000005,14.004,4.704000000000001,14.048C3.5420000000000007,14.125,2.0860000000000007,14.298,1.5950000000000006,14.417C1.1110000000000007,14.535,1.3260000000000005,14.539,1.9840000000000007,14.424C3.0870000000000006,14.229999999999999,4.696000000000001,14.104,6.232000000000001,14.093C6.522000000000001,14.092,6.793000000000001,14.086,7.026000000000002,14.08C7.096000000000002,14.317,7.176000000000002,14.543,7.267000000000001,14.758000000000001L7.26,14.759C6.245,14.794,4.996,14.927,3.795,15.129C2.894,15.28,1.564,15.581999999999999,1.4089999999999998,15.669C1.2459999999999998,15.76,1.3789999999999998,15.74,2.077,15.563C3.3499999999999996,15.241000000000001,5.005,14.994,7.055,14.822000000000001L7.284,14.802000000000001C7.724,15.824000000000002,8.402,16.604000000000003,9.36,17.212000000000003C9.946,17.585000000000004,10.885,17.968000000000004,11.357999999999999,18.028000000000002C11.488,18.044,11.866,18.122000000000003,12.197999999999999,18.200000000000003C12.530999999999999,18.278000000000002,13.181999999999999,18.395000000000003,13.643999999999998,18.462000000000003H13.654999999999998C13.645999999999997,18.468000000000004,13.637999999999998,18.472000000000005,13.629999999999997,18.478C13.069999999999997,18.769000000000002,12.705999999999998,19.222,12.460999999999997,19.935000000000002C12.350999999999997,19.968000000000004,12.213999999999997,20.013,12.065999999999997,20.064000000000004C11.536999999999997,20.244000000000003,11.330999999999998,20.281000000000002,10.794999999999998,20.285000000000004C10.238999999999997,20.289000000000005,10.106999999999998,20.265000000000004,9.774999999999999,20.109000000000005C9.291999999999998,19.884000000000004,8.841999999999999,19.470000000000006,8.541999999999998,18.976000000000006C8.040999999999999,18.150000000000006,7.174999999999998,17.566000000000006,6.452999999999998,17.566000000000006C5.835999999999998,17.566000000000006,5.718999999999998,17.816000000000006,6.164999999999997,18.181000000000004C6.836999999999997,18.730000000000004,7.338999999999997,19.290000000000006,7.544999999999997,19.718000000000004C7.660999999999997,19.958000000000002,7.838999999999997,20.329000000000004,7.9419999999999975,20.542000000000005C8.050999999999998,20.769000000000005,8.283999999999997,21.077000000000005,8.505999999999997,21.290000000000006C9.027999999999997,21.788000000000007,9.531999999999996,22.026000000000007,10.283999999999997,22.138000000000005C10.787999999999997,22.212000000000007,10.911999999999997,22.212000000000007,11.506999999999998,22.136000000000006C11.793999999999999,22.101000000000006,12.035999999999998,22.060000000000006,12.252999999999998,22.009000000000007C12.252999999999998,22.253000000000007,12.252999999999998,22.534000000000006,12.252999999999998,22.864000000000008C12.252999999999998,24.63000000000001,12.231999999999998,25.198000000000008,12.161999999999999,25.364000000000008C12.03,25.680000000000007,11.733999999999998,26.00500000000001,11.446,26.151000000000007C11.158999999999999,26.297000000000008,11.07,26.458000000000006,11.190999999999999,26.606000000000005C11.258,26.686000000000003,11.386999999999999,26.700000000000006,11.819999999999999,26.672000000000004C12.641999999999998,26.621000000000006,13.222999999999999,26.317000000000004,13.518999999999998,25.781000000000006C13.613999999999999,25.609000000000005,13.636,25.263000000000005,13.665999999999999,23.463000000000005C13.697999999999999,21.510000000000005,13.711999999999998,21.322000000000003,13.838999999999999,21.043000000000006C13.915999999999999,20.877000000000006,14.027,20.697000000000006,14.088999999999999,20.648000000000007C14.192999999999998,20.56200000000001,14.2,20.732000000000006,14.2,23.068000000000005C14.199,25.646000000000004,14.173,25.957000000000004,13.915,26.453000000000003C13.857,26.566000000000003,13.747,26.713000000000005,13.67,26.783C13.535,26.906000000000002,13.478,27.221,13.572,27.316000000000003C13.726999999999999,27.470000000000002,14.504,27.228,14.927999999999999,26.894000000000002C15.649999999999999,26.322000000000003,15.735999999999999,25.849000000000004,15.741999999999999,22.433L15.745,20.429L15.963999999999999,20.45L16.183,20.47L16.219,23.090999999999998C16.26,26.041999999999998,16.266000000000002,26.084999999999997,16.768,26.654999999999998C17.053,26.976999999999997,17.34,27.154999999999998,17.807000000000002,27.293999999999997C18.432000000000002,27.481999999999996,18.62,27.191999999999997,18.200000000000003,26.688999999999997C17.743000000000002,26.141999999999996,17.721000000000004,25.932999999999996,17.746000000000002,22.694999999999997C17.763,20.618999999999996,17.763,20.618999999999996,17.897000000000002,20.739999999999995C18.179000000000002,20.995999999999995,18.233,21.415999999999993,18.233,23.362999999999996C18.233,25.780999999999995,18.302,26.010999999999996,19.156,26.432999999999996C19.555,26.627999999999997,19.666999999999998,26.651999999999997,20.177999999999997,26.653999999999996C20.721999999999998,26.655999999999995,20.754999999999995,26.647999999999996,20.775,26.505999999999997C20.791999999999998,26.391,20.724999999999998,26.312999999999995,20.471,26.157999999999998C20.138,25.953,19.907,25.691,19.762,25.360999999999997C19.707,25.233999999999998,19.67,24.401999999999997,19.645,22.688999999999997C19.608999999999998,20.295999999999996,19.601,20.186999999999998,19.451999999999998,19.811999999999998C19.250999999999998,19.307999999999996,18.944,18.909999999999997,18.555,18.645999999999997C18.454,18.58,18.352999999999998,18.525,18.222,18.483999999999998C18.383000000000003,18.468,18.539,18.450999999999997,18.69,18.429C20.262,18.22,21.093,18.046,21.76,17.787999999999997C23.171000000000003,17.244999999999997,24.125,16.342999999999996,24.642000000000003,15.063999999999997C24.688000000000002,14.949999999999996,24.734,14.841999999999997,24.773000000000003,14.754999999999997L25.171000000000003,14.787999999999997C27.222,14.960999999999997,28.877000000000002,15.207999999999997,30.150000000000002,15.530999999999997C30.848000000000003,15.707999999999997,30.981,15.728999999999997,30.818,15.635999999999997C30.666,15.551,29.336,15.25,28.436,15.099ZM22.422,15.068C22.189,15.58,21.539,16.238,21.014,16.496C20.496,16.752,19.683999999999997,16.947,18.764,17.04C18.134999999999998,17.104,14.626999999999999,17.122999999999998,14.047999999999998,17.066C12.130999999999998,16.878,11.056999999999999,16.509,10.264999999999999,15.77C9.514999999999999,15.068,9.165,14.115,9.225999999999999,12.942C9.264999999999999,12.208,9.441999999999998,11.747,9.905,11.187000000000001C10.325999999999999,10.677000000000001,10.769,10.362000000000002,11.290999999999999,10.202000000000002C11.727999999999998,10.068000000000001,13.068999999999999,10.056000000000001,14.871999999999998,10.172000000000002C15.668999999999999,10.223000000000003,16.328,10.223000000000003,17.124,10.172000000000002C19.009999999999998,10.053000000000003,20.269,10.066000000000003,20.733999999999998,10.210000000000003C21.465,10.436000000000003,22.130999999999997,11.044000000000002,22.531,11.854000000000003C22.711,12.216000000000003,22.746,12.370000000000003,22.772,12.929000000000002C22.808,13.699,22.675,14.517,22.422,15.068ZM12.912,11.762C11.839,11.574,11.226,13.411000000000001,12.049000000000001,14.349C12.440000000000001,14.794,12.787,14.867,13.221000000000002,14.597C13.623000000000001,14.346,13.841000000000001,13.876999999999999,13.841000000000001,13.269C13.841,12.458,13.472,11.862,12.912,11.762ZM19.425,11.872C18.352,11.684,17.738,13.519,18.561,14.458C18.953,14.903,19.299,14.977,19.734,14.705C20.135,14.455,20.354000000000003,13.985,20.354000000000003,13.377C20.354,12.569,19.985,11.971,19.425,11.872ZM16.539,15.484C16.516000000000002,15.558,16.404,15.668,16.291,15.727C16.005,15.874,15.799,15.823,15.497,15.548C15.31,15.379,15.225,15.29,15.168,15.467C15.114999999999998,15.631,15.447999999999999,15.96,15.705,16.061C15.941,16.155,16.11,16.158,16.366,16.051C16.62,15.944999999999999,16.842,15.659999999999998,16.842,15.474999999999998C16.842,15.303,16.595,15.311,16.539,15.484ZM16.222,14.909C16.385,14.765,16.422,14.469000000000001,16.266000000000002,14.312000000000001S15.793000000000001,14.179000000000002,15.669000000000002,14.355C15.525000000000002,14.561,15.602000000000002,14.718,15.705000000000002,14.885C15.865,15.009,16.08,15.034,16.222,14.909Z" />
+      </svg>
+    </a>
+  </li>
+  
+ <!-- 
+  
+  <li>
+    <a href="https://twitter.com/#!/jsw0528" target="_blank">
+      <svg width="40" height="40" class="twitter" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#000000" d="M14.605,13.11C15.518,10.259,16.634,8.411999999999999,17.918,7.071999999999999C18.877,6.071999999999999,19.371,5.755999999999999,18.808999999999997,6.855999999999999C19.058999999999997,6.656999999999999,19.415,6.391999999999999,19.694,6.2509999999999994C21.249,5.518,21.136,6.132,20.067,6.7909999999999995C22.990000000000002,5.7459999999999996,22.887,7.076999999999999,19.796,7.739999999999999C22.323,7.786999999999999,25.009999999999998,9.395999999999999,25.783,12.817C25.888,13.291,25.762,13.245000000000001,26.247,13.331C27.294,13.517,28.277,13.504999999999999,29.238,13.200999999999999C29.134,13.908999999999999,28.198999999999998,14.367999999999999,26.741,14.671999999999999C26.2,14.783999999999999,26.09,14.754999999999999,26.736,14.900999999999998C27.535,15.079999999999998,28.426000000000002,15.126999999999999,29.37,15.082999999999998C28.636000000000003,15.928999999999998,27.465,16.360999999999997,26.016000000000002,16.378999999999998C25.112000000000002,19.688,23.040000000000003,22.057,20.42,23.543C14.268,27.035,5.312000000000001,26.527,0.8210000000000015,20.183999999999997C3.7680000000000016,22.496,8.133000000000003,23.005,11.376000000000001,19.782999999999998C9.251000000000001,19.782999999999998,8.702000000000002,18.191999999999997,10.386000000000001,17.333999999999996C8.791,17.316999999999997,7.7780000000000005,16.812999999999995,7.183000000000002,15.899999999999997C6.957000000000002,15.552999999999997,6.9540000000000015,15.525999999999996,7.323000000000001,15.259999999999996C7.7280000000000015,14.966999999999997,8.281,14.836999999999996,8.851,14.792999999999996C7.200000000000001,14.319999999999995,6.191000000000001,13.457999999999995,5.8420000000000005,12.301999999999996C5.726000000000001,11.919999999999996,5.708,11.938999999999997,6.098000000000001,11.839999999999996C6.478000000000001,11.742999999999997,6.968000000000001,11.691999999999997,7.407000000000001,11.669999999999996C6.11,10.88,5.336,9.917,5.139,8.852C4.953,7.846,5.144,8.104000000000001,5.897,8.392C9.263,9.68,12.619,11.062,14.605,13.11L14.605,13.11Z" />
+      </svg>
+    </a>
+  </li>
+-->
+  
+</ul>
+    </div>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:liuhongjiang.github.com/tech" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/tech/">博客首页</a></li>
+  <li><a href="/tech/blog/archives">文章列表</a></li>
+  <li><a href="/tech/categories">标签分类</a></li>
+  <li><a href="/tech/todo">ToDo</a></li>
+  <li><a href="/tech/about">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Go语言学习</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-25T18:28:00+08:00" pubdate data-updated="true">Nov 25<span>th</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/language/'>Language</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= go语言学习  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+<div class="entry-content">
+    
+    <h2 id="section">一点体会</h2>
+
+<p>下面这篇博文是在看<a href="http://book.douban.com/subject/11577300/">《go语言编程》</a>书的笔记。
+在看书的过程中，其实也没有对go语言进行深入的学习。仅仅是停留在对语法的简单了解。</p>
+
+<p>总的来说，go语言没有它多的新东西，仅仅是将各个语言比较有特色的内容，集中到以一个语言中，而且还是基于C语言的，因为go语言的作者就是C语言的作者。哪些比较有特色的呢，例如闭包，接口，垃圾回收，还有必然语言级别支持协程。这种炒大杂烩的方式，个人感觉不可能会成功。只不过go语言已一个比较强大的干爹google，所有才多多少少掀起了几个波浪。</p>
+
+<p>很有意思的一件事情是，虽然这个语言生在美国，生在google，但是目前go语言的社区最活跃的，还是我们中国的屌丝程序员。我认为这是一件极好的事情，说明了我们中国在IT方面对新事物的开明态度和勇于追逐，虽然成功可能不在go语言，但是有这种态度，终会有所作为。</p>
+
+<h2 id="go">go语言简介</h2>
+
+<p>go语言是google推出的一个可以提高并发编程的语言，它着不同一般的背景。</p>
+
+<ul>
+  <li>回溯至1969 年, 肯·汤普逊（Ken Thompson）和丹尼斯·里奇（Dennis Ritchie ）在贝尔实验室的计算科学研究中心里开发出了Unix ，还因为开发Unix而衍生——C语言。</li>
+  <li>80年代，开始Plan 9 的操作系统研究项目，解决Unix 中的一些问题, 又演变出了Inferno 的项目分支，以及一个名为Limbo 的编程语言</li>
+  <li>Limbo是用于开发运行在小型计算机上的分布式应用的编程语言，它支持模块化编程，编译期和运行时的强类型检查，进程内基于具有类型的通信通道，原子性垃圾收集和简单的抽象数据类型。它被设计为：即便是在没有硬件内存保护的小型设备上，也能安全运行。</li>
+  <li>Limbo 语言被认为是Go语言的前身，不仅仅因为是同一批人设计的语言，而是Go语言确实从Limbo 语言中继承了众多优秀的特性。</li>
+  <li>贝尔实验室后来经历了多次的动荡，包括肯·汤普逊在内的Plan 9 项目原班人马加入了Google 。在Google ，他们创造了Go语言。</li>
+  <li>2007 年9月，Go语言还是这帮大牛的20% 自由时间的实验项目</li>
+  <li>2008 年5月，Google 发现了Go语言的巨大潜力，从而开始全力支持这个项目</li>
+  <li>2009年11 月，发布第一个版本在</li>
+  <li>2012年3月28 日，发布第一个正式版本</li>
+</ul>
+
+<h2 id="go-1">go语言特性</h2>
+
+<ul>
+  <li>自动垃圾回收 </li>
+  <li>更丰富的内置类型 </li>
+  <li>函数多返回值 </li>
+  <li>错误处理 </li>
+  <li>匿名函数和闭包 </li>
+  <li>类型和接口 </li>
+  <li>并发编程 </li>
+  <li>反射 </li>
+  <li>语言交互性 (Cgo, C语言库)</li>
+</ul>
+
+<h2 id="go-2">go的工具</h2>
+
+<ul>
+  <li>编辑器
+    <ul>
+      <li>文本编辑工具gedit（Linux）/Notepad++ （Windows）/Fraise （Mac OS X）</li>
+      <li>安装了GoClipse 插件的Eclipse ，集成性做得很好； </li>
+      <li>Vim/Emacs，万能开发工具； </li>
+      <li>LiteIDE，一款专为Go语言开发的集成开发环境。</li>
+    </ul>
+  </li>
+  <li>工程管理
+    <ul>
+      <li>Go命令行工具</li>
+    </ul>
+  </li>
+  <li>调试
+    <ul>
+      <li>FMT 输出日志/gdb</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="section-1">语言</h1>
+
+<h2 id="section-2">变量</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  v1 int  
+</span><span class="line">var  v2 string  
+</span><span class="line">var  v3 [10] int     //  数组 
+</span><span class="line">var  v4 [] int      //  数组切片 
+</span><span class="line">var v5 struct { 
+</span><span class="line">    f  int  
+</span><span class="line">} 
+</span><span class="line">var  v6 *int       //  指针 
+</span><span class="line">var  v7 map [ string ] int  // map ，key 为string 类型，value 为int 类型 
+</span><span class="line">var  v8 func(a  int ) int 
+</span><span class="line">
+</span><span class="line">var v1  int  = 10
+</span><span class="line">var v2 = 10  //  编译器自动推导出v2 的类型 
+</span><span class="line">v3 := 10  // 编译器自动推导出v3 的类型</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Go语言也引入了另一个C和C++ 中没有的符号（冒号和等号的组合:=），用于明确表达同时进行变量声明和初始化的工作。</p>
+
+<p>go支持直接交换值</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  v10 int  
+</span><span class="line">v10 = 123 
+</span><span class="line">i, j = j, i     //交换值</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-3">常量</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">-12                 // 无类型常量
+</span><span class="line">3.14159265358979323846 //  浮点类型的常量 
+</span><span class="line">3.2+12i      // 复数类型的常量 
+</span><span class="line">true      //  布尔类型的常量 
+</span><span class="line">"foo"     //  字符串常量</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>go语言的数字类型有：
+<code>int</code>、<code>uint</code>、<code>int32</code>、<code>int64</code>、<code>float32</code>、<code>float64</code>、<code>complex64</code>、<code>complex128</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">const Pi float64 = 3.14159265358979323846  
+</span><span class="line">const zero = 0.0             // 无类型浮点常量 
+</span><span class="line">const  (  
+</span><span class="line">    size int64 = 1024 
+</span><span class="line">    eof = -1                //  无类型整型常量 
+</span><span class="line">)  
+</span><span class="line">const u, v  float32 = 0, 3    // u = 0.0, v = 3.0，常量的多重赋值 
+</span><span class="line">const a, b, c = 3, 4, "foo"   // a = 3, b = 4, c = "foo",  无类型整型和字符串常量</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-4">类型</h2>
+
+<ul>
+  <li>布尔类型：bool </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var v1 bool 
+</span><span class="line">v1 = true</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>整型：int8、byte、int16 、int 、uint、uintptr等。 </li>
+</ul>
+
+<p>go语言支持位运算</p>
+
+<p>且有一个特殊类型：uintptr: 
+uintptr is an integer type that is large enough to hold the bit pattern of any pointer.</p>
+
+<ul>
+  <li>浮点类型：float32、float64。</li>
+  <li>复数类型：complex64、complex128。</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var value1 complex64       //  由2 个float32构成的复数类型 
+</span><span class="line">value1 = 3.2 + 12i 
+</span><span class="line">value2 := 3.2 + 12i        // value2 是complex128类型 
+</span><span class="line">value3 := complex(3.2, 12)  // value3结果同 value2  </span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对于一个复数z = complex(x, y) ，就可以通过Go语言内置函数real(z)获得该复数的实部，也就是x，通过imag(z)获得该复数的虚部，也就是y</p>
+
+<ul>
+  <li>字符串：string。
+  Go编译器支持UTF-8 的源代码文件格式</li>
+  <li>字符类型：rune。 </li>
+  <li>错误类型：error 。 </li>
+</ul>
+
+<p>此外，Go语言也支持以下这些复合类型： 
+* 指针（pointer ） 
+* 数组（array） </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">[32]byte       //  长度为32 的数组，每个元素为一个字节 
+</span><span class="line">[2*N]  struct  { x, y  int32 } //  复杂类型数组 
+</span><span class="line">[1000]*float64    //  指针数组 
+</span><span class="line">[3][5] int      //  二维数组 
+</span><span class="line">[2][2][2]float64    //  等同于[2]([2]([2]float64))</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>切片（slice ） <code>myArray[:5]</code></li>
+  <li>字典（map） </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  myMap map [ string ] PersonInfo
+</span><span class="line">// myMap是声明的map 变量名，string是键的类型，PersonInfo则是其中所存放的值类型。
+</span><span class="line">myMap =  make( map [ string ] PersonInfo)
+</span><span class="line">myMap =  map [ string ] PersonInfo{ 
+</span><span class="line">	"1234": PersonInfo{"1", "Jack", "Room 101,..."}, 
+</span><span class="line">}
+</span><span class="line">myMap["1234"] = PersonInfo{"1", "Jack", "Room 101,..."}
+</span><span class="line">delete(myMap, "1234")
+</span><span class="line">value, ok := myMap["1234"]  
+</span><span class="line">if ok { // 找到了 
+</span><span class="line">	// 处理找到的value  
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>通道（chan ） 
+channel是Go语言在语言级别提供的goroutine 间的通信方式。我们可以使用channel在两个或多个goroutine 之间传递消息。channel是进程内的通信方式，因此通过channel传递对象的过程和调用函数时的参数传递行为比较一致，比如也可以传递指针等。</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  ch chan int
+</span><span class="line">ch :=  make( chan int )
+</span><span class="line">ch &lt;- value
+</span><span class="line">向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是
+</span><span class="line">value := &lt;-ch</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>结构体（struct） </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">type Rect  struct  { 
+</span><span class="line">    x, y float64 
+</span><span class="line">    width, height  float64 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>接口（interface ）</li>
+  <li>流程控制</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">if a &lt; 5 { 
+</span><span class="line">    return 0 
+</span><span class="line">} else { 
+</span><span class="line">    return 1 
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">switch  i { 
+</span><span class="line">    case 0: 
+</span><span class="line">        fmt.Printf("0") 
+</span><span class="line">    case 1: 
+</span><span class="line">        fmt.Printf("1") 
+</span><span class="line">    case 2: 
+</span><span class="line">         fallthrough 
+</span><span class="line">    case 3: 
+</span><span class="line">        fmt.Printf("3") 
+</span><span class="line">    case 4, 5, 6: 
+</span><span class="line">        fmt.Printf("4, 5, 6") 
+</span><span class="line">    default: 
+</span><span class="line">        fmt.Printf("Default") 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>注意上面的switch语句里面没有break语句</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">sum := 0 
+</span><span class="line">for  i := 0; i &lt; 10; i++ { 
+</span><span class="line">    sum += i 
+</span><span class="line">}  
+</span><span class="line">
+</span><span class="line">a := []int {1, 2, 3, 4, 5, 6} 
+</span><span class="line">for  i, j := 0, len(a) – 1; i &lt; j; i, j = i + 1, j – 1 { 
+</span><span class="line">    a[i], a[j] = a[j], a[i] 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>且go语言包含goto语句</p>
+
+<ul>
+  <li>函数</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">package mymath 
+</span><span class="line">import "errors" 
+</span><span class="line"> 
+</span><span class="line">func Add(a int , b int ) (ret int , err error) { 
+</span><span class="line">    if a &lt; 0 || b &lt; 0 { //  假设这个函数只支持两个非负数字的加法 
+</span><span class="line">        err= errors.New("Should be non-negative numbers!") 
+</span><span class="line">        return 
+</span><span class="line">    } 
+</span><span class="line"> 
+</span><span class="line">    return  a + b,  nil  //  支持多重返回值 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>不定参数类型</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">func myfunc(args ... int ) { 
+</span><span class="line">    for  _, arg :=  range args { 
+</span><span class="line">		fmt.Println(arg) 
+</span><span class="line">    }  
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">n, _ := f.Read(buf)</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>闭包</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">package main   
+</span><span class="line"> 
+</span><span class="line">import  ( 
+</span><span class="line">	"fmt" 
+</span><span class="line">)   
+</span><span class="line"> 
+</span><span class="line">func main() { 
+</span><span class="line">    var  j  int  = 5 
+</span><span class="line"> 
+</span><span class="line">    a := func()( func()) { 
+</span><span class="line">         var  i  int  = 10 
+</span><span class="line">         return func () { 
+</span><span class="line">            fmt.Printf("i, j: %d, %d\n", i, j) 
+</span><span class="line">        } 
+</span><span class="line">    }() 
+</span><span class="line"> 
+</span><span class="line">    a() 
+</span><span class="line"> 
+</span><span class="line">    j *= 2 
+</span><span class="line"> 
+</span><span class="line">    a() 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>defer
+  解决释放资源的问题, 可以通过defer字段实现资源的自动释放 </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">func CopyFile(dst, src string ) (w int64, err error) { 
+</span><span class="line">    srcFile, err := os.Open(src) 
+</span><span class="line">    if err !=  nil  { 
+</span><span class="line">         return 
+</span><span class="line">    } 
+</span><span class="line"> 
+</span><span class="line">    defer srcFile.Close() 
+</span><span class="line"> 
+</span><span class="line">    dstFile, err := os.Create(dstName) 
+</span><span class="line">    if err !=  nil  { 
+</span><span class="line">         return 
+</span><span class="line">    } 
+</span><span class="line"> 
+</span><span class="line">    defer dstFile.Close() 
+</span><span class="line"> 
+</span><span class="line">    return  io.Copy(dstFile, srcFile)  
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>panic()和recover()</li>
+</ul>
+
+<p>panic()函数时，正常的函数执行流程将立即终止，但函数中之前使用defer 关键字延迟执行的语句将正常展开执行，之后该函数将返回到调用函数，并导致逐层向上执行panic流程，直至所属的goroutine 中所有正在执行的函数被终止。</p>
+
+<p>recover()函数用于终止错误处理流程。</p>
+
+<h2 id="section-5">面向对象</h2>
+
+<p>对于面向对象编程的支持Go 语言设计得非常简洁而优雅。简洁之处在于，Go语言并没有沿袭传统面向对象编程中的诸多概念，比如继承、虚函数、构造函数和析构函数、隐藏的this指针等。优雅之处在于，Go语言对面向对象编程的支持是语言类型系统中的天然组成部分。整个类型系统通过接口串联，浑然一体。我们在本章中将一一解释这些特性。
+类型
+在Go语言中，你可以给任意类型（包括内置类型，但不包括指针类型）添加相应的方法，例如： </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">type Integer int  
+</span><span class="line"> 
+</span><span class="line">func (a Integer) Less(b Integer) bool { 
+</span><span class="line">	return  a &lt; b 
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">var  a Integer = 1 
+</span><span class="line">if a.Less(2) { 
+</span><span class="line">	fmt.Println(a, "Less 2") 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在你需要修改对象的时候，才必须用指针。它不是Go语言的约束，而是一种自然约束。
+举个例子： </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">func (a *Integer) Add(b Integer) { 
+</span><span class="line">    *a += b 
+</span><span class="line">}
+</span><span class="line">a.Add(2)</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>值语义和引用语义</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  a = [3] int {1, 2, 3} 
+</span><span class="line">var  b = a 
+</span><span class="line">b[1]++ 
+</span><span class="line">fmt.Println(a, b)</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Go语言中的大多数类型都基于值语义</p>
+
+<p><code>基本类型</code>：如byte、int 、bool、float32、float64和string等；  </p>
+
+<p><code>复合类型</code>：如数组（array）、结构体（struct）和指针（pointer ）等。</p>
+
+<p>Go语言中有4个类型比较特别，看起来像引用类型</p>
+
+<p><code>数组切片</code>：指向数组（array）的一个区间。 </p>
+
+<p><code>map</code>：极其常见的数据结构，提供键值查询能力。 </p>
+
+<p><code>channel</code>：执行体（goroutine ）间的通信设施。 </p>
+
+<p><code>接口（interface ）</code>：对一组满足某个契约的类型的抽象。</p>
+
+<ul>
+  <li>结构体 </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">type Rect  struct  { 
+</span><span class="line">    x, y float64 
+</span><span class="line">    width, height  float64 
+</span><span class="line">}
+</span><span class="line">// 初始化
+</span><span class="line">rect1 := new (Rect) 
+</span><span class="line">rect2 := &amp;Rect{} 
+</span><span class="line">rect3 := &amp;Rect{0, 0, 100, 200} 
+</span><span class="line">rect4 := &amp;Rect{width: 100, height: 200}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>匿名组合：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">type Base  struct  { 
+</span><span class="line">    Name string 
+</span><span class="line">} 
+</span><span class="line"> 
+</span><span class="line">func (base *Base) baseFoo() { ... } 
+</span><span class="line">func (base *Base) baseBar() { ... }
+</span><span class="line">
+</span><span class="line">type Foo struct  { 
+</span><span class="line">    Base 
+</span><span class="line">    ... 
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">func (foo *Foo) Bar() { 
+</span><span class="line">    foo.Base.baseBar() 
+</span><span class="line">    ... 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>要使某个符号对其他包（package）可见（即可以访问），需要将该符号定义为以大写字母开头</p>
+
+<ul>
+  <li>接口</li>
+</ul>
+
+<p>非侵入式接口:
+将对象实例赋值给接口；将一个接口赋值给另一个接口。</p>
+
+<p>我们定义一个Integer类型的对象实例，怎么将其赋值给LessAdder</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">type Integer int  
+</span><span class="line"> 
+</span><span class="line">func (a Integer) Less(b Integer) bool { 
+</span><span class="line">    return  a &lt; b 
+</span><span class="line">} 
+</span><span class="line"> 
+</span><span class="line">func (a *Integer) Add(b Integer) { 
+</span><span class="line">    *a += b 
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">type LessAdder  interface { 
+</span><span class="line">    Less(b Integer) bool 
+</span><span class="line">    Add(b Integer) 
+</span><span class="line">}
+</span><span class="line">var  a Integer = 1 
+</span><span class="line">var  b LessAdder = &amp;a</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>下面的例子，定义了两个不同的包：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">package one 
+</span><span class="line"> 
+</span><span class="line">type ReadWriter interface { 
+</span><span class="line">    Read(buf []byte) (n int , err error) 
+</span><span class="line">    Write(buf [] byte) (n int , err error) 
+</span><span class="line">}
+</span><span class="line">
+</span><span class="line">package two 
+</span><span class="line"> 
+</span><span class="line">type IStream interface { 
+</span><span class="line">    Write(buf [] byte) (n int , err error) 
+</span><span class="line">    Read(buf []byte) (n int , err error) 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>任何实现了one.ReadWriter接口的类，均实现了two.IStream ； </p>
+
+<ol>
+  <li>任何one.ReadWriter接口对象可赋值给two.IStream ，反之亦然； </li>
+  <li>在任何地方使用one.ReadWriter接口与使用two.IStream 并无差异。 </li>
+</ol>
+
+<p>以下这些代码可编译通过： </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  file1 two.IStream =  new (File) 
+</span><span class="line">var  file2 one.ReadWriter = file1 
+</span><span class="line">var  file3 two.IStream = file2</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>接口查询：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">if file5, ok := file1.(two.IStream); ok { 
+</span><span class="line">    ... 
+</span><span class="line">}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>Any 类型</li>
+</ul>
+
+<p>由于Go语言中任何对象实例都满足空接口interface{}，所以 interface{} 看起来像是可
+以指向任何对象的Any 类型，如下： </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">var  v1 interface{} = 1       //  将int 类型赋值给interface{} 
+</span><span class="line">var  v2 interface{} = "abc"   //  将string类型赋值给interface{} 
+</span><span class="line">var  v3 interface{} = &amp;v2     //  将*interface{}类型赋值给interface{} 
+</span><span class="line">var  v4 interface{} = struct { X int  }{1} 
+</span><span class="line">var  v5 interface{} = &amp; struct { X int  }{1}</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>fmt包中的Print定义，可以看出any类型的优势。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">func Print(a ...interface{}) (n int, err error)
+</span><span class="line">func Printf(fmt string , args ...interface{}) 
+</span><span class="line">func Println(args ...interface{})</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="section-6">并发编程</h2>
+
+<p>并发编程的模型一般有：</p>
+
+<ul>
+  <li>多进程</li>
+  <li>多线程</li>
+  <li>基于回调的非阻塞/ 异步IO</li>
+  <li>协程</li>
+</ul>
+
+<p><a href="http://zh.wikipedia.org/wiki/%E5%8D%8F%E7%A8%8B">协程</a><a href="http://en.wikipedia.org/wiki/Coroutine">(coroutine)</a>本质上是一种用户态线程，不需要操作系统来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器。目前，原生支持协程的语言还很少。</p>
+
+<p>子例程(线程)的起始处是惟一的入口点，一旦退出即完成了子程序的执行，子程序的一个实例只会返回一次。
+协程可以通过yield来调用其它协程。通过yield方式转移执行权的协程之间不是调用者与被调用者的关系，而是彼此对称、平等的。
+协程的起始处是第一个入口点，在协程里，返回点之后是接下来的入口点。</p>
+
+<p>以下是协程的一段伪代码</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">生产者协程
+</span><span class="line">   loop
+</span><span class="line">       while q is not full
+</span><span class="line">           create some new items
+</span><span class="line">           add the items to q
+</span><span class="line">       yield to consume
+</span><span class="line">消费者协程
+</span><span class="line">   loop
+</span><span class="line">       while q is not empty
+</span><span class="line">           remove some items from q
+</span><span class="line">           use the items
+</span><span class="line">       yield to produce</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一个python的例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">h</span><span class="p">():</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&#39;Wen Chuan&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="n">m</span> <span class="o">=</span> <span class="k">yield</span> <span class="mi">5</span>  <span class="c"># Fighting!</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">m</span>
+</span><span class="line">    <span class="n">d</span> <span class="o">=</span> <span class="k">yield</span> <span class="mi">12</span>
+</span><span class="line">    <span class="k">print</span> <span class="s">&#39;We are together!&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">c</span> <span class="o">=</span> <span class="n">h</span><span class="p">()</span>
+</span><span class="line"><span class="n">m</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c">#m 获取了yield 5 的参数值 5</span>
+</span><span class="line"><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s">&#39;Fighting!&#39;</span><span class="p">)</span>  <span class="c">#d 获取了yield 12 的参数值12</span>
+</span><span class="line"><span class="k">print</span> <span class="s">&#39;We will never forget the date&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">d</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>输出结果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Wen</span> <span class="n">Chuan</span> <span class="n">Fighting</span><span class="err">!</span>
+</span><span class="line"><span class="n">We</span> <span class="n">will</span> <span class="n">never</span> <span class="n">forget</span> <span class="n">the</span> <span class="n">date</span> <span class="mi">5</span> <span class="o">.</span> <span class="mi">12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Go 语言在语言级别支持轻量级线程，叫goroutine 。
+一个函数调用前加上go关键字，这次调用就会在一个新的goroutine 中并发执行。当被调用的函数返回时，这个goroutine 也自动结束了。需要注意的是，如果这个函数有返回值，那么这个返回值会被丢弃。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">package</span> <span class="n">main</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">import</span>  <span class="s">&quot;fmt&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="nb">int</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">z</span> <span class="p">:</span><span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</span><span class="line">    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">for</span> <span class="n">i</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+</span><span class="line"> 		<span class="n">go</span> <span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>代码源文件</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>协程示例1 (goroutine1.go)</span> <a href="/tech/code/2013/go/goroutine1.go">download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">package</span> <span class="n">main</span>
+</span><span class="line">
+</span><span class="line"><span class="k">import</span> <span class="s">&quot;fmt&quot;</span>
+</span><span class="line"><span class="k">import</span> <span class="s">&quot;time&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">func</span> <span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="nb">int</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="n">z</span> <span class="p">:=</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span>
+</span><span class="line">	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">go</span> <span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="n">time</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="p">*</span> <span class="mf">1e9</span><span class="p">)</span>
+</span><span class="line">	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;finished&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>协程示例2 (goroutine1.go)</span> <a href="/tech/code/2013/go/goroutine1.go">download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">package</span> <span class="n">main</span>
+</span><span class="line">
+</span><span class="line"><span class="k">import</span> <span class="s">&quot;fmt&quot;</span>
+</span><span class="line"><span class="k">import</span> <span class="s">&quot;time&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">func</span> <span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="nb">int</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	<span class="n">z</span> <span class="p">:=</span> <span class="n">x</span> <span class="p">+</span> <span class="n">y</span>
+</span><span class="line">	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="k">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
+</span><span class="line">		<span class="k">go</span> <span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span><span class="line">	<span class="p">}</span>
+</span><span class="line">	<span class="n">time</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="p">*</span> <span class="mf">1e9</span><span class="p">)</span>
+</span><span class="line">	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;finished&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>channel</li>
+</ul>
+
+<p>channel是Go语言在语言级别提供的goroutine 间的通信方式。我们可以使用channel在两个或多个goroutine 之间传递消息。channel是进程内的通信方式，因此通过channel传递对象的过程和调用函数时的参数传递行为比较一致，比如也可以传递指针等。</p>
+
+<p>channel是类型相关的。也就是说，一个channel只能传递一种类型的值，这个类型需要在声明channel时指定。如果对Unix 管道有所了解的话，就不难理解channel，可以将其认为是一种类型安全的管道。</p>
+
+<p>语法：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">var</span>  <span class="n">chanName</span> <span class="n">chan</span> <span class="n">ElementType</span>
+</span><span class="line"><span class="n">var</span>  <span class="n">ch</span> <span class="n">chan</span> <span class="nb">int</span>
+</span><span class="line"><span class="n">var</span>  <span class="n">m</span>  <span class="nb">map</span> <span class="p">[</span> <span class="n">string</span> <span class="p">]</span> <span class="n">chan</span> <span class="nb">bool</span>
+</span><span class="line"><span class="n">ch</span> <span class="p">:</span><span class="o">=</span>  <span class="n">make</span><span class="p">(</span> <span class="n">chan</span> <span class="nb">int</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在channel的用法中，最常见的包括写入和读出。将一个数据写入（发送）至channel的语法很直观，如下：</p>
+
+<pre><code>ch &lt;- value 
+</code></pre>
+
+<p>向channel写入数据通常会导致程序阻塞，直到有其他goroutine 从这个channel中读取数据。从channel中读取数据的语法是 </p>
+
+<pre><code>value := &lt;-ch  
+</code></pre>
+
+<p>如果channel之前没有写入数据，那么从channel中读取数据也会导致程序阻塞，直到channel中被写入数据为止。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">Select</span>
+</span><span class="line"><span class="n">select</span>  <span class="p">{</span>
+</span><span class="line">	<span class="n">case</span> <span class="o">&lt;-</span><span class="n">chan1</span><span class="p">:</span>
+</span><span class="line">	<span class="o">//</span> <span class="err">如果</span><span class="n">chan1</span><span class="err">成功读到数据，则进行该</span><span class="n">case</span><span class="err">处理语句</span>
+</span><span class="line"> 	<span class="n">case</span> <span class="n">chan2</span> <span class="o">&lt;-</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class="line">	<span class="o">//</span> <span class="err">如果成功向</span><span class="n">chan2</span> <span class="err">写入数据，则进行该</span><span class="n">case</span><span class="err">处理语句</span>
+</span><span class="line"> 	<span class="n">default</span><span class="p">:</span>
+</span><span class="line">	<span class="o">//</span> <span class="err">如果上面都没有成功，则进入</span><span class="n">default</span><span class="err">处理流程</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>缓冲机制</li>
+</ul>
+
+<p>给channel带上缓冲，从而达到消息队列的效果。 要创建一个带缓冲的channel，其实也非常容易： </p>
+
+<pre><code>c := make( chan int , 1024)
+</code></pre>
+
+<p>从带缓冲的channel中读取数据可以使用与常规非缓冲channel完全一致的方法，但我们也可以使用range关键来实现更为简便的循环读取：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">for</span>  <span class="n">i</span> <span class="p">:</span><span class="o">=</span>  <span class="nb">range</span> <span class="n">c</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;Received:&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>需要注意的是，在Go语言中channel本身也是一个原生类型，与map之类的类型地位一样，因此channel本身在定义后也可以通过channel来传递。</p>
+
+<ul>
+  <li>超时机制</li>
+</ul>
+
+<p>Go语言没有提供直接的超时处理机制，但我们可以利用select机制。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">//</span>  <span class="err">首先，我们实现并执行一个匿名的超时等待函数</span>
+</span><span class="line"><span class="n">timeout</span> <span class="p">:</span><span class="o">=</span>  <span class="n">make</span><span class="p">(</span> <span class="n">chan</span> <span class="nb">bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="n">go</span> <span class="n">func</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span> <span class="o">//</span>  <span class="err">等待</span><span class="mi">1</span><span class="err">秒钟</span>
+</span><span class="line">    <span class="n">timeout</span> <span class="o">&lt;-</span> <span class="n">true</span>
+</span><span class="line"><span class="p">}()</span>
+</span><span class="line">
+</span><span class="line"><span class="o">//</span>  <span class="err">然后我们把</span><span class="n">timeout</span><span class="err">这个</span><span class="n">channel</span><span class="err">利用起来</span>
+</span><span class="line"><span class="n">select</span>  <span class="p">{</span>
+</span><span class="line">	<span class="n">case</span> <span class="o">&lt;-</span><span class="n">ch</span><span class="p">:</span>
+</span><span class="line">	<span class="o">//</span> <span class="err">从</span><span class="n">ch</span><span class="err">中读取到数据</span>
+</span><span class="line">	<span class="n">case</span> <span class="o">&lt;-</span><span class="n">timeout</span><span class="p">:</span>
+</span><span class="line">	<span class="o">//</span> <span class="err">一直没有从</span><span class="n">ch</span><span class="err">中读取到数据，但从</span><span class="n">timeout</span><span class="err">中读取到了数据</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>单向channel</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">var</span>  <span class="n">ch1</span> <span class="n">chan</span> <span class="nb">int</span>  <span class="o">//</span> <span class="n">ch1</span> <span class="err">是一个正常的</span><span class="n">channel</span><span class="err">，不是单向的</span>
+</span><span class="line"><span class="n">var</span>  <span class="n">ch2</span> <span class="n">chan</span><span class="o">&lt;-</span>  <span class="n">float64</span><span class="o">//</span> <span class="n">ch2</span> <span class="err">是单向</span><span class="n">channel</span><span class="err">，只用于写</span><span class="n">float64</span><span class="err">数据</span>
+</span><span class="line"><span class="n">var</span>  <span class="n">ch3</span> <span class="o">&lt;-</span><span class="n">chan</span> <span class="nb">int</span>  <span class="o">//</span> <span class="n">ch3</span> <span class="err">是单向</span><span class="n">channel</span><span class="err">，只用于读取</span><span class="nb">int</span> <span class="err">数据</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>只有在介绍了单向channel的概念后，读者才会明白类型转换对于channel的意义：就是在单向channel和双向channel之间进行转换。示例如下： </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">ch4</span> <span class="p">:</span><span class="o">=</span> <span class="n">make</span><span class="p">(</span> <span class="n">chan</span> <span class="nb">int</span> <span class="p">)</span>
+</span><span class="line"><span class="n">ch5</span> <span class="p">:</span><span class="o">=</span> <span class="o">&lt;-</span><span class="n">chan</span> <span class="nb">int</span> <span class="p">(</span><span class="n">ch4</span><span class="p">)</span> <span class="o">//</span> <span class="n">ch5</span><span class="err">就是一个单向的读取</span><span class="n">channel</span>
+</span><span class="line"><span class="n">ch6</span> <span class="p">:</span><span class="o">=</span> <span class="n">chan</span><span class="o">&lt;-</span>  <span class="nb">int</span> <span class="p">(</span><span class="n">ch4</span><span class="p">)</span> <span class="o">//</span> <span class="n">ch6</span>  <span class="err">是一个单向的写入</span><span class="n">channel</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>关闭channel</p>
+
+<pre><code>close(ch)
+</code></pre>
+
+<p>关闭后：</p>
+
+<pre><code>x, ok := &lt;-ch 
+</code></pre>
+
+<p>这个用法与map 中的按键获取value的过程比较类似，只需要看第二个bool返回值即可，如果返回值是false 则表示ch已经被关闭。</p>
+
+<p>多核并行化，让出时间片</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>多核并行示例  (parallel.go)</span> <a href="/tech/code/2013/go/parallel.go">download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="go"><span class="line"><span class="k">type</span> <span class="n">Vector</span> <span class="p">[]</span><span class="nb">float64</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">//  分配给每个CPU 的计算任务 </span>
+</span><span class="line"><span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="n">Vector</span><span class="p">)</span> <span class="n">DoSome</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">u</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">c</span> <span class="k">chan</span> <span class="nb">int</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class="line"> <span class="k">for</span> <span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
+</span><span class="line">         <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">+=</span> <span class="n">u</span><span class="p">.</span><span class="n">Op</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span class="line">     <span class="p">}</span>
+</span><span class="line">     <span class="n">c</span> <span class="p">&lt;-</span> <span class="mi">1</span>          <span class="c1">//  发信号告诉任务管理者我已经计算完成了 </span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="k">const</span> <span class="n">NCPU</span> <span class="p">=</span> <span class="mi">16</span>      <span class="c1">// 假设总共有16 核 </span>
+</span><span class="line">
+</span><span class="line"><span class="k">func</span> <span class="p">(</span><span class="n">v</span> <span class="n">Vector</span><span class="p">)</span> <span class="n">DoAll</span><span class="p">(</span><span class="n">u</span> <span class="n">Vector</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">    <span class="n">c</span> <span class="p">:=</span> <span class="nb">make</span><span class="p">(</span> <span class="k">chan</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">NCPU</span><span class="p">)</span>  <span class="c1">// 用于接收每个CPU 的任务完成信号 </span>
+</span><span class="line">
+</span><span class="line"> <span class="k">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">NCPU</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
+</span><span class="line">  <span class="k">go</span> <span class="n">v</span><span class="p">.</span><span class="n">DoSome</span><span class="p">(</span><span class="n">i</span><span class="p">*</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)/</span><span class="n">NCPU</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">+</span><span class="mi">1</span><span class="p">)*</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)/</span><span class="n">NCPU</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"> <span class="c1">// 等待所有CPU 的任务完成 </span>
+</span><span class="line"> <span class="k">for</span> <span class="n">i</span> <span class="p">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">NCPU</span><span class="p">;</span> <span class="n">i</span><span class="p">++</span> <span class="p">{</span>
+</span><span class="line">    <span class="p">&lt;-</span><span class="n">c</span>    <span class="c1">//  获取到一个数据，表示一个CPU 计算完成了 </span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"> <span class="c1">// 到这里表示所有计算已经结束 </span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>同步</li>
+</ul>
+
+<p>Go语言包中的sync包提供了两种锁类型：sync.Mutex和sync.RWMutex。
+RWMutex相对友好些，是经典的单写多读模型</p>
+
+<p>Go语言提供了一个Once类型来保证全局的唯一性操作，</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">var</span> <span class="n">a</span> <span class="n">string</span>
+</span><span class="line"><span class="n">var</span> <span class="n">once</span> <span class="n">sync</span><span class="o">.</span><span class="n">Once</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="n">setup</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line"> 	<span class="n">a</span> <span class="o">=</span> <span class="s">&quot;hello, world&quot;</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="n">doprint</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="n">once</span><span class="o">.</span><span class="n">Do</span><span class="p">(</span><span class="n">setup</span><span class="p">)</span>
+</span><span class="line">	<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">func</span> <span class="n">twoprint</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">	<span class="n">go</span> <span class="n">doprint</span><span class="p">()</span>
+</span><span class="line">	<span class="n">go</span> <span class="n">doprint</span><span class="p">()</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>goroutine 和channel 是支撑起Go语言的并发模型的基石，让Go语言在如今集群化与多核化的时代成为一道极为亮丽的风景</p>
+
+<p>最后，看书的过程中，写的关于一些简单的go语言的例子，在<a href="https://github.com/liuhongjiang/tech/tree/source/source/code/2013/go">这里</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-25T18:28:00+08:00" pubdate data-updated="true">Nov 25<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/language/'>Language</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= go语言学习  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/tech/blog/2013/08/18/tree/" title="Previous Post: 数据结构--树">&laquo; 数据结构--树</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>本人</h1>
+  <p>一个码农，苦逼而卑微地活着，同时也正直、善良而坚持地活着。相信梦想，相信真理。写过C/C++，python。开发过网站服务器后端程序。<a href="/tech/about/">更多介绍...</a></p>
+  <p>声明：本站使用的图片等，甚至部分文章都来自网络，原作者享有对著作的一切权利。</p>
+  <p>欢迎在新浪微博上关注我：<wb:follow-button uid="1462341965" type="gray_3" width="100%" height="24" ></wb:follow-button></p>
+</section>
+<section>
+  <h1>最新博文</h1>
+  <ul id="Recent Posts">
+    
+      <li class="post">
+        <a href="/tech/blog/2013/11/25/learning-go/">go语言学习</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/08/18/tree/">数据结构--树</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/tech/blog/2013/01/23/zk-overview/">ZooKeeper Overview</a>
+      </li>
+    
+  </ul>
+</section>
+<section id="tag-clouds">
+  <h1>分类</h1>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+</section>
+<section>
+  <h1>友情链接</h1>
+  <ul id="friends-links">
+      <li class="post">
+        <a href="http://liuhongjiang.github.com/life/">小结其绳</a>
+      </li>
+      <li class="post">
+        <a href="http://arekyao.github.com/">YY Every Day</a>
+      </li>
+      <li class="post">
+        <a href="http://www.cnblogs.com/yorkhuang/">黄耀York</a>
+      </li>
+  </ul>
+</section>
+<section id="tag-clouds" style="text-decoration:none">
+<h1><a href="/tech/recent-comment/">最新评论</a></h1>
+    <script type="text/javascript" src="http://andrewliu117.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=16&excerpt_length=30"></script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 刘洪江 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <span style="float:right">
+    Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>
+  </span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'andrewliu117';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

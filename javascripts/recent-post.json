@@ -1,6 +1,12 @@
 [
 
 {
+    "title":"go语言学习", 
+    "url":"http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/", 
+    "date":"2013-11-25"
+}
+,
+{
     "title":"数据结构--树", 
     "url":"http://liuhongjiang.github.com/tech/blog/2013/08/18/tree/", 
     "date":"2013-08-18"
@@ -22,12 +28,6 @@
     "title":"ZooKeeper Overview", 
     "url":"http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/", 
     "date":"2013-01-23"
-}
-,
-{
-    "title":"使用https连接github", 
-    "url":"http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/", 
-    "date":"2013-01-22"
 }
 
 ]
