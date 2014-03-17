@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2014-03-17T11:36:22+08:00</updated>
+  <updated>2014-03-17T11:41:19+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -56,6 +56,8 @@
   <li>反射 </li>
   <li>语言交互性 (Cgo, C语言库)</li>
 </ul>
+
+<!-- more -->
 
 <h2 id="go-2">go的工具</h2>
 
@@ -1197,6 +1199,8 @@ RWMutex相对友好些，是经典的单写多读模型</p>
 
 <p>所以，使用二叉树还要考虑尽可能让二叉树保持左图的结构，和避免右图的结构，也就是所谓的“平衡”问题； 实际使用的二叉数都是在原二叉树的基础上加上平衡算法, 即“平衡二叉树”;如何保持二叉树结点分布均匀的平衡算法是平衡二叉树的关键; 平衡算法是一种在二叉数中插入和删除结点的策略。</p>
 
+<!-- more -->
+
 <h2 id="section-1">平衡二叉树</h2>
 
 <p>形态匀称的二叉树称为平衡二叉树 (Balanced binary tree), 其严格定义是：</p>
@@ -1469,6 +1473,8 @@ RWMutex相对友好些，是经典的单写多读模型</p>
   <li>《<a href="http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html">为什么Lisp语言如此先进</a>》比较系统地介绍了lisp的特点，可以一读。        </li>
   <li><a href="http://tianchunbinghe.blog.163.com/blog/static/7001200692314249376/">用sbcl,asdf和cl-launch编写可分发的lisp程序</a></li>
 </ul>
+
+<!-- more -->
 
 <h3 id="section">默认参数</h3>
 
