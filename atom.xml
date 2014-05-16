@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2014-03-17T11:41:19+08:00</updated>
+  <updated>2014-05-16T14:51:17+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[规则]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/"/>
+    <updated>2014-05-16T14:41:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2014/05/16/rules</id>
+    <content type="html"><![CDATA[<p>这篇博文是由两个问题想到的。</p>
+
+<p>一是火车票实名制后，但是仍然还是有黄牛党倒票。倒票的手法是，先用几百张身份证抢下火车票，然后联系买主，联系到买主后，在乘车时间的前一两天，在一个窗口退票，另外一个窗口买票，一退票后系统上显示有一张鱼票后，马上买入。虽然理论上还是有被其它人抢走，失手的可能，但由于该车次的票早早就买光了，临开车的前1、2天，很少会有人去查询，所以还是比较安全的。
+针对这种倒票方式，设置怎样的规则杜绝呢？首先一个方法就是，退掉的票，半个小时后才能买入。这样就可以增加退掉的票被被人抢走的可能性。开车前半个小时，退掉的票可以立马买进。这样就讲黄牛党的倒票时间窗口缩短到了开车前半个小时。
+复杂的规则，就还有调查哪些身份证存在大量这种买了票后，又退票的行为，并加以惩罚。例如半年内不能买车票，或在春运期间不能买火车票。但这里有个风险，就是如果黄牛党用假身份证买票，那么这条规则就会伤及到真身份证的那个无辜的人。</p>
+
+<p>第二个问题是成都的公交车票，有两种，一种是电子钱包，就是充一定数量的钱，这个钱永远在卡里，一直可以用，主要目的是方便，不用每次乘公交都要准备零钱，而且还打9折。
+还有一种是次卡，就是用前买一定数量的乘车次数，相当于打5折，而且用次卡乘车，2个小时内免费换乘公交车3次。而电子钱包换乘的时候，是要再次给钱的。对于我们这些上班族，每天上班要换乘几次的，非常划算。
+但次卡有个规定，买的次数是当月有效的，一到下个月，无论你买了多少次，就作废了。我想公交公司是想用这种方式，吃点别人多充次数的油头。最开始的时候，次卡只能10块钱的倍数买，后来大家反对，于是可以1块钱的倍数买。乘公交用次卡的最低单位也是1块钱，所以基本上，公交公司就没有什么油头了。</p>
+
+<!-- more -->
+
+<p>但是广大人民群众是不能让公交公司占便宜的。于是大家都按照每月的次数，然后卡着次数充，或者少充一点，到了月末再买剩下不足的次数。但有保不齐因为什么原因，多用了一两次，那么就可以看到每月的最后1、2天，有人充1块钱2块钱的情况。其实这是一种资源的浪费。一是充卡点工作人员的劳动浪费，本来一次可以完成的工作，却要分成2次或者3、4次完成。当然更有甚者，家楼下就是充卡点，每天出门充个1、2块，仅仅满足当天乘公交的需求，明天的明天再充。二是每次充卡都要到充卡点去，排队交钱，充卡，快的话2、3分钟，慢的话5、6分钟，如果算上去充卡点和回来的时间，那就不止几分钟的时间了。如果每个人都浪费这几分钟，加起来，对整个社会来说就是大损失了。
+所以一个坏规则的影响是难以想像的，而且往往都还不知道怎么影响的。人都是趋利的，不可能白白承受损失。但绝大多数的时候也是遵守规则的，所以人往往会在规则允许的情况下，做对自己最有利的事情。</p>
+
+<p>对于上面的公交卡的例子，如果不改变规则，你很难改变人们充卡的方式。
+改变的方法其实也很简单，最粗暴的方式是取消1个月有效期的限制，但是这将会给公交公司带来损失，因为这样的话，电子钱包就没有人买了，那部分收入就损失了。公交公司肯定不愿意的。</p>
+
+<p>还有另外一种方式，就是每个月有几天次卡使用的重叠期，举个例子，这个月充的次卡，到下个月10号之前有效，下个月的前面几天充的次卡，是本月就可以用的，那么就有10天的重叠期，充钱的时候，就可以在本月的使用次数的基础上，多充几个天的次卡，即使我本月有什么变动，多乘了几次公交，也不会出现，卡着次数充，而月底需要再充钱的情况，同时，我也不担心要多充的那几次浪费，当然也可以杜绝大家害怕因为请个假什么的，当月少乘了几次，所有充卡的时候，估计少充1、2天的情况。</p>
+
+<p>这样，一个简单的规则改变，可以避免上面说的临充1、2块而带来的资源浪费。</p>
+
+<p>其实生活中有很多值得思考的问题，特别是制度的制定。有人说过：一个好的制度，让坏人做好事；一个坏的制度，让好人做坏事。如何制定一个更好的更好的更民主的政治制度，也许是我们每一个中国人应该关心的话题，和应该去读的书。</p>
+
+<p>同样我们在实现系统时，或实现一个平台的时候，怎么设计用户的参与规则，如何避免上面讲到的两个例子问题，都应该在实现的过程中，认真思考。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[go语言学习]]></title>
@@ -7798,157 +7831,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 </table>
 
 <p><a href="http://wiki.ubuntu.org.cn/Wikipedia:%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F">letax数学公式</a></p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用Octopress搭建博客]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog/"/>
-    <updated>2012-11-21T10:40:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog</id>
-    <content type="html"><![CDATA[<h2 id="blog">如何搭建blog</h2>
-<ul>
-  <li>这个blog是使用<a href="http://octopress.org/">Octopress</a>搭建的，它是一种基于<a href="https://github.com/mreid/jekyll/">Jekyll</a>的博客框架。</li>
-  <li>存放在<a href="https://github.com/">github</a>上。</li>
-  <li>markdown解析器用的<a href="http://kramdown.rubyforge.org/">kramdown</a></li>
-  <li>数学公式解析器用的<a href="http://www.mathjax.org/">MathJax</a></li>
-</ul>
-
-<!-- more -->
-
-<p>相关信息如下：</p>
-
-<ul>
-  <li><a href="https://github.com/">github</a></li>
-  <li><a href="http://pages.github.com/">github pages</a></li>
-  <li><a href="http://octopress.org/">Octopress</a></li>
-  <li><a href="http://octopress.org/docs/">Octopress手册</a></li>
-</ul>
-
-<h2 id="section">值得借鉴的站点</h2>
-
-<p>下面是一个很不错的小站，都是结语jekyll和github搭建的，如果决定喜欢，可以从github拷贝下来，然后自己搭建一个。这些小站中还有很多关于如何使用github，搭建blog的文章，可以看看。</p>
-
-<ul>
-  <li><a href="http://luikore.github.com/2011/09/good-things-learned-from-octopress/">这个小站很不错</a></li>
-  <li><a href="http://yanping.me/">yanping.me</a></li>
-  <li><a href="http://www.yangzhiping.com/">http://www.yangzhiping.com/</a></li>
-  <li><a href="http://colors4.us/">http://colors4.us/</a></li>
-  <li><a href="http://mark.reid.name/">http://mark.reid.name/</a></li>
-  <li><a href="http://www.worldhello.net">http://www.worldhello.net</a></li>
-  <li><a href="http://jakevdp.github.com/">http://jakevdp.github.com/</a></li>
-  <li><a href="http://threeofakind.ca/blog/2012/06/russells-6-8-months/">head的照片</a> </li>
-  <li><a href="http://blog.satrex.jp/">head的渐变色</a></li>
-  <li><a href="http://mrzhang.me/">一个前端大牛的博客：wǒ_is神仙</a></li>
-  <li><a href="http://www.dongwm.com/">3d云标签，豆瓣阅读的侧边栏</a></li>
-</ul>
-
-<p>其它的收集</p>
-
-<ul>
-  <li><a href="http://justineo.github.com/slideshows/font/#/">这个slideshows太亮了</a></li>
-  <li><a href="http://mrzhang.me/blog/using-shjs-for-jekyll.html">另外一种博客语法高亮:Using SHJS for Jekyll</a></li>
-</ul>
-
-<h2 id="blog-1">在blog中显示公式</h2>
-
-<p>数学公式解析器用的<a href="http://www.mathjax.org/">MathJax</a>, 这是一个JS脚本，渲染Latex格式的数学公式。请参考以下几篇文章。</p>
-
-<ul>
-  <li><a href="http://yanping.me/cn/blog/2012/03/10/octopress-with-latex/">在Octopress中使用LaTeX</a></li>
-  <li><a href="http://steshaw.org/blog/2012/02/09/hello-mathjax/">Hello MathJax</a></li>
-  <li><a href="http://jakevdp.github.com/blog/2012/09/05/quantum-python/">blog写公式的例子</a></li>
-</ul>
-
-<h2 id="section-1">标签</h2>
-
-<p>标签云主要使用<a href="https://github.com/tokkonopapa/octopress-tagcloud">标签云的插件</a>。</p>
-
-<p>在<code>_config.yml</code>的sidebar中加入<code>tag_cloud.html</code>，就标签出现在侧边栏中。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">default_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
-</span><span class="line">
-</span><span class="line">blog_index_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
-</span><span class="line">
-</span><span class="line">post_asides: [custom/asides/about.html, asides/recent_posts.html, custom/asides/tag_cloud.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="section-2">拷贝本站</h2>
-
-<p>或者你也可以拷贝这个项目到你的github的pages的项目中，然后删除source/_post下面的所有文章。修改部分配置即可。</p>
-
-<ul>
-  <li><a href="https://github.com/liuhongjiang/liuhongjiang.github.com">本站的源代码</a></li>
-</ul>
-
-<p><strong style="color:red">注意：</strong>clone的是source分支，不是master。</p>
-
-<p>需要修改的地方：</p>
-
-<ul>
-  <li>_config.yml文件</li>
-</ul>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">url: http://liuhongjiang.github.com
-</span><span class="line">title: 刘洪江的流水帐
-</span><span class="line">subtitle: 拾起点点滴滴, 聚沙成石.
-</span><span class="line">author: 刘洪江
-</span><span class="line">simple_search: http://google.com/search
-</span><span class="line">description: 他是一个程序员，已婚，有个儿子，字“左烦子”，号“李真棒”.</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<ul>
-  <li>
-    <p>自我介绍</p>
-
-    <ul>
-      <li>source/about/index.markdown </li>
-      <li>source/_includes/custom/asides/about.html</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="section-3">预览</h2>
-
-<p>写了新文章以后可以进行预览，最简单的命令就是</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">rake preview</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>如果是在github的个人主页上的博客，那么使用<code>http://localhost:4000</code>既可以访问了，如果是项目主页那么就要用<code>http://localhost:4000/{project-name}/</code>访问。</p>
-
-<p>还有一个预览方式，就是通过<code>jekyll</code>命令</p>
-
-<p>对于个人主页，是使用下面命令，访问的网址<code>http://localhost:4000</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>对于项目主页，使用以下命令，访问的网址是<code>http://localhost:4000/{project-name}/</code></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">jekyll --server --base-url /{project-name}/</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h2 id="section-4">博客样式</h2>
-
-<p>另外关于本博客的一些样式可以参考<a href="http://liuhongjiang.github.com/tech/blog/2012/11/24/blog-styles/">博客的样式</a></p>
-
-<h2 id="section-5">感谢</h2>
-<p>在本站的搭建过程中，参考了<a href="http://yanping.me/cn/">http://yanping.me/cn/</a>。我阅读了他关于如何搭建的文章，也借鉴了他的很多样式。在此表示感谢。</p>
-
-<h2 id="section-6">好文章</h2>
-
-<p><a href="http://www.yangzhiping.com/tech/github.html">如何高效利用GitHub</a></p>
 
 ]]></content>
   </entry>

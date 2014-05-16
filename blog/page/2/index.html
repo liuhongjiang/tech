@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="摘要： 本文主要介绍了一个使用svm实现一个简单的数字手写识别的例子。首先讲到如何将svm应用到多类分类，又简单介绍了高斯核函数，之后又简单介绍了本例所使用的数据来源和格式，最后贴出来实现的代码。 前面两篇blog介绍了支持向量机SVM和SMO算法，这一篇就讲讲SVM的一个简单实际应用： &hellip;">
+  <meta name="description" content="摘要： 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找、搜索功能。 elasticsearch是一个是开源的（Apache2协议），分布式的，RESTful的，构建在Apache Lucene之上的的搜索引擎。 它有很多特点例如Schema Free， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,86 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/01/11/es/">Elasticsearch之基本操作</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-11T17:08:00+08:00" pubdate data-updated="true">Jan 11<span>th</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/3rd-nbsp-tools/'>3rd&nbsp;tools</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=elasticsearch之基本操作 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/11/es/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=elasticsearch之基本操作 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/11/es/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=elasticsearch之基本操作  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/11/es/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <div class="abstract">
+            <table>
+                <tr>
+                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                    <td>本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找、搜索功能。</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p><a href="http://www.elasticsearch.org">elasticsearch</a>是一个是开源的（Apache2协议），分布式的，<a href="http://zh.wikipedia.org/zh-cn/REST">RESTful</a>的，构建在<a href="http://lucene.apache.org/">Apache Lucene</a>之上的的搜索引擎。 </p>
+
+<p>它有很多特点例如Schema Free，Document Oriented。它是#nosql的，基于JSON，同时支持多种API，包括HTTP, thrift, memcached。支持HTTP,是比较爽的一点，因为基本上所有的应用都可以用ES了，页面上的js脚本都可以去查询。</p>
+
+<h2 id="section">安装</h2>
+
+<p>启动和安装特别简单，在<a href="http://www.elasticsearch.org/download/">ES下载页面</a>下载zip或者tar包后，解压，然后到elasticsearch的目录下，运行下面的命令就可以了。</p>
+
+<pre class="sh-commands"><code>bin/elasticsearch -f</code></pre>
+
+<p>搭建集群也非常简单，在同网段的机器上，启动es后，它们会自动组建成一个集群，并完成数据的分布式存储，查询时也会按照分布式的方式去查找。</p>
+
+<p>好了恭喜你，现在你已经可以搭建ES单机版和ES集群了，一切都这么简单。</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2013/01/11/es/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -842,71 +922,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/11/21/how-to-build-blog/">使用Octopress搭建博客</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-21T10:40:00+08:00" pubdate data-updated="true">Nov 21<span>st</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/octopress/'>octopress</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=使用Octopress搭建博客 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=使用Octopress搭建博客 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=使用Octopress搭建博客  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/how-to-build-blog/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <h2 id="blog">如何搭建blog</h2>
-<ul>
-  <li>这个blog是使用<a href="http://octopress.org/">Octopress</a>搭建的，它是一种基于<a href="https://github.com/mreid/jekyll/">Jekyll</a>的博客框架。</li>
-  <li>存放在<a href="https://github.com/">github</a>上。</li>
-  <li>markdown解析器用的<a href="http://kramdown.rubyforge.org/">kramdown</a></li>
-  <li>数学公式解析器用的<a href="http://www.mathjax.org/">MathJax</a></li>
-</ul>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2012/11/21/how-to-build-blog/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -930,6 +945,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2014/05/16/rules/">规则</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2013/11/25/learning-go/">go语言学习</a>
       </li>
     
@@ -943,10 +962,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
     
       <li class="post">
         <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/01/23/zk-overview/">ZooKeeper Overview</a>
       </li>
     
   </ul>
