@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="摘要： 本文简单介绍了elasticsearch的HTTP API中的插入、删除、更新、查找、搜索功能。 elasticsearch是一个是开源的（Apache2协议），分布式的，RESTful的，构建在Apache Lucene之上的的搜索引擎。 它有很多特点例如Schema Free， &hellip;">
+  <meta name="description" content="linux下shell提示符可以任意配置的。 首先看看bash的配置文件，一般在用户的HOME目录下有这样几个文件1： .bash_history ：记录了您以前输入的命令， .bash_logout ：当您退出 shell 时，要执行的命令， .bash_profile ：当您登入 shell &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,84 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/01/16/shell-prompting/">Linux命令行提示符配置</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-16T09:29:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/linux/'>linux</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=linux命令行提示符配置 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=linux命令行提示符配置 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=linux命令行提示符配置  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>linux下shell提示符可以任意配置的。</p>
+
+<p>首先看看bash的配置文件，一般在用户的HOME目录下有这样几个文件<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>：</p>
+
+<ul>
+  <li>.bash_history ：记录了您以前输入的命令，</li>
+  <li>.bash_logout ：当您退出 shell 时，要执行的命令，</li>
+  <li>.bash_profile ：当您登入 shell 时，要执行的命令，</li>
+  <li>.bashrc ：每次打开新的 shell 时，要执行的命令。</li>
+</ul>
+
+<p>这些文件是每一位用户的设置。系统级的设置存储在’/etc/profile’、’/etc/bashrc’及目录’/etc/profile.d’下的文件中。但您得习惯用各自的配置文件：编辑不需要’root’权限，还可以使您的设置更有个性。当系统级与用户级的设置发生冲突时，将采用用户的设置。</p>
+
+<p>每次当您打开一个控制台(console)或 xterm 时，最先看到的就是提示符(prompt)，类似于：</p>
+
+<pre class="sh-bash"><code>account@hostname ~ $</code></pre>
+
+<p>在默认设置下，提示符将显示您的用户名、主机名（默认是’localhost’）、当前所在目录（在Unix中，’~’表示您的home目录）。
+按照传统，最后一个字符可以标识您是普通用户（<code>$</code>），还是’root’（<code>#</code>）。
+您可以通过 <code>$PS1</code>, <code>$PS2</code> 变量来设置提示符，<code>$PS2</code>是当在多行内输入一个命令时，换行后，出现的提示符。命令</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2013/01/16/shell-prompting/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -845,83 +923,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/11/21/math/">显示公式</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-21T12:49:00+08:00" pubdate data-updated="true">Nov 21<span>st</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/math/'>math</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=显示公式 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=显示公式 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=显示公式  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <p>在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。借用强大的<code>MathJax + Latex</code>就可以解决这个问题。废话少说，先来一个例子  </p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-
-\begin{align*}
-  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
-  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
-  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
-      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
-      \vdots & \ddots & \vdots \\
-      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
-    \end{array} \right)
-  \left( \begin{array}{c}
-      y_1 \\
-      \vdots \\
-      y_n
-    \end{array} \right)
-\end{align*}
- %]]></script>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2012/11/21/math/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -945,6 +946,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2014/05/16/rules/">规则</a>
       </li>
     
@@ -958,10 +963,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
     
       <li class="post">
         <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a>
       </li>
     
   </ul>
