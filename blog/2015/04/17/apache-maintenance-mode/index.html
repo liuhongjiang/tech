@@ -182,7 +182,7 @@ Basically, I learnt from this page:
 
 <p>Then add rewrite rule:</p>
 
-<pre><code>DocumentRoot "/opt/dev_center/"
+<pre><code>DocumentRoot "/opt/root_dir/"
 &lt;IfModule mod_rewrite.c&gt;
    RewriteEngine On
    #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
@@ -203,19 +203,19 @@ After the site becomes normally, please just remove the <code>maintenance.enable
 </code></pre>
 
 <h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
-<p>add the following line in the <code>conf.d/devcenter.conf</code> or <code>conf.d/webconsole.conf</code>:</p>
+<p>add the following line in the <code>conf.d/myproject.conf</code> or <code>conf.d/otherproject.conf</code>:</p>
 
-<pre><code>Alias /maintenance.html /opt/dev_center/maintenance.html
+<pre><code>Alias /maintenance.html /opt/root_dir/maintenance.html
 </code></pre>
 
 <h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
 <p>restart Apache, it should work.
-And I already make a demo on devcenter at 10.24.148.31, here are the config files with path:</p>
+And I already make a demo, here are the config files with path:</p>
 
-<pre><code>httpd.conf -&gt; /opt/dev_center/httpd/conf
-devcenter.conf -&gt; /opt/dev_center/httpd/conf.d
-maintenance.html -&gt; /opt/dev_center
-maintenance.enable -&gt; /opt/devcenter
+<pre><code>httpd.conf -&gt; /opt/root_dir/httpd/conf
+devcenter.conf -&gt; /opt/root_dir/httpd/conf.d
+maintenance.html -&gt; /opt/root_dir
+maintenance.enable -&gt; /opt/root_dir
 </code></pre>
 
 </div>
