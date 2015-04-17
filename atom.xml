@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2014-05-16T17:25:50+08:00</updated>
+  <updated>2015-04-17T19:52:45+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[apache maintenance mode]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/"/>
+    <updated>2015-04-17T19:39:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode</id>
+    <content type="html"><![CDATA[<h2 id="how-to-set-devcenter-or-webconsole-into-maintenance-mode">How to set devcenter or webconsole into maintenance mode</h2>
+<p>I found a way to set devcenter or webconsole show maintenance page automatically without restart apache.
+With the following method, we just touch or remove one file, it will turn on or off the maintenance mode.
+Basically, I learnt from this page:
+<a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
+
+<h2 id="change-httpdconf">Change httpd.conf</h2>
+<p>make sure the rewrite module is loaded:</p>
+
+<pre><code>LoadModule rewrite_module modules/mod_rewrite.so
+</code></pre>
+
+<p>Then add rewrite rule:</p>
+
+<pre><code>DocumentRoot "/opt/dev_center/"
+&lt;IfModule mod_rewrite.c&gt;
+   RewriteEngine On
+   #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.enable -f
+   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+   RewriteRule ^.*$ /maintenance.html [R=503,L]
+   ErrorDocument 503 /maintenance.html
+   Header Set Cache-Control "max-age=0, no-store"
+&lt;/IfModule&gt;
+</code></pre>
+
+<p>Then add the <code>maintenance.html</code> page in the <code>DocumentRoot</code>.
+When the site is under maintenance mode, please touch <code>maintenance.enable</code> file in <code>DocumentRoot</code>.
+After the site becomes normally, please just remove the <code>maintenance.enable</code></p>
+
+<pre><code>TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
+</code></pre>
+
+<h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
+<p>add the following line in the <code>conf.d/devcenter.conf</code> or <code>conf.d/webconsole.conf</code>:</p>
+
+<pre><code>Alias /maintenance.html /opt/dev_center/maintenance.html
+</code></pre>
+
+<h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
+<p>restart Apache, it should work.
+And I already make a demo on devcenter at 10.24.148.31, here are the config files with path:</p>
+
+<pre><code>httpd.conf -&gt; /opt/dev_center/httpd/conf
+devcenter.conf -&gt; /opt/dev_center/httpd/conf.d
+maintenance.html -&gt; /opt/dev_center
+maintenance.enable -&gt; /opt/devcenter
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Cathedral and the Bazaar ]]></title>
@@ -7531,49 +7589,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>就可以显示和本文开始一样的摘要了。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[读Vim手册笔记]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/"/>
-    <updated>2012-11-22T10:22:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim</id>
-    <content type="html"><![CDATA[<h2 id="section">书籍</h2>
-<pre class="sh-bash"><code>《VIM用户手册》  
-作者: Bram Moolenaar  
-翻译: ZhaoRuFei&lt;slimzhao@hotmail.com&gt;  
-版本: 7.0  
-</code></pre>
-
-<h2 id="section-1">笔记</h2>
-<ol>
-  <li><strong>要退出Vim, 用命令”ZZ”. 该命令保存当前文件并退出Vim.</strong></li>
-  <li>如果你在放弃所有修改后还想以该文件的初始内容作为开始继续编辑, 还可以用”:e!”命令放弃所有修改并重新载入该文件的原始内容.</li>
-</ol>
-
-<h2 id="section-2">奇技淫巧</h2>
-
-<ol>
-  <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
-  <li>gu/gU 大小写转化，gu小写，gU转为大写.    <br />
- u/U： 选中区域，直接进行大小写转换
- gg gu G：整篇文章大写转化为小写。  <br />
- gU0 ：从光标所在位置到行首变为大写  <br />
- gU$ ：从光标所在位置到行尾变为大写    </li>
-  <li><a href="http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html">vundle 管理vim插件</a></li>
-  <li>vim查看编译错误
- <code>:make</code>     进行编译，需要在makefile所在的目录下打开文件
- <code>:cw</code>       带开quickfix窗口
- cn          （next）下一条
- cp          (previous) 上一条
- cw          (显示warning)
- cc          显示错误
- col         前一个旧的错误 勘误表
- col         后一个旧的勘误表
- cnew        后一个较新的错误列表 ( :help :cnew )</li>
-</ol>
 
 ]]></content>
   </entry>

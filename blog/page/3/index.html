@@ -9,7 +9,8 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。借用强大的MathJax + Latex就可以解决这个问题。废话少说，先来一个例子 % <![CDATA[ \begin{align*} & \phi(x,y) = \phi \left(\sum_ &hellip;">
+  <meta name="description" content="书籍
+《VIM用户手册》 作者: Bram Moolenaar 翻译: ZhaoRuFei&lt;slimzhao@hotmail.com&gt; 版本: 7.0 笔记 要退出Vim, 用命令”ZZ”. 该命令保存当前文件并退出Vim. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +163,94 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2012/11/22/learning-vim/">读Vim手册笔记</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-22T10:22:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2012</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/vi/'>Vi</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=读Vim手册笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=读Vim手册笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=读Vim手册笔记  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <h2 id="section">书籍</h2>
+<pre class="sh-bash"><code>《VIM用户手册》  
+作者: Bram Moolenaar  
+翻译: ZhaoRuFei&lt;slimzhao@hotmail.com&gt;  
+版本: 7.0  
+</code></pre>
+
+<h2 id="section-1">笔记</h2>
+<ol>
+  <li><strong>要退出Vim, 用命令”ZZ”. 该命令保存当前文件并退出Vim.</strong></li>
+  <li>如果你在放弃所有修改后还想以该文件的初始内容作为开始继续编辑, 还可以用”:e!”命令放弃所有修改并重新载入该文件的原始内容.</li>
+</ol>
+
+<h2 id="section-2">奇技淫巧</h2>
+
+<ol>
+  <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
+  <li>gu/gU 大小写转化，gu小写，gU转为大写.    <br />
+ u/U： 选中区域，直接进行大小写转换
+ gg gu G：整篇文章大写转化为小写。  <br />
+ gU0 ：从光标所在位置到行首变为大写  <br />
+ gU$ ：从光标所在位置到行尾变为大写    </li>
+  <li><a href="http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html">vundle 管理vim插件</a></li>
+  <li>vim查看编译错误
+ <code>:make</code>     进行编译，需要在makefile所在的目录下打开文件
+ <code>:cw</code>       带开quickfix窗口
+ cn          （next）下一条
+ cp          (previous) 上一条
+ cw          (显示warning)
+ cc          显示错误
+ col         前一个旧的错误 勘误表
+ col         后一个旧的勘误表
+ cnew        后一个较新的错误列表 ( :help :cnew )</li>
+</ol>
+
+
+    </div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -388,6 +477,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/04/17/apache-maintenance-mode/">apache maintenance mode</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
       </li>
     
@@ -401,10 +494,6 @@
     
       <li class="post">
         <a href="/tech/blog/2013/08/18/tree/">数据结构&#8211;树</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
       </li>
     
   </ul>
@@ -443,7 +532,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 刘洪江 -
+  Copyright &copy; 2015 - 刘洪江 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <span style="float:right">
     Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>

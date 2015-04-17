@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="linux下shell提示符可以任意配置的。 首先看看bash的配置文件，一般在用户的HOME目录下有这样几个文件1： .bash_history ：记录了您以前输入的命令， .bash_logout ：当您退出 shell 时，要执行的命令， .bash_profile ：当您登入 shell &hellip;">
+  <meta name="description" content="摘要： 本文介绍了两种简单的master算法，霸道算法和环选举算法，另外还提出了一个没有验证的假象算法，它是在同一个host上基于文件锁的霸道选举算法。 现在主流的分布式集群一致性问题大多都吸收了PAXOS算法1的思想。然而，如果完全按照Leslie Lamport的论文2，实现复杂度比较高。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,88 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-18T17:44:00+08:00" pubdate data-updated="true">Jan 18<span>th</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/algorithm/'>Algorithm</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=霸道算法和环选举算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=霸道算法和环选举算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=霸道算法和环选举算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <div class="abstract">
+            <table>
+                <tr>
+                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                    <td>本文介绍了两种简单的master算法，霸道算法和环选举算法，另外还提出了一个没有验证的假象算法，它是在同一个host上基于文件锁的霸道选举算法。</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p>现在主流的分布式集群一致性问题大多都吸收了PAXOS算法<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>的思想。然而，如果完全按照Leslie Lamport的论文<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup>，实现复杂度比较高。因此，大多数实现都采用PAXOS的某种变形。Lamport的重要贡献，献是把分布式一致性的问题，形式化并给出了证明，给出了理论指导。<sup id="fnref:3"><a href="#fn:3" rel="footnote">3</a></sup></p>
+
+<p>关于Paxos算法，在网上看到了一个Fast Paxos算法，见淘宝核心系统团队博客, <a href="http://rdc.taobao.com/blog/cs/?p=162">paxos 实现</a></p>
+
+<p>Paxos算法看起来还是很复杂的，没有仔细研究，倒是在网上另外找到了两个简单的master选举算法。</p>
+
+<h2 id="section">霸道算法</h2>
+
+<p>Garcia-Monila 在 1982 年的一篇论文中发明了所谓的霸道选举算法（Bully Algorithm）<sup id="fnref:4"><a href="#fn:4" rel="footnote">4</a></sup>。当一个进程 P 发现协调者进程不再响应时，这个进程就召集选举。由于进程的独立性，在同一个时刻，系统中可能有多个召集选举的过程。假设 P 是召集选举的进程，每个召集选举的过程如下：</p>
+
+<ol>
+  <li>P 向所有比自己编号大的进程发送一条 ELECTION（选举）消息。</li>
+  <li>如果 P 得不到任何回复，则 P 赢得选举，P 向所有进程发送 COORDINATOR（协调者）消息，宣布自己的胜利。</li>
+  <li>如果 P 得到任何一个回复，回复一定来自于比自己编号大的进程。P 的召集选举的工作结束，因为 P 此时已经不可能赢得选举。 </li>
+</ol>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2013/01/18/simple-master-election/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -835,94 +917,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/11/22/learning-vim/">读Vim手册笔记</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-22T10:22:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/vi/'>Vi</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=读Vim手册笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=读Vim手册笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=读Vim手册笔记  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/22/learning-vim/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <h2 id="section">书籍</h2>
-<pre class="sh-bash"><code>《VIM用户手册》  
-作者: Bram Moolenaar  
-翻译: ZhaoRuFei&lt;slimzhao@hotmail.com&gt;  
-版本: 7.0  
-</code></pre>
-
-<h2 id="section-1">笔记</h2>
-<ol>
-  <li><strong>要退出Vim, 用命令”ZZ”. 该命令保存当前文件并退出Vim.</strong></li>
-  <li>如果你在放弃所有修改后还想以该文件的初始内容作为开始继续编辑, 还可以用”:e!”命令放弃所有修改并重新载入该文件的原始内容.</li>
-</ol>
-
-<h2 id="section-2">奇技淫巧</h2>
-
-<ol>
-  <li>d^ 删除光标到行首第一个非空白字符之间的内容，可用于删除行首的空白 </li>
-  <li>gu/gU 大小写转化，gu小写，gU转为大写.    <br />
- u/U： 选中区域，直接进行大小写转换
- gg gu G：整篇文章大写转化为小写。  <br />
- gU0 ：从光标所在位置到行首变为大写  <br />
- gU$ ：从光标所在位置到行尾变为大写    </li>
-  <li><a href="http://www.cnblogs.com/respawn/archive/2012/08/21/2649483.html">vundle 管理vim插件</a></li>
-  <li>vim查看编译错误
- <code>:make</code>     进行编译，需要在makefile所在的目录下打开文件
- <code>:cw</code>       带开quickfix窗口
- cn          （next）下一条
- cp          (previous) 上一条
- cw          (显示warning)
- cc          显示错误
- col         前一个旧的错误 勘误表
- col         后一个旧的勘误表
- cnew        后一个较新的错误列表 ( :help :cnew )</li>
-</ol>
-
-
-    </div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -946,6 +940,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/04/17/apache-maintenance-mode/">apache maintenance mode</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
       </li>
     
@@ -959,10 +957,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
     
       <li class="post">
         <a href="/tech/blog/2013/08/18/tree/">数据结构&#8211;树</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
       </li>
     
   </ul>
@@ -1001,7 +995,7 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 刘洪江 -
+  Copyright &copy; 2015 - 刘洪江 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <span style="float:right">
     Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>

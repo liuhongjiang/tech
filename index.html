@@ -9,8 +9,8 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="记得还是在读大学的时候读到的这篇文章，那个时候对文章的理解不是很深刻，工作多年以后再读这篇文章，对里面的很多思想有可比较深刻的认识，特别是关于软件管理方面的。
-也许没有实践经验，有的东西就很难理解吧。 大师的思想不会随着时间的变化而失去光辉的，快20年过去了，依然闪烁着智慧。 &hellip;">
+  <meta name="description" content="How to set devcenter or webconsole into maintenance mode
+I found a way to set devcenter or webconsole show maintenance page automatically without &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -163,6 +163,102 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2015/04/17/apache-maintenance-mode/">Apache Maintenance Mode</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-04-17T19:39:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
+        
+		
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=apache maintenance mode  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <h2 id="how-to-set-devcenter-or-webconsole-into-maintenance-mode">How to set devcenter or webconsole into maintenance mode</h2>
+<p>I found a way to set devcenter or webconsole show maintenance page automatically without restart apache.
+With the following method, we just touch or remove one file, it will turn on or off the maintenance mode.
+Basically, I learnt from this page:
+<a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
+
+<h2 id="change-httpdconf">Change httpd.conf</h2>
+<p>make sure the rewrite module is loaded:</p>
+
+<pre><code>LoadModule rewrite_module modules/mod_rewrite.so
+</code></pre>
+
+<p>Then add rewrite rule:</p>
+
+<pre><code>DocumentRoot "/opt/dev_center/"
+&lt;IfModule mod_rewrite.c&gt;
+   RewriteEngine On
+   #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.enable -f
+   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+   RewriteRule ^.*$ /maintenance.html [R=503,L]
+   ErrorDocument 503 /maintenance.html
+   Header Set Cache-Control "max-age=0, no-store"
+&lt;/IfModule&gt;
+</code></pre>
+
+<p>Then add the <code>maintenance.html</code> page in the <code>DocumentRoot</code>.
+When the site is under maintenance mode, please touch <code>maintenance.enable</code> file in <code>DocumentRoot</code>.
+After the site becomes normally, please just remove the <code>maintenance.enable</code></p>
+
+<pre><code>TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
+</code></pre>
+
+<h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
+<p>add the following line in the <code>conf.d/devcenter.conf</code> or <code>conf.d/webconsole.conf</code>:</p>
+
+<pre><code>Alias /maintenance.html /opt/dev_center/maintenance.html
+</code></pre>
+
+<h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
+<p>restart Apache, it should work.
+And I already make a demo on devcenter at 10.24.148.31, here are the config files with path:</p>
+
+<pre><code>httpd.conf -&gt; /opt/dev_center/httpd/conf
+devcenter.conf -&gt; /opt/dev_center/httpd/conf.d
+maintenance.html -&gt; /opt/dev_center
+maintenance.enable -&gt; /opt/devcenter
+</code></pre>
+
+
+    </div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -849,88 +945,6 @@ While there are more examples in S
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2013/01/18/simple-master-election/">霸道算法和环选举算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-18T17:44:00+08:00" pubdate data-updated="true">Jan 18<span>th</span>, 2013</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/algorithm/'>Algorithm</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=霸道算法和环选举算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=霸道算法和环选举算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=霸道算法和环选举算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/18/simple-master-election/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <div class="abstract">
-            <table>
-                <tr>
-                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
-                    <td>本文介绍了两种简单的master算法，霸道算法和环选举算法，另外还提出了一个没有验证的假象算法，它是在同一个host上基于文件锁的霸道选举算法。</td>
-                </tr>
-            </table>
-        </div>
-        
-        <p>现在主流的分布式集群一致性问题大多都吸收了PAXOS算法<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>的思想。然而，如果完全按照Leslie Lamport的论文<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup>，实现复杂度比较高。因此，大多数实现都采用PAXOS的某种变形。Lamport的重要贡献，献是把分布式一致性的问题，形式化并给出了证明，给出了理论指导。<sup id="fnref:3"><a href="#fn:3" rel="footnote">3</a></sup></p>
-
-<p>关于Paxos算法，在网上看到了一个Fast Paxos算法，见淘宝核心系统团队博客, <a href="http://rdc.taobao.com/blog/cs/?p=162">paxos 实现</a></p>
-
-<p>Paxos算法看起来还是很复杂的，没有仔细研究，倒是在网上另外找到了两个简单的master选举算法。</p>
-
-<h2 id="section">霸道算法</h2>
-
-<p>Garcia-Monila 在 1982 年的一篇论文中发明了所谓的霸道选举算法（Bully Algorithm）<sup id="fnref:4"><a href="#fn:4" rel="footnote">4</a></sup>。当一个进程 P 发现协调者进程不再响应时，这个进程就召集选举。由于进程的独立性，在同一个时刻，系统中可能有多个召集选举的过程。假设 P 是召集选举的进程，每个召集选举的过程如下：</p>
-
-<ol>
-  <li>P 向所有比自己编号大的进程发送一条 ELECTION（选举）消息。</li>
-  <li>如果 P 得不到任何回复，则 P 赢得选举，P 向所有进程发送 COORDINATOR（协调者）消息，宣布自己的胜利。</li>
-  <li>如果 P 得到任何一个回复，回复一定来自于比自己编号大的进程。P 的召集选举的工作结束，因为 P 此时已经不可能赢得选举。 </li>
-</ol>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2013/01/18/simple-master-election/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -952,6 +966,10 @@ While there are more examples in S
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/04/17/apache-maintenance-mode/">apache maintenance mode</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
       </li>
     
@@ -965,10 +983,6 @@ While there are more examples in S
     
       <li class="post">
         <a href="/tech/blog/2013/08/18/tree/">数据结构&#8211;树</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2013/02/25/lisp-notes/">lisp笔记</a>
       </li>
     
   </ul>
@@ -1007,7 +1021,7 @@ While there are more examples in S
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 刘洪江 -
+  Copyright &copy; 2015 - 刘洪江 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <span style="float:right">
     Statistics by <script type="text/javascript" src="/tech/javascripts/baidu-tongji.js"></script>

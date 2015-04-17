@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>第一篇 - 刘洪江的流水帐</title>
+  <title>apache maintenance mode - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="桃花庵歌 ——唐伯虎 桃花坞里桃花庵，桃花庵下桃花仙。桃花仙人种桃树，又摘桃花换酒钱。 酒醒只在花前坐，酒醉还来花下眠。半醉半醒日复日，花落花开年复年。 但愿老死花酒间，不愿鞠躬车马前。车尘马足显者事，酒盏花枝隐士缘。 若将显者比隐士，一在平地一在天。若将花酒比车马，彼何碌碌我何闲。 &hellip;">
+  <meta name="description" content="How to set devcenter or webconsole into maintenance mode
+I found a way to set devcenter or webconsole show maintenance page automatically without &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -134,7 +135,7 @@
   
   <header>
     
-      <h1 class="entry-title">第一篇</h1>
+      <h1 class="entry-title">Apache Maintenance Mode</h1>
     
     
       <p class="meta">
@@ -150,14 +151,14 @@
   
 
 
-<time datetime="2012-11-13T10:30:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+<time datetime="2015-04-17T19:39:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
         
 		
         
         <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=第一篇 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=第一篇 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 第一篇  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= apache maintenance mode  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
  
       </p>
@@ -167,25 +168,56 @@
 
 <div class="entry-content">
     
-    <blockquote class="information">
-  <h2 id="section">桃花庵歌</h2>
+    <h2 id="how-to-set-devcenter-or-webconsole-into-maintenance-mode">How to set devcenter or webconsole into maintenance mode</h2>
+<p>I found a way to set devcenter or webconsole show maintenance page automatically without restart apache.
+With the following method, we just touch or remove one file, it will turn on or off the maintenance mode.
+Basically, I learnt from this page:
+<a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
 
-  <h4 id="section-1">——唐伯虎</h4>
+<h2 id="change-httpdconf">Change httpd.conf</h2>
+<p>make sure the rewrite module is loaded:</p>
 
-  <p>桃花坞里桃花庵，桃花庵下桃花仙。桃花仙人种桃树，又摘桃花换酒钱。    <br />
-酒醒只在花前坐，酒醉还来花下眠。半醉半醒日复日，花落花开年复年。    <br />
-但愿老死花酒间，不愿鞠躬车马前。车尘马足显者事，酒盏花枝隐士缘。 <br />
-若将显者比隐士，一在平地一在天。若将花酒比车马，彼何碌碌我何闲。 <br />
-别人笑我太疯癫，我笑他人看不穿。不见五陵豪杰墓，无花无酒锄作田。   </p>
-</blockquote>
+<pre><code>LoadModule rewrite_module modules/mod_rewrite.so
+</code></pre>
 
-<!-- more -->
+<p>Then add rewrite rule:</p>
 
-<p>把这首诗放在第一篇，也没有什么特别了。就是那天读到了，被字句间的洒脱和释然所震撼了。    </p>
+<pre><code>DocumentRoot "/opt/dev_center/"
+&lt;IfModule mod_rewrite.c&gt;
+   RewriteEngine On
+   #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+   RewriteCond %{DOCUMENT_ROOT}/maintenance.enable -f
+   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+   RewriteRule ^.*$ /maintenance.html [R=503,L]
+   ErrorDocument 503 /maintenance.html
+   Header Set Cache-Control "max-age=0, no-store"
+&lt;/IfModule&gt;
+</code></pre>
 
-<p>想想每日的工作、生活，难免会有这样或那样的苦闷、难受，也许这时候读读这篇诗，可以得到片刻的洒脱和释然，心情也许就会好很多吧。   </p>
+<p>Then add the <code>maintenance.html</code> page in the <code>DocumentRoot</code>.
+When the site is under maintenance mode, please touch <code>maintenance.enable</code> file in <code>DocumentRoot</code>.
+After the site becomes normally, please just remove the <code>maintenance.enable</code></p>
 
-<p>放在这些技术文章中，而且是第一篇，也是想提醒自己，一个人可以用很多种不同的角度看待自己的生活和工作，可以用很多不同的方式过完一生。也许偶尔换个方式过一两天，也会是不错的一段经历。</p>
+<pre><code>TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
+</code></pre>
+
+<h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
+<p>add the following line in the <code>conf.d/devcenter.conf</code> or <code>conf.d/webconsole.conf</code>:</p>
+
+<pre><code>Alias /maintenance.html /opt/dev_center/maintenance.html
+</code></pre>
+
+<h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
+<p>restart Apache, it should work.
+And I already make a demo on devcenter at 10.24.148.31, here are the config files with path:</p>
+
+<pre><code>httpd.conf -&gt; /opt/dev_center/httpd/conf
+devcenter.conf -&gt; /opt/dev_center/httpd/conf.d
+maintenance.html -&gt; /opt/dev_center
+maintenance.enable -&gt; /opt/devcenter
+</code></pre>
+
 </div>
 
 
@@ -208,14 +240,14 @@
   
 
 
-<time datetime="2012-11-13T10:30:00+08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
+<time datetime="2015-04-17T19:39:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
       
 
 
       <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=第一篇 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=第一篇 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 第一篇  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= apache maintenance mode  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
 
     </p>
@@ -229,8 +261,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/" title="Previous Post: The Cathedral and the Bazaar ">&laquo; The Cathedral and the Bazaar </a>
       
-        <a class="basic-alignment right" href="/tech/blog/2012/11/21/how-to-build-blog/" title="Next Post: 使用Octopress搭建博客">使用Octopress搭建博客 &raquo;</a>
       
     </p>
   </footer>
@@ -328,8 +360,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/';
-        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2012/11/13/first-blog/';
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/';
         var disqus_script = 'embed.js';
       
     (function () {
