@@ -22,7 +22,7 @@ make sure the rewrite module is loaded:
 
 Then add rewrite rule:
 
-    DocumentRoot "/opt/dev_center/"
+    DocumentRoot "/opt/root_dir/"
     <IfModule mod_rewrite.c>
        RewriteEngine On
        #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
@@ -41,17 +41,17 @@ After the site becomes normally, please just remove the `maintenance.enable`
     TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
 
 ## Add alias in wsgi conf
-add the following line in the `conf.d/devcenter.conf` or `conf.d/webconsole.conf`:
+add the following line in the `conf.d/myproject.conf` or `conf.d/otherproject.conf`:
 
-    Alias /maintenance.html /opt/dev_center/maintenance.html
+    Alias /maintenance.html /opt/root_dir/maintenance.html
 
 ## Restart Apache and Demo
 restart Apache, it should work.
-And I already make a demo on devcenter at 10.24.148.31, here are the config files with path:
+And I already make a demo, here are the config files with path:
 
-    httpd.conf -> /opt/dev_center/httpd/conf
-    devcenter.conf -> /opt/dev_center/httpd/conf.d
-    maintenance.html -> /opt/dev_center
-    maintenance.enable -> /opt/devcenter
+    httpd.conf -> /opt/root_dir/httpd/conf
+    devcenter.conf -> /opt/root_dir/httpd/conf.d
+    maintenance.html -> /opt/root_dir
+    maintenance.enable -> /opt/root_dir
 
 
