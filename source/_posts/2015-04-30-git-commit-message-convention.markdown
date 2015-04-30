@@ -92,9 +92,9 @@ These are the article I got above good practice of git commit messages. Read it 
 ## git commit message line wrapping in IDEA
 [git commit message line wrapping](https://youtrack.jetbrains.com/issue/IDEA-53615#comment=27-446912)
 
-if you turn on the line margin in the commit dialog in the Setting | Version Control, commit dialog text area becomes monospaced. 
-Moreover, if you turn on "Wrap when typing reaches right margin" in Settings | Code style | General, it will affect the commit dialog text area as well (however, it will affect the main editor too).
+if you turn on the line margin in the commit dialog in the Setting \| Version Control, commit dialog text area becomes monospaced. 
+Moreover, if you turn on "Wrap when typing reaches right margin" in Settings \| Code style \| General, it will affect the commit dialog text area as well (however, it will affect the main editor too).
 
-A separate setting to wrap when text reaches right margin has been added to Settings | Version Control.
+A separate setting to wrap when text reaches right margin has been added to Settings \| Version Control.
 
 
