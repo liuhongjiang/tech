@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: git | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2015-04-30T09:35:17+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[git commit message convention]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/04/30/git-commit-message-convention/"/>
+    <updated>2015-04-30T08:58:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/04/30/git-commit-message-convention</id>
+    <content type="html"><![CDATA[<p>I collect all information for internet, I did not write a single word.</p>
+
+<p>A well-crafted git commit message is the best way to communicate context about a change to fellow developers (and indeed to their future selves)</p>
+
+<h2 id="examples">examples</h2>
+<p>example of commit messages:</p>
+
+<pre><code>Capitalized, short (50 chars or less) summary
+
+More detailed explanatory text, if necessary.  Wrap it to about 72
+characters or so.  In some contexts, the first line is treated as the
+subject of an email and the rest of the text as the body.  The blank
+line separating the summary from the body is critical (unless you omit
+the body entirely); tools like rebase can get confused if you run the 
+two together.
+   
+- Bullet points are okay, too
+- Typically a hyphen or asterisk is used for the bullet, followed by a
+  single space, with blank lines in between, but conventions vary here
+- Use a hanging indent
+</code></pre>
+
+<p>Another one:</p>
+
+<pre><code>Summarize changes in around 50 characters or less
+
+More detailed explanatory text, if necessary. Wrap it to about 72
+characters or so. In some contexts, the first line is treated as the
+subject of the commit and the rest of the text as the body. The
+blank line separating the summary from the body is critical (unless
+you omit the body entirely); various tools like `log`, `shortlog`
+and `rebase` can get confused if you run the two together.
+
+Explain the problem that this commit is solving. Focus on why you
+are making this change as opposed to how (the code explains that).
+Are there side effects or other unintuitive consequenses of this
+change? Here's the place to explain them.
+
+Further paragraphs come after blank lines.
+
+- Bullet points are okay, too
+
+- Typically a hyphen or asterisk is used for the bullet, preceded
+  by a single space, with blank lines in between, but conventions
+  vary here
+
+If you use an issue tracker, put references to them at the bottom,
+like this:
+
+Resolves: #123
+See also: #456, #789
+</code></pre>
+
+<h2 id="subject">subject</h2>
+<ul>
+  <li>Separate subject from body with a blank line</li>
+  <li>Limit the subject line to 50 characters</li>
+  <li>Capitalize the subject line</li>
+  <li>Do not end the subject line with a period</li>
+  <li>Use the imperative mood in the subject line: “Fix bug” and not “Fixed bug” or “Fixes bug.”</li>
+  <li>The subject should be a concise summary of the changes introduced by the commit</li>
+</ul>
+
+<h2 id="body">body</h2>
+<ul>
+  <li>Wrap the body at 72 characters</li>
+  <li>Use the body to explain what and why vs. how</li>
+  <li>Try to answer the following questions in your commit message
+    <ul>
+      <li>Why is this change necessary?</li>
+      <li>How does it address the issue?</li>
+      <li>What side effects does this change have?</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="others">others</h2>
+<ul>
+  <li>Never use the <code>-m &lt;msg&gt;</code> or <code>--message=&lt;msg&gt;</code> flag to git commit</li>
+  <li>The Linux kernel and git itself are great examples</li>
+</ul>
+
+<h2 id="reference">reference</h2>
+<p>These are the article I got above good practice of git commit messages. Read it carefully.</p>
+
+<ul>
+  <li><a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">A Note About Git Commit Messages</a></li>
+  <li><a href="https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message">5 Useful Tips For A Better Commit Message</a></li>
+  <li><a href="http://chris.beams.io/posts/git-commit/">How to Write a Git Commit Message</a></li>
+  <li><a href="https://github.com/torvalds/linux/pull/17#issuecomment-5659933">real stickler for a good commit message, Linus Torvalds</a></li>
+  <li><a href="https://github.com/blog/926-shiny-new-commit-styles">Shiny new commit styles</a></li>
+</ul>
+
+<h2 id="git-commit-message-line-wrapping-in-idea">git commit message line wrapping in IDEA</h2>
+<p><a href="https://youtrack.jetbrains.com/issue/IDEA-53615#comment=27-446912">git commit message line wrapping</a></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>if you turn on the line margin in the commit dialog in the Setting</td>
+      <td>Version Control, commit dialog text area becomes monospaced.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Moreover, if you turn on “Wrap when typing reaches right margin” in Settings</td>
+      <td>Code style</td>
+      <td>General, it will affect the commit dialog text area as well (however, it will affect the main editor too).</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>A separate setting to wrap when text reaches right margin has been added to Settings</td>
+      <td>Version Control.</td>
+    </tr>
+  </tbody>
+</table>
+
+]]></content>
+  </entry>
+  
+</feed>

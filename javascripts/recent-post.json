@@ -1,6 +1,12 @@
 [
 
 {
+    "title":"git commit message convention", 
+    "url":"http://liuhongjiang.github.com/tech/blog/2015/04/30/git-commit-message-convention/", 
+    "date":"2015-04-30"
+}
+,
+{
     "title":"apache maintenance mode", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/", 
     "date":"2015-04-17"
@@ -22,12 +28,6 @@
     "title":"go语言学习", 
     "url":"http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/", 
     "date":"2013-11-25"
-}
-,
-{
-    "title":"数据结构--树", 
-    "url":"http://liuhongjiang.github.com/tech/blog/2013/08/18/tree/", 
-    "date":"2013-08-18"
 }
 
 ]
