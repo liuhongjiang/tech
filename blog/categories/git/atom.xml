@@ -4,7 +4,7 @@
   <title><![CDATA[分类: git | 刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-04-30T09:35:17+08:00</updated>
+  <updated>2015-04-30T09:47:09+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -114,29 +114,10 @@ See also: #456, #789
 <h2 id="git-commit-message-line-wrapping-in-idea">git commit message line wrapping in IDEA</h2>
 <p><a href="https://youtrack.jetbrains.com/issue/IDEA-53615#comment=27-446912">git commit message line wrapping</a></p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>if you turn on the line margin in the commit dialog in the Setting</td>
-      <td>Version Control, commit dialog text area becomes monospaced.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>Moreover, if you turn on “Wrap when typing reaches right margin” in Settings</td>
-      <td>Code style</td>
-      <td>General, it will affect the commit dialog text area as well (however, it will affect the main editor too).</td>
-    </tr>
-  </tbody>
-</table>
+<p>if you turn on the line margin in the commit dialog in the Setting | Version Control, commit dialog text area becomes monospaced. 
+Moreover, if you turn on “Wrap when typing reaches right margin” in Settings | Code style | General, it will affect the commit dialog text area as well (however, it will affect the main editor too).</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>A separate setting to wrap when text reaches right margin has been added to Settings</td>
-      <td>Version Control.</td>
-    </tr>
-  </tbody>
-</table>
+<p>A separate setting to wrap when text reaches right margin has been added to Settings | Version Control.</p>
 
 ]]></content>
   </entry>
