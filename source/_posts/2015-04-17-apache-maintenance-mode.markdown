@@ -15,6 +15,7 @@ With the following method, we just touch or remove one file, it will turn on or 
 Basically, I learnt from this page:
 [Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess](http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess)
 
+<!--more -->
 ## Change httpd.conf
 make sure the rewrite module is loaded:
 

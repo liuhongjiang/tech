@@ -29,6 +29,7 @@ example of commit messages:
       single space, with blank lines in between, but conventions vary here
     - Use a hanging indent
 
+<!-- more -->
 Another one:
 
     Summarize changes in around 50 characters or less
