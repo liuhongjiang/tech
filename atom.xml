@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-04-30T09:47:09+08:00</updated>
+  <updated>2015-05-09T16:21:46+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,174 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git reference]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/"/>
+    <updated>2015-05-09T14:35:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference</id>
+    <content type="html"><![CDATA[<h2 id="git-ref">git ref</h2>
+
+<p>可以使用下面的命令查看ref</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git show HEAD
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="head-vs-orighead">HEAD vs ORIG_HEAD</h2>
+<p>HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit that you have checked in the working directory (unless you made some changes, or equivalent), and it is a commit on top of which “git commit” would make a new one. Usually HEAD is symbolic reference to some other named branch; this branch is currently checked out branch, or current branch. HEAD can also point directly to a commit; this state is called “detached HEAD”, and can be understood as being on unnamed, anonymous branch.</p>
+
+<p><strong>ORIG_HEAD is previous state of HEAD, set by commands that have possibly dangerous behavior, to be easy to revert them.</strong> It is less useful now that Git has reflog: HEAD@{1} is roughly equivalent to ORIG_HEAD (HEAD@{1} is always last value of HEAD, ORIG_HEAD is last value of HEAD before dangerous operation).</p>
+
+<p>“pull” or “merge” always leaves the original tip of the current branch in ORIG_HEAD.</p>
+
+<p>HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn’t.</p>
+
+<p>So HEAD is NOT a synonym for “current branch” everywhere already.</p>
+
+<p>HEAD means “current” everywhere in git, but it does not necessarily mean “current branch” (i.e. detached HEAD).</p>
+
+<p>But it almost always means the “current commit”.
+It is the commit “git commit” builds on top of, and “git diff –cached” and “git status” compare against.
+It means the current branch only in very limited contexts (exactly when we want a branch name to operate on — resetting and growing the branch tip via commit/rebase/etc.).</p>
+
+<p>http://stackoverflow.com/questions/964876/head-and-orig-head-in-git</p>
+
+<h2 id="detached-head">detached head</h2>
+
+<p>Detached head means you are no longer on a branch, you have checked out a single commit in the history (in this case the commit previous to HEAD, i.e. HEAD^).</p>
+
+<p><a href="http://stackoverflow.com/questions/10228760/fix-a-git-detached-head">fix a git detached head</a></p>
+
+<p>创建一个detach head，关注命令的输出</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$git</span> checkout head^
+</span><span class="line">You are in <span class="s1">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
+</span><span class="line">changes and commit them, and you can discard any commits you make in this
+</span><span class="line">state without impacting any branches by performing another checkout.
+</span><span class="line">
+</span><span class="line">If you want to create a new branch to retain commits you create, you may
+</span><span class="line"><span class="k">do</span> so <span class="o">(</span>now or later<span class="o">)</span> by using -b with the checkout <span class="nb">command </span>again. Example:
+</span><span class="line">
+</span><span class="line">git checkout -b new_branch_name
+</span><span class="line">
+</span><span class="line">HEAD is now at 635b2b1... Init the test.md file
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="specifying-revision">specifying revision</h3>
+
+<p>比较常用的</p>
+
+<ul>
+  <li>
+    <p><code>&lt;sha1&gt;</code> </p>
+
+    <p>dae86e1950b1277e545cee180551750029cfe735 and dae86e both name the same commit object if there is no other object in your repository whose object name starts with dae86e.</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;</code>, e.g. master, heads/master, refs/heads/master</p>
+
+    <p>If $GIT_DIR/<name> exists, that is what you mean (this is usually useful only for HEAD, FETCH_HEAD, ORIG_HEAD, MERGE_HEAD and CHERRY_PICK_HEAD);</name></p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{&lt;n&gt;}</code>, e.g. master@{1}</p>
+
+    <p>从refname的最新的提交倒数n个提交。
+  <code>@{&lt;n&gt;}, e.g. @{1}</code>， 当前的branch</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{upstream}, e.g. master@{upstream}, @{u}</code></p>
+
+    <p>ref的远端最新提交</p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;^, e.g. HEAD^, v1.5.1^0</code></p>
+
+    <p>A suffix <code>^</code> to a revision parameter means the first parent of that commit object. </p>
+
+    <p><code>^&lt;n&gt;</code> means the <code>&lt;n&gt;th</code> parent, <code>&lt;rev&gt;^</code> is equivalent to <code>&lt;rev&gt;^1</code>.</p>
+
+    <p>As a special rule, <code>&lt;rev&gt;^0</code> means the commit itself.</p>
+
+    <p>注意<code>head^2</code>的意思是head的第二个parent，不是parent的parent</p>
+
+    <p><code>&lt;rev&gt;^^</code>的意思是第一个parent的第一个parent，等价于<code>&lt;rev&gt;^1^1</code></p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;~&lt;n&gt;, e.g. master~3</code></p>
+
+    <p>A suffix <code>~&lt;n&gt;</code> to a revision parameter means the commit object that is the <n>th generation grand-parent of the named commit object, following only the first parents.</n></p>
+
+    <p><code>&lt;rev&gt;~3</code> is equivalent to <code>&lt;rev&gt;^^^</code> which is equivalent to <code>&lt;rev&gt;^1^1^1</code>. </p>
+
+    <p>注意，这一句“following only the first parents.”，这种方式只会追踪第一个parent。具体可以参考下面这个例子。</p>
+  </li>
+</ul>
+
+<p>Here is an illustration, by Jon Loeliger. Both commit nodes B and C are parents of commit node A. Parent commits are ordered left-to-right.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">G   H   I   J
+</span><span class="line"> <span class="se">\ </span>/     <span class="se">\ </span>/
+</span><span class="line">  D   E   F
+</span><span class="line">   <span class="se">\ </span> <span class="p">|</span>  / <span class="se">\</span>
+</span><span class="line">    <span class="se">\ </span><span class="p">|</span> /   <span class="p">|</span>
+</span><span class="line">     <span class="se">\|</span>/    <span class="p">|</span>
+</span><span class="line">      B     C
+</span><span class="line">       <span class="se">\ </span>  /
+</span><span class="line">        <span class="se">\ </span>/
+</span><span class="line">         A
+</span><span class="line">
+</span><span class="line"><span class="nv">A</span> <span class="o">=</span>      <span class="o">=</span> A^0
+</span><span class="line"><span class="nv">B</span> <span class="o">=</span> A^   <span class="o">=</span> A^1     <span class="o">=</span> A~1
+</span><span class="line"><span class="nv">C</span> <span class="o">=</span> A^2  <span class="o">=</span> A^2
+</span><span class="line"><span class="nv">D</span> <span class="o">=</span> A^^  <span class="o">=</span> A^1^1   <span class="o">=</span> A~2
+</span><span class="line"><span class="nv">E</span> <span class="o">=</span> B^2  <span class="o">=</span> A^^2
+</span><span class="line"><span class="nv">F</span> <span class="o">=</span> B^3  <span class="o">=</span> A^^3
+</span><span class="line"><span class="nv">G</span> <span class="o">=</span> A^^^ <span class="o">=</span> A^1^1^1 <span class="o">=</span> A~3
+</span><span class="line"><span class="nv">H</span> <span class="o">=</span> D^2  <span class="o">=</span> B^^2    <span class="o">=</span> A^^^2  <span class="o">=</span> A~2^2
+</span><span class="line"><span class="nv">I</span> <span class="o">=</span> F^   <span class="o">=</span> B^3^    <span class="o">=</span> A^^3^
+</span><span class="line"><span class="nv">J</span> <span class="o">=</span> F^2  <span class="o">=</span> B^3^2   <span class="o">=</span> A^^3^2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>以下是git的man page：
+<a href="http://schacon.github.io/git/git-rev-parse#_specifying_revisions">specifying revisions</a>
+or 
+<a href="http://git-scm.com/docs/git-rev-parse#_specifying_revisions">specifying revisions</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git commit message convention]]></title>
@@ -40,6 +208,7 @@ two together.
 - Use a hanging indent
 </code></pre>
 
+<!-- more -->
 <p>Another one:</p>
 
 <pre><code>Summarize changes in around 50 characters or less
@@ -133,8 +302,9 @@ With the following method, we just touch or remove one file, it will turn on or 
 Basically, I learnt from this page:
 <a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
 
-<h2 id="change-httpdconf">Change httpd.conf</h2>
-<p>make sure the rewrite module is loaded:</p>
+<!--more -->
+<p>## Change httpd.conf
+make sure the rewrite module is loaded:</p>
 
 <pre><code>LoadModule rewrite_module modules/mod_rewrite.so
 </code></pre>
@@ -6253,875 +6423,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <li>白杨.<a href="http://baiy.cn/doc/cpp/inside_rtti.htm">RTTI、虚函数和虚基类的实现方式、开销分析及使用指导</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[虚函数]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/11/29/virtual-function/"/>
-    <updated>2012-11-29T09:30:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/11/29/virtual-function</id>
-    <content type="html"><![CDATA[<p>面试的时候，常常宣称自己是一个C++程序员，不免就会被问一些有关C++的问题，例如虚函数的实现原理；析构函数是否能定义为虚函数等等。很多时候都回答不上来，就总会以时间久了忘了，搪塞过去，面试完，可能回去查查答案，但也总是不求甚解。</p>
-
-<p>既然有了博客，我就准备看看这些方面的内容，希望能记录下来，有所积累。于是就到网上查,或在书上找找，后来发现里面的内容太多了，不是一篇两篇博客就能写完的。于是没有办法，就只有硬着头皮写一个系列了。今天是第一部分虚函数和虚继承。</p>
-
-<p>C++的关键字virtual只能用在两个地方，一是定义类的成员函数为虚函数，二是定义类的继承关系为虚继承。这两点的用处大相径庭，但是在设计思想上还是有一定的共同性的。这篇文章先讲虚函数，下一篇讲虚继承。</p>
-
-<!-- more -->
-
-<h2 id="section">虚函数</h2>
-
-<p>虚，不实也。也可以理解为看到的和实际的不一样。虚函数存在的目的只有一个，那就是实现多态。关于多态，可以去参考各种教科书，上面都有详细的说明。虚函数在实现多态时，通过一种间接的运行时（而不是编译时）的机制激活（调用）的函数。下面看一个多态的简单例子。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>多态的简单例子  (polymorphism.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/polymorphism.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * polymorphism.cc: example of polymorphism</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived1</span><span class="o">:</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived1:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived2</span><span class="o">:</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived2:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">void</span> <span class="n">call_func</span><span class="p">(</span><span class="n">base</span><span class="o">*</span> <span class="n">pb</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">base</span><span class="p">();</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pd1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">derived1</span><span class="p">();</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pd2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">derived2</span><span class="p">();</span>
-</span><span class="line">	<span class="n">call_func</span><span class="p">(</span><span class="n">pb</span><span class="p">);</span>
-</span><span class="line">	<span class="n">call_func</span><span class="p">(</span><span class="n">pd1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">call_func</span><span class="p">(</span><span class="n">pd2</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>运行结果如下<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>:</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/polymorphism_output.jpg" /></p>
-
-<p>从运行结果来看，函数<code>call_func()</code>最后实际调用的<code>f()</code>要到运行时，根据传入的参数，才能确定调用的是哪个函数。</p>
-
-<p>那么虚函数的这种性质是如何实现的呢？答案是虚表(vtable)。具体的做法是，在对象的存储空间里面开辟一个指针，指针指向一个存放着虚函数地址的函数指针表。编译器在生成调用虚函数的指令时，按照偏移量，从虚表中取相应的函数指针进行调用。子类的虚函数会覆盖父类中对应虚函数在虚表中的位置，所以在调用的时候，就调用到了子类的函数了。也许这段话没有说太清楚，下面看一段代码或许会有帮助。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>测试虚表的例子  (vfun.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/vfun.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * test virtual functions</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">fun</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line"><span class="cp">#define VTAB(pclass) ((long*)(*(long*)(pclass)))</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">base</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pd</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span><span class="o">*</span><span class="p">)</span> <span class="k">new</span> <span class="n">derived</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- call through vtable ---&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">fun</span> <span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pb</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">derived</span><span class="o">*</span> <span class="n">pd_fake</span> <span class="o">=</span> <span class="p">(</span><span class="n">derived</span><span class="o">*</span><span class="p">)</span><span class="n">pb</span><span class="p">;</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd_fake</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">);</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;value of *pfun is: &quot;</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">pfun</span> <span class="o">&lt;&lt;</span>  <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;value of *pfun is: &quot;</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">pfun</span> <span class="o">&lt;&lt;</span>  <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果如下：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/vfun_output.jpg" /></p>
-
-<p>上面这段代码的第20行，通过定义指针的方式<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup>，直接访问虚表，发现它的输出与通过对象调用是一直的，而且指针的类型无关。由上面的代码也可以看出虚表在对象的内存空间中是怎么分布的。对象的起始地址，就是虚表指针。虚表的最后一项为0，代表虚表结束。上面程序的最后一项输出可以看出来。</p>
-
-<p>用一张图来说明情况。</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/one_derived.jpg" /></p>
-
-<p>在多个虚函数的情况下，子类仅仅覆盖在子类重载的虚函数，而子类新定义的虚函数，加入到虚表的最后。下面这个例子就是多个虚函数的情况。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>多个虚函数  (vfun1.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/vfun1.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">// test virtual functions</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f0</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f0&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived:f1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">fun</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#define VTAB(pclass) ((long*)(*(long*)(pclass)))</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pb_real</span> <span class="o">=</span> <span class="k">new</span> <span class="n">base</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pb_real</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
-</span><span class="line">	<span class="n">base</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span><span class="o">*</span><span class="p">)</span> <span class="k">new</span> <span class="n">derived</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f0</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- call function through vtable ---&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">fun</span> <span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pb</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/vfun1_output.jpg" /></p>
-
-<p>虚表的组织结构如下:</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/more_derived.jpg" /></p>
-
-<p>由图中可以看出，子类的<code>f()</code>覆盖了基类的<code>f()</code>，而基类的<code>f0()</code>依然存在，子类的<code>f1()</code>添加到了虚表的最后。</p>
-
-<p>当有多个基类时，子类会为每个基类添加一个虚表指针，指针的顺序按照类定义时的声明顺序。下面这个例子就是这样的。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>虚函数多重继承  (vfun2.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/vfun2.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">// test virtual functions</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">father_b1</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in father of base1:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">fbf</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in father of base1:fbf&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">father1_b1</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in father1 of base1:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1bf</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in father1 of base1:f1bf&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">bf0</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base:f0&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base1</span><span class="o">:</span> <span class="k">public</span> <span class="n">father_b1</span><span class="p">,</span> <span class="k">public</span> <span class="n">father1_b1</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base1:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">b1f0</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base1:f0&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">base1</span><span class="p">,</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived:f&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived:f1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">typedef</span> <span class="kt">void</span><span class="p">(</span><span class="o">*</span><span class="n">fun</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#define VTAB(pclass) ((long*)(*(long*)(pclass)))</span>
-</span><span class="line"><span class="cp">#define VTAB1(pclass) ((long*)(*(((long*)(pclass)) + 1)))</span>
-</span><span class="line"><span class="cp">#define VTAB2(pclass) ((long*)(*(((long*)(pclass)) + 2)))</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">derived</span><span class="o">*</span> <span class="n">pd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">derived</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- vtable ---&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">fun</span> <span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- vtable + 1 ---&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB1</span><span class="p">(</span><span class="n">pd</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB1</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- vtable + 2 ---&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="n">VTAB2</span><span class="p">(</span><span class="n">pd</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line">	<span class="n">pfun</span> <span class="o">=</span> <span class="p">(</span><span class="n">fun</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">VTAB2</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pfun</span><span class="p">();</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/vfun2_output.jpg" /></p>
-
-<p>这是一个比较复杂的继承关系了，可以看出最后的<code>derived</code>类里面已经有3个虚表指针了，也就是说，子类会讲所有的父类的虚表继承下来，并将自己的虚函数添加到第一个虚表的最后。还有一点，就是子类的虚函数会覆盖所有基类的对应虚函数，图中的<code>derived::f()</code>就覆盖了3处。其组织结构如下：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/more_bases.jpg" /></p>
-
-<h2 id="section-1">构造函数和析构函数的调用顺序</h2>
-
-<p>这个问题本来和虚函数没有关系，但是为了后面解释关于构造函数为什么不能声明为virtual，添加到这里的。</p>
-
-<p>构造函数的调用顺序是，先调用父类的构造函数，然后调用成员变量的构造函数，最后调用子类自身的构造函数，多个父类时，按照父类的继承时的声明顺序调用，成员变量的构造函数也按照声明顺序调用。</p>
-
-<p>析构函数的调用顺序与构造函数的正好相反，先调用子类自身的析构函数，然后是成员变量的析构函数，最后是父类的构造函数，多个父类时，按照父类的继承时的声明的相反顺序调用，成员变量的构造函数也按照声明的相反顺序调用。</p>
-
-<p>下面是一段测试调用顺序的代码</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>构造和析构函数的调用顺序  (constructor_destructor_order.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/constructor_destructor_order.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * 研究构造函数的调用顺序</span>
-</span><span class="line"><span class="cm"> *  1. 首先调用基类的构造函数（如果有基类）；如果有多个基类，则按基类被列出的顺序调用；</span>
-</span><span class="line"><span class="cm"> *  2. 调用这个类的成员对象的构造函数（如果有的话）；如果有多个成员对象，则按成员对象定义的顺序被调用（与参数列表中列出的顺序无关）；</span>
-</span><span class="line"><span class="cm"> *  3. 最后调用这个类自身的构造函数；</span>
-</span><span class="line"><span class="cm"> *  4. 析构函数正好相反;</span>
-</span><span class="line"><span class="cm"> *  注意：如果有虚基类，则先调用虚基类的构造函数。在调用基类的构造函数，如果有多个虚基类，则按列出的顺序调用； </span>
-</span><span class="line"><span class="cm">*/</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">father_base_a</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">father_base_a</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is father_base_a;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">father_base_a</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is ~father_base_a&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base_a</span><span class="o">:</span> <span class="k">public</span> <span class="n">father_base_a</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">base_a</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is base_a;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">base_a</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is ~base_a&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base_b</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">base_b</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is base_b;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">base_b</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;This is ~base_b&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">member_a</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">member_a</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is meber_a;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">member_a</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is ~meber_a;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">member_b</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">member_b</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is member_b;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">member_b</span><span class="p">(){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is ~meber_b;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">base_b</span><span class="p">,</span> <span class="k">public</span> <span class="n">base_a</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">   <span class="n">member_a</span> <span class="n">ma</span><span class="p">;</span>
-</span><span class="line">   <span class="n">derived</span><span class="p">(){</span>
-</span><span class="line">      <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;This is derived;&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span><span class="line">   <span class="p">}</span>
-</span><span class="line">   <span class="k">virtual</span> <span class="o">~</span><span class="n">derived</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;this is ~derived()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="k">private</span><span class="o">:</span>
-</span><span class="line">   <span class="n">member_b</span> <span class="n">mb</span><span class="p">;</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-</span><span class="line"><span class="p">{</span>
-</span><span class="line">  <span class="n">derived</span> <span class="n">de</span><span class="p">;</span>
-</span><span class="line">  <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;---------&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果
-<img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/constructor_destructor_order.jpg" /></p>
-
-<p>从输出结果可以看出，先调用了<code>base_b</code>的构造函数，然后调用<code>base_a</code>的构造函数（但得先调用<code>base_a</code>的父类<code>father_base_a</code>），然后是成员<code>member_a</code>和<code>member_b</code>的构造函数，最后是<code>derived</code>自己的构造函数。析构的过程正好相反。</p>
-
-<h2 id="section-2">构造函数不能声明为虚函数</h2>
-
-<p>这也是面试中常被问道的一个问题。原因应该有两个  </p>
-
-<ol>
-  <li>在构造函数之前，类的对象是不存在的，那么也没有vtable，也无法通过vtable找到虚函数。所有无法定义为虚函数。</li>
-  <li>构造函数是先调用父类，最后才是子类的构造，因为子类的内存布局是基于父类。如果使用虚构函数，那么在调用父类的构造函数时，实际调用的是子类的构造函数，那么就无法完成对象的构造。</li>
-  <li>虚函数的主要目的是多态，运行时确定调用那个函数，对象的构造过程是确定的，使用虚函数没有意义。</li>
-</ol>
-
-<p>实际上，如果将构造函数声明为虚函数，编译时，gcc会报错。</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/constructor_error.jpg" /></p>
-
-<h2 id="section-3">析构函数声明为虚函数</h2>
-
-<p>在基类的声明中一般都应该将析构函数声明为虚函数。首先由于析构函数没有构造函数的问题，所以是可以声明为虚函数的。其次，可能程序需要利用析构函数为虚函数的特性，才能讲资源释放完全。</p>
-
-<p>首先来看一个代码例子</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>析构函数为虚函数  (destructor_virtual.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/destructor_virtual.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">// 分析析构函数为虚函数时的特性</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span>	<span class="o">~</span><span class="n">base</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base::~base()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived</span><span class="o">:</span> <span class="k">public</span> <span class="n">base</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="o">~</span><span class="n">derived</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived::~derived&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">base1</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="o">~</span><span class="n">base1</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in base1::~base1()&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">derived1</span><span class="o">:</span> <span class="k">public</span> <span class="n">base1</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="o">~</span><span class="n">derived1</span><span class="p">(){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;in derived1::~derived1&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class="line">	<span class="n">base</span> <span class="o">*</span><span class="n">pbase</span> <span class="o">=</span> <span class="k">new</span> <span class="n">derived</span><span class="p">();</span>
-</span><span class="line">	<span class="k">delete</span> <span class="n">pbase</span><span class="p">;</span>
-</span><span class="line">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--------&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span><span class="line">	<span class="n">base1</span> <span class="o">*</span><span class="n">pbase1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">derived1</span><span class="p">();</span>
-</span><span class="line">	<span class="k">delete</span> <span class="n">pbase1</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>运行结果</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/destructor_virtual.jpg" /></p>
-
-<p>由结果可以看出，由于<code>base1</code>的析构函数没有声明为虚函数，在<code>delete pbase1</code>时，没有调用<code>derived1</code>的析构函数，那么在<code>derived1</code>中申请的资源就无法释放。而因为<code>base</code>类中的修改函数声明为了虚函数，就没有这样的问题。</p>
-
-<h2 id="section-4">什么时候使用虚函数</h2>
-
-<p>包含了虚函数的成员函数的对象，由于需要存放虚表地址，那么就比不包含虚函数的对象，多出了一块空间，32位为4个字节，64位为8个字节。如果没有用到多态，而且有大量的对象存在时，需要考虑这个开销。</p>
-
-<p>在需要使用多态，或在定义接口时，需要使用虚函数。特别是定义接口时，最好使用纯虚函数。</p>
-
-<p>另外，将私有成员函数声明为虚函数，可以通过对象的虚表指针的方式访问，造成了封装的不严密。例如，通过在前面的例子中定义的<code>VTAB</code>宏，就可以直接获取函数指针，然后调用函数，这种调用是需要检查这个成员函数的性质的。</p>
-
-<h2 id="section-5">同名函数隐藏规则</h2>
-
-<p>在父类和子类中如果存在同名的函数，那么一定要小心了，这时需要重载父类中所有同名的函数。首先来看一个关于同名函数的例子</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>诡异的同名函数  (same_name.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/same_name.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * 测试c++隐藏规则：</span>
-</span><span class="line"><span class="cm"> * （1）如果派生类的函数与基类的函数同名，但是参数不同。</span>
-</span><span class="line"><span class="cm"> *      不论有无virtual关键字，基类的函数将被隐藏（注意别与重载混淆）。</span>
-</span><span class="line"><span class="cm"> * （2）如果派生类的函数与基类的函数同名，并且参数也相同，但是基类函数</span>
-</span><span class="line"><span class="cm"> *      没有virtual关键字。此时，基类的函数被隐藏（注意别与覆盖混淆）。</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::f(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::g(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::h(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">m</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::m(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::f(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">g</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::g(int) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">h</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::h(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="kt">void</span> <span class="n">m</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::m(int) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	<span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="n">Base</span> <span class="o">*</span><span class="n">pb</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="n">Derived</span> <span class="o">*</span><span class="n">pd</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="c1">// Good : behavior depends solely on type of the object</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Derived::f(float) 3.14</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Derived::f(float) 3.14</span>
-</span><span class="line">	<span class="c1">// Bad : behavior depends on type of the pointer</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">g</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Base::g(float) 3.14</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">g</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Derived::g(int) 3 (surprise!)</span>
-</span><span class="line">	<span class="c1">// Bad : behavior depends on type of the pointer</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">h</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Base::h(float) 3.14 (surprise!)</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">h</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Derived::h(float) 3.14</span>
-</span><span class="line">	<span class="c1">// Bad : behavior depends on type of the pointer</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Base::m(float) 3.14</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">m</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Derived::m(int) 3 (surprise!)</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输出结果</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/same_name.jpg" /></p>
-
-<p>注意在用不同类型的类指针调用<code>g()</code>,<code>h()</code>,<code>m()</code>三个函数时，程序实际的行为。</p>
-
-<p>这样会带来一个问题，就是在继承后，重载了父类的一个函数，或在定义了一个函数，那么父类中与这个函数同名的函数都会被隐藏，子类的对象无法调用这些函数。</p>
-
-<p>下面是一个例子</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>诡异的同名函数  (same_name1.cc)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/polymorphism/same_name1.cc">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="c1">// 测试隐藏规则：</span>
-</span><span class="line"><span class="c1">// 子类重载同名函数, 无论是否声明为虚函数，父类的所有同名函数将会被隐藏 </span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &lt;iostream&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Base</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::f(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="kt">float</span> <span class="n">y</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Base::f(float, float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">Derived</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span><span class="p">{</span>
-</span><span class="line"><span class="k">public</span><span class="o">:</span>
-</span><span class="line">	<span class="k">virtual</span> <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">){</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Derived::f(float) &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
-</span><span class="line"><span class="p">};</span>
-</span><span class="line">
-</span><span class="line"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
-</span><span class="line">	<span class="n">Derived</span> <span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="n">Base</span> <span class="o">*</span><span class="n">pb</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="n">Derived</span> <span class="o">*</span><span class="n">pd</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">;</span>
-</span><span class="line">	<span class="n">pb</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">,</span> <span class="mf">3.14f</span><span class="p">);</span>
-</span><span class="line">	<span class="n">pd</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">(</span><span class="mf">3.14f</span><span class="p">,</span> <span class="mf">3.14f</span><span class="p">);</span> <span class="c1">// Compile error</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在编译的时候会报这样的错误</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/polymorphism/same_name1_error.jpg" /></p>
-
-<h2 id="section-6">总结</h2>
-
-<ol>
-  <li>虚函数是通过虚表实现运行时绑定。虚表存放在对象的起始位置。子类继承父类时，会将所有的虚表就继承下来，所有子类可能有多个虚表指针。如果子类重载了父类的某个虚函数，那么子类将重写<em style="color:red">所有虚表</em>中该函数的地址，子类将自己的虚函数添加到第一个虚表的最后。</li>
-  <li>构造函数不能声明为虚函数，析构函数可以声明为虚函数，当类包含是虚函数的成员函数时，析构函数<em style="color:red">必须声明为虚函数</em>。</li>
-  <li>当子类和父类有同名函数时，父类的所有与这个函数同名的函数都将被隐藏，子类的对象无法访问到。</li>
-</ol>
-
-<h3 id="section-7">参考</h3>
-
-<p>本文参考了以下文章：</p>
-
-<ol>
-  <li>陈皓.<a href="http://blog.csdn.net/haoel/article/details/1948051/">C++ 虚函数表解析</a></li>
-  <li><a href="http://www.cnblogs.com/xd502djj/archive/2010/09/22/1832912.html">C++ Virtual详解</a></li>
-</ol>
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>系统为ubuntu 12.04 server 64bit, 编译器为gcc 4.6.3 <a href="#fnref:1" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p>程序运行在64位机器上，所以使用long进行强制转换获取指针，如果在32位服务器上，就应该用int。<a href="#fnref:2" rel="reference">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="一直说写一篇2012年的总结，但元旦以来的这段时间忙东忙西，再加上自己的拖延症，始终没有写。今天终于鼓起勇气，下定决心，要把这篇总结写完，在旁边放了一把菜刀，写不完，不自刎谢罪，也要卸下一只胳膊。 2012年多多少少也是特别的一年，最主要的是那部有名的《2012》。 &hellip;">
+  <meta name="description" content="火车票插件拖垮github的事件的结果，就是github被悲催地墙掉了。愤慨啊。Fuck GFW! 不过有了goagent的代理，github的网站是可以上了，但是命令行上面pull，push就不灵了。新浪微博上@蒋伟找到了一个通过https连接github的办法，总结一下如下： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,93 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/01/22/github-https/">使用https连接github</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-22T13:08:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/fuck-nbsp-gfw/'>Fuck&nbsp;GFW</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=使用https连接github - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=使用https连接github - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=使用https连接github  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>火车票插件拖垮github的事件的结果，就是github被悲催地墙掉了。愤慨啊。Fuck GFW!</p>
+
+<p>不过有了goagent的代理，github的网站是可以上了，但是命令行上面pull，push就不灵了。新浪微博上<a href="http://www.weibo.com/neilxp">@蒋伟</a>找到了一个通过<a href="http://www.weibo.com/1791166224/zfvJvnG39">https连接github的办法</a>，总结一下如下：</p>
+
+<ol>
+  <li>安装goagent</li>
+  <li>
+    <p>导入ca.crt证书
+ 导入goagent目录下的local/CA.crt   <br />
+ ubuntu导入证书    <br />
+ http://askubuntu.com/questions/73287/how-do-i-install-a-root-certificate        </p>
+  </li>
+  <li>启动代理 python proxy.py</li>
+  <li>设置代理： export HTTPS_PROXY=”http://127.0.0.1:8087”</li>
+  <li>github配置，关键一步是remote add的时候，方法是：   <br />
+ git remote add origin https://liuhongjiang@github.com/liuhongjiang/tech.git   <br />
+ 这样就可以正常地pull和push了，麻烦的是，每次都要输入秘密。      </li>
+  <li>
+    <p>接下来就是octopress的rake deploy了：
+ 需要修改Rakefile：</p>
+
+    <pre><code> # user = repo_url.match(/:([^\/]+)/)[1]
+ user = repo_url.match(/github\.com.([^\/]+)/)[1]
+ # branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
+ branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
+ # project = (branch == 'gh-pages') ? repo_url.match(/\/([^\.]+)/)[1] : ''
+ project = (branch == 'gh-pages') ? repo_url.match(/\/([^\/^\.]+)$/)[1] : ''
+</code></pre>
+
+    <p>然后在<code>rake setup_github_pages</code>命令中填https的url地址：        <br />
+ https://liuhongjiang@github.com/liuhongjiang/tech     <br />
+ 同样在部署的时候，还是要输入密码</p>
+  </li>
+</ol>
+
+    </div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -842,69 +929,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/11/29/virtual-function/">虚函数</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-29T09:30:00+08:00" pubdate data-updated="true">Nov 29<span>th</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/c-c-/'>C/C++</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=虚函数 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/29/virtual-function/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=虚函数 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/29/virtual-function/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=虚函数  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/29/virtual-function/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <p>面试的时候，常常宣称自己是一个C++程序员，不免就会被问一些有关C++的问题，例如虚函数的实现原理；析构函数是否能定义为虚函数等等。很多时候都回答不上来，就总会以时间久了忘了，搪塞过去，面试完，可能回去查查答案，但也总是不求甚解。</p>
-
-<p>既然有了博客，我就准备看看这些方面的内容，希望能记录下来，有所积累。于是就到网上查,或在书上找找，后来发现里面的内容太多了，不是一篇两篇博客就能写完的。于是没有办法，就只有硬着头皮写一个系列了。今天是第一部分虚函数和虚继承。</p>
-
-<p>C++的关键字virtual只能用在两个地方，一是定义类的成员函数为虚函数，二是定义类的继承关系为虚继承。这两点的用处大相径庭，但是在设计思想上还是有一定的共同性的。这篇文章先讲虚函数，下一篇讲虚继承。</p>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2012/11/29/virtual-function/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -928,6 +952,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/04/30/git-commit-message-convention/">git commit message convention</a>
       </li>
     
@@ -943,15 +971,11 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
         <a href="/tech/blog/2014/05/16/rules/">规则</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2013/11/25/learning-go/">go语言学习</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 115.0%'>git(1)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 130.0%'>git(2)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>

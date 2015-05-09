@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>我的2012 - 刘洪江的流水帐</title>
+  <title>git reference - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="一直说写一篇2012年的总结，但元旦以来的这段时间忙东忙西，再加上自己的拖延症，始终没有写。今天终于鼓起勇气，下定决心，要把这篇总结写完，在旁边放了一把菜刀，写不完，不自刎谢罪，也要卸下一只胳膊。 2012年多多少少也是特别的一年，最主要的是那部有名的《2012》。 &hellip;">
+  <meta name="description" content="git ref 可以使用下面的命令查看ref 1
+git show HEAD HEAD vs ORIG_HEAD
+HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -134,7 +136,7 @@
   
   <header>
     
-      <h1 class="entry-title">我的2012</h1>
+      <h1 class="entry-title">Git Reference</h1>
     
     
       <p class="meta">
@@ -150,14 +152,21 @@
   
 
 
-<time datetime="2013-01-19T16:20:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2013</time>
+<time datetime="2015-05-09T14:35:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
         
 		
         
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
         <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=我的2012 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=我的2012 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 我的2012  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git reference  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
  
       </p>
@@ -167,35 +176,165 @@
 
 <div class="entry-content">
     
-    <p>一直说写一篇2012年的总结，但元旦以来的这段时间忙东忙西，再加上自己的拖延症，始终没有写。今天终于鼓起勇气，下定决心，要把这篇总结写完，在旁边放了一把菜刀，写不完，不自刎谢罪，也要卸下一只胳膊。</p>
+    <h2 id="git-ref">git ref</h2>
 
-<p>2012年多多少少也是特别的一年，最主要的是那部有名的《2012》。现在庆幸时间没有终结在2012年12月21日，劫后余生。《2012》对我的影响不是那震撼的场面，也不是世界终结的恐慌，而是对人生的认识。也许明天世界就终结了，那我们应该怎么办，今天还有什么意义？12月20日那天，网上、微博上各种调侃，各种问题，五花八门。其中有个问题是这样的：明天世界都要结束了，今天晚上怎么过？各种答案，去酒吧疯狂一晚上，或者喝个天昏地暗，处男就去花点钱。我当时想的是回家早点洗洗睡了，明天还要上班啊。</p>
+<p>可以使用下面的命令查看ref</p>
 
-<p>把最后一天当成每一天度过，没有什么特别的，做自己该做的，完成该完成的，一步一步地往前走。这也许就是我2012年的寄语吧。</p>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git show HEAD
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<!-- more -->
+<h2 id="head-vs-orighead">HEAD vs ORIG_HEAD</h2>
+<p>HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit that you have checked in the working directory (unless you made some changes, or equivalent), and it is a commit on top of which “git commit” would make a new one. Usually HEAD is symbolic reference to some other named branch; this branch is currently checked out branch, or current branch. HEAD can also point directly to a commit; this state is called “detached HEAD”, and can be understood as being on unnamed, anonymous branch.</p>
 
-<p>先从这一年开始的时候说起吧，从2010年8月回到成都，在诺西工作，一晃就是1年多了，当时觉得不能再呆下去了，继续下去人生就不是自己所希望的那个样子。于是在2011年年底开始找工作了。先后面试了几家公司，也拿到了几个offer，最后选择了盛大创新院，当时考虑的原因是回到互联网、回到自己熟悉的行业。于是开始了2012年精彩起伏的一年了。</p>
+<p><strong>ORIG_HEAD is previous state of HEAD, set by commands that have possibly dangerous behavior, to be easy to revert them.</strong> It is less useful now that Git has reflog: HEAD@{1} is roughly equivalent to ORIG_HEAD (HEAD@{1} is always last value of HEAD, ORIG_HEAD is last value of HEAD before dangerous operation).</p>
 
-<p>2月10日，从诺西离职，匆匆地处理了各种私事，2月27日从成都出发到了上海。当时盛大创新院offer的工作地点是成都，但是有个条件是要先到上海工作1到2个月。
-到了上海，就住在公司附近，做的工作是和网页信息抽取相关的。4月23日回到成都，和另外一个同事一起，然后招聘了几个实习生，一起带领这几个实习生做工作。当时整个大的项目是一个视频SNS网站，这个网站是很快上线了。
-后来慢慢地，工作相对轻松了，我们成都几个同学就组织了一个学习小组，学习机器学习方面的知识。风雨突变，9月14日不得不离开盛大创新院，又开始了新的一轮找工作。
-当时很想进入到一个移动互联网公司工作，于是投了很多简历，但是反馈都不是很好，要不是做的东西不太对口，要么就是这些公司还没有做后端的东西。总的感觉成都的移动互联网还停留在界面阶段，而且整体技术能力还比较一般。
-还是没有找到好的。最后转悠的1个半月，选择了NHN成都，11月5日开始在新公司上班，选择NHN的主要考虑是，工作相对轻松一点，可以花时间做一点自己感兴趣的东西。</p>
+<p>“pull” or “merge” always leaves the original tip of the current branch in ORIG_HEAD.</p>
 
-<p>上面说得很流水帐，主要是很多事情不便细说。总得来说，还是十分感谢盛大创新院的offer，感谢在盛大创新工作的6个月时间。在6个月过得很精彩，认识了一帮大牛人，这帮人技术牛，知识牛，猥琐能力更牛，每顿饭前不讲几个黄色笑话，饭都会不香的。有的笑话很隐晦，需要好好理解一下，有个牛人就给我说：要理解，就往下想，突破一下自己的底限，你就有可能理解到了。现在写到这里，好几个笑话都从我脑袋中跳出来了，“牛蛙”、“2.5L的大可乐”、“按流量收费”、“软件园池塘的青蛙”、“大辣椒”。猥琐啊，猥琐啊。不过码农，就这点乐趣了。</p>
+<p>HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn’t.</p>
 
-<p>技术上，这帮哥们也是顶呱呱的，获得过世界级竞赛的大奖，也有哥们混迹于各种论坛、开源社区，那也是一方一霸。当时的老大也是大牛人啊，喜欢给我们传道，从他哪里学习到了两点：多读书，用如何用思考的方式去完成自己的工作，任何工作只要你认真思考，总会找到可以创新的地方，任何工作都要做到极致。成都的另外一位同事也是我学习的对象，对技术的热爱和执着，知识面很广。</p>
+<p>So HEAD is NOT a synonym for “current branch” everywhere already.</p>
 
-<p>这份工作给我带来了两点，一是开始有意识地看书，构建自己的知识框架了。二是明白做事要踏踏实实，执着。看到这些同事，对新技术的追求，超强的学术能力，勤奋地工作态度，猥琐的世界观，让我明白了自己与别人的差距，要想成功，只有多学习，勤奋工作，执着地甚至固执地追求新技术新知识。</p>
+<p>HEAD means “current” everywhere in git, but it does not necessarily mean “current branch” (i.e. detached HEAD).</p>
 
-<p>来到NHN在11月开始搭建了这个blog，并开始记录blog，主要是两部份，技术相关，生活相关。一来可以记录自己的技术和生活，二来可以督促自己学习，三可以锻炼自己的写作能力，说不定那天可以写本书。这个blog不是写给别人看的，写给自己纪念的。</p>
+<p>But it almost always means the “current commit”.
+It is the commit “git commit” builds on top of, and “git diff –cached” and “git status” compare against.
+It means the current branch only in very limited contexts (exactly when we want a branch name to operate on — resetting and growing the branch tip via commit/rebase/etc.).</p>
 
-<p>2013年，我对自己也没有什么特别的要求，多读书，多学习一些技术，思考自己希望的生活和工作的方式，为了能过上这样的生活和工作努力。</p>
+<p>http://stackoverflow.com/questions/964876/head-and-orig-head-in-git</p>
 
-<p>2012年，还是跌宕起伏的一年。学习了很多，提高了很多，自己的人生观也改变了许多。中间八九月份还有创业的冲动，但最后还是找了个工作，但是这种冲动从未消失，各种想法在脑袋里面碰撞，但似乎自己缺乏跨出第一步的勇气，希望2013年不是这样。</p>
+<h2 id="detached-head">detached head</h2>
 
-<p>What will happen in 2013? We will see.</p>
+<p>Detached head means you are no longer on a branch, you have checked out a single commit in the history (in this case the commit previous to HEAD, i.e. HEAD^).</p>
+
+<p><a href="http://stackoverflow.com/questions/10228760/fix-a-git-detached-head">fix a git detached head</a></p>
+
+<p>创建一个detach head，关注命令的输出</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$git</span> checkout head^
+</span><span class="line">You are in <span class="s1">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
+</span><span class="line">changes and commit them, and you can discard any commits you make in this
+</span><span class="line">state without impacting any branches by performing another checkout.
+</span><span class="line">
+</span><span class="line">If you want to create a new branch to retain commits you create, you may
+</span><span class="line"><span class="k">do</span> so <span class="o">(</span>now or later<span class="o">)</span> by using -b with the checkout <span class="nb">command </span>again. Example:
+</span><span class="line">
+</span><span class="line">git checkout -b new_branch_name
+</span><span class="line">
+</span><span class="line">HEAD is now at 635b2b1... Init the test.md file
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="specifying-revision">specifying revision</h3>
+
+<p>比较常用的</p>
+
+<ul>
+  <li>
+    <p><code>&lt;sha1&gt;</code> </p>
+
+    <p>dae86e1950b1277e545cee180551750029cfe735 and dae86e both name the same commit object if there is no other object in your repository whose object name starts with dae86e.</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;</code>, e.g. master, heads/master, refs/heads/master</p>
+
+    <p>If $GIT_DIR/<name> exists, that is what you mean (this is usually useful only for HEAD, FETCH_HEAD, ORIG_HEAD, MERGE_HEAD and CHERRY_PICK_HEAD);</name></p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{&lt;n&gt;}</code>, e.g. master@{1}</p>
+
+    <p>从refname的最新的提交倒数n个提交。
+  <code>@{&lt;n&gt;}, e.g. @{1}</code>， 当前的branch</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{upstream}, e.g. master@{upstream}, @{u}</code></p>
+
+    <p>ref的远端最新提交</p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;^, e.g. HEAD^, v1.5.1^0</code></p>
+
+    <p>A suffix <code>^</code> to a revision parameter means the first parent of that commit object. </p>
+
+    <p><code>^&lt;n&gt;</code> means the <code>&lt;n&gt;th</code> parent, <code>&lt;rev&gt;^</code> is equivalent to <code>&lt;rev&gt;^1</code>.</p>
+
+    <p>As a special rule, <code>&lt;rev&gt;^0</code> means the commit itself.</p>
+
+    <p>注意<code>head^2</code>的意思是head的第二个parent，不是parent的parent</p>
+
+    <p><code>&lt;rev&gt;^^</code>的意思是第一个parent的第一个parent，等价于<code>&lt;rev&gt;^1^1</code></p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;~&lt;n&gt;, e.g. master~3</code></p>
+
+    <p>A suffix <code>~&lt;n&gt;</code> to a revision parameter means the commit object that is the <n>th generation grand-parent of the named commit object, following only the first parents.</n></p>
+
+    <p><code>&lt;rev&gt;~3</code> is equivalent to <code>&lt;rev&gt;^^^</code> which is equivalent to <code>&lt;rev&gt;^1^1^1</code>. </p>
+
+    <p>注意，这一句“following only the first parents.”，这种方式只会追踪第一个parent。具体可以参考下面这个例子。</p>
+  </li>
+</ul>
+
+<p>Here is an illustration, by Jon Loeliger. Both commit nodes B and C are parents of commit node A. Parent commits are ordered left-to-right.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">G   H   I   J
+</span><span class="line"> <span class="se">\ </span>/     <span class="se">\ </span>/
+</span><span class="line">  D   E   F
+</span><span class="line">   <span class="se">\ </span> <span class="p">|</span>  / <span class="se">\</span>
+</span><span class="line">    <span class="se">\ </span><span class="p">|</span> /   <span class="p">|</span>
+</span><span class="line">     <span class="se">\|</span>/    <span class="p">|</span>
+</span><span class="line">      B     C
+</span><span class="line">       <span class="se">\ </span>  /
+</span><span class="line">        <span class="se">\ </span>/
+</span><span class="line">         A
+</span><span class="line">
+</span><span class="line"><span class="nv">A</span> <span class="o">=</span>      <span class="o">=</span> A^0
+</span><span class="line"><span class="nv">B</span> <span class="o">=</span> A^   <span class="o">=</span> A^1     <span class="o">=</span> A~1
+</span><span class="line"><span class="nv">C</span> <span class="o">=</span> A^2  <span class="o">=</span> A^2
+</span><span class="line"><span class="nv">D</span> <span class="o">=</span> A^^  <span class="o">=</span> A^1^1   <span class="o">=</span> A~2
+</span><span class="line"><span class="nv">E</span> <span class="o">=</span> B^2  <span class="o">=</span> A^^2
+</span><span class="line"><span class="nv">F</span> <span class="o">=</span> B^3  <span class="o">=</span> A^^3
+</span><span class="line"><span class="nv">G</span> <span class="o">=</span> A^^^ <span class="o">=</span> A^1^1^1 <span class="o">=</span> A~3
+</span><span class="line"><span class="nv">H</span> <span class="o">=</span> D^2  <span class="o">=</span> B^^2    <span class="o">=</span> A^^^2  <span class="o">=</span> A~2^2
+</span><span class="line"><span class="nv">I</span> <span class="o">=</span> F^   <span class="o">=</span> B^3^    <span class="o">=</span> A^^3^
+</span><span class="line"><span class="nv">J</span> <span class="o">=</span> F^2  <span class="o">=</span> B^3^2   <span class="o">=</span> A^^3^2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>以下是git的man page：
+<a href="http://schacon.github.io/git/git-rev-parse#_specifying_revisions">specifying revisions</a>
+or 
+<a href="http://git-scm.com/docs/git-rev-parse#_specifying_revisions">specifying revisions</a></p>
 
 </div>
 
@@ -219,14 +358,20 @@
   
 
 
-<time datetime="2013-01-19T16:20:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2013</time>
+<time datetime="2015-05-09T14:35:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/git/'>git</a>
+  
+</span>
 
 
       <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=我的2012 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=我的2012 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 我的2012  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git reference  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
 
     </p>
@@ -240,10 +385,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/tech/blog/2013/01/18/simple-master-election/" title="Previous Post: 霸道算法和环选举算法">&laquo; 霸道算法和环选举算法</a>
+        <a class="basic-alignment left" href="/tech/blog/2015/04/30/git-commit-message-convention/" title="Previous Post: git commit message convention">&laquo; git commit message convention</a>
       
-      
-        <a class="basic-alignment right" href="/tech/blog/2013/01/22/github-https/" title="Next Post: 使用https连接github">使用https连接github &raquo;</a>
       
     </p>
   </footer>
@@ -341,8 +484,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/';
-        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2013/01/19/2012/';
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/';
         var disqus_script = 'embed.js';
       
     (function () {

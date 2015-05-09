@@ -9,7 +9,9 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="I collect all information for internet, I did not write a single word. A well-crafted git commit message is the best way to communicate context &hellip;">
+  <meta name="description" content="git ref 可以使用下面的命令查看ref 1
+git show HEAD HEAD vs ORIG_HEAD
+HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -168,6 +170,219 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/tech/blog/2015/05/09/git-reference/">Git Reference</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-09T14:35:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git reference - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=git reference  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <h2 id="git-ref">git ref</h2>
+
+<p>可以使用下面的命令查看ref</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git show HEAD
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="head-vs-orighead">HEAD vs ORIG_HEAD</h2>
+<p>HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit that you have checked in the working directory (unless you made some changes, or equivalent), and it is a commit on top of which “git commit” would make a new one. Usually HEAD is symbolic reference to some other named branch; this branch is currently checked out branch, or current branch. HEAD can also point directly to a commit; this state is called “detached HEAD”, and can be understood as being on unnamed, anonymous branch.</p>
+
+<p><strong>ORIG_HEAD is previous state of HEAD, set by commands that have possibly dangerous behavior, to be easy to revert them.</strong> It is less useful now that Git has reflog: HEAD@{1} is roughly equivalent to ORIG_HEAD (HEAD@{1} is always last value of HEAD, ORIG_HEAD is last value of HEAD before dangerous operation).</p>
+
+<p>“pull” or “merge” always leaves the original tip of the current branch in ORIG_HEAD.</p>
+
+<p>HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn’t.</p>
+
+<p>So HEAD is NOT a synonym for “current branch” everywhere already.</p>
+
+<p>HEAD means “current” everywhere in git, but it does not necessarily mean “current branch” (i.e. detached HEAD).</p>
+
+<p>But it almost always means the “current commit”.
+It is the commit “git commit” builds on top of, and “git diff –cached” and “git status” compare against.
+It means the current branch only in very limited contexts (exactly when we want a branch name to operate on — resetting and growing the branch tip via commit/rebase/etc.).</p>
+
+<p>http://stackoverflow.com/questions/964876/head-and-orig-head-in-git</p>
+
+<h2 id="detached-head">detached head</h2>
+
+<p>Detached head means you are no longer on a branch, you have checked out a single commit in the history (in this case the commit previous to HEAD, i.e. HEAD^).</p>
+
+<p><a href="http://stackoverflow.com/questions/10228760/fix-a-git-detached-head">fix a git detached head</a></p>
+
+<p>创建一个detach head，关注命令的输出</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$git</span> checkout head^
+</span><span class="line">You are in <span class="s1">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
+</span><span class="line">changes and commit them, and you can discard any commits you make in this
+</span><span class="line">state without impacting any branches by performing another checkout.
+</span><span class="line">
+</span><span class="line">If you want to create a new branch to retain commits you create, you may
+</span><span class="line"><span class="k">do</span> so <span class="o">(</span>now or later<span class="o">)</span> by using -b with the checkout <span class="nb">command </span>again. Example:
+</span><span class="line">
+</span><span class="line">git checkout -b new_branch_name
+</span><span class="line">
+</span><span class="line">HEAD is now at 635b2b1... Init the test.md file
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="specifying-revision">specifying revision</h3>
+
+<p>比较常用的</p>
+
+<ul>
+  <li>
+    <p><code>&lt;sha1&gt;</code> </p>
+
+    <p>dae86e1950b1277e545cee180551750029cfe735 and dae86e both name the same commit object if there is no other object in your repository whose object name starts with dae86e.</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;</code>, e.g. master, heads/master, refs/heads/master</p>
+
+    <p>If $GIT_DIR/<name> exists, that is what you mean (this is usually useful only for HEAD, FETCH_HEAD, ORIG_HEAD, MERGE_HEAD and CHERRY_PICK_HEAD);</name></p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{&lt;n&gt;}</code>, e.g. master@{1}</p>
+
+    <p>从refname的最新的提交倒数n个提交。
+  <code>@{&lt;n&gt;}, e.g. @{1}</code>， 当前的branch</p>
+  </li>
+  <li>
+    <p><code>&lt;refname&gt;@{upstream}, e.g. master@{upstream}, @{u}</code></p>
+
+    <p>ref的远端最新提交</p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;^, e.g. HEAD^, v1.5.1^0</code></p>
+
+    <p>A suffix <code>^</code> to a revision parameter means the first parent of that commit object. </p>
+
+    <p><code>^&lt;n&gt;</code> means the <code>&lt;n&gt;th</code> parent, <code>&lt;rev&gt;^</code> is equivalent to <code>&lt;rev&gt;^1</code>.</p>
+
+    <p>As a special rule, <code>&lt;rev&gt;^0</code> means the commit itself.</p>
+
+    <p>注意<code>head^2</code>的意思是head的第二个parent，不是parent的parent</p>
+
+    <p><code>&lt;rev&gt;^^</code>的意思是第一个parent的第一个parent，等价于<code>&lt;rev&gt;^1^1</code></p>
+  </li>
+  <li>
+    <p><code>&lt;rev&gt;~&lt;n&gt;, e.g. master~3</code></p>
+
+    <p>A suffix <code>~&lt;n&gt;</code> to a revision parameter means the commit object that is the <n>th generation grand-parent of the named commit object, following only the first parents.</n></p>
+
+    <p><code>&lt;rev&gt;~3</code> is equivalent to <code>&lt;rev&gt;^^^</code> which is equivalent to <code>&lt;rev&gt;^1^1^1</code>. </p>
+
+    <p>注意，这一句“following only the first parents.”，这种方式只会追踪第一个parent。具体可以参考下面这个例子。</p>
+  </li>
+</ul>
+
+<p>Here is an illustration, by Jon Loeliger. Both commit nodes B and C are parents of commit node A. Parent commits are ordered left-to-right.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">G   H   I   J
+</span><span class="line"> <span class="se">\ </span>/     <span class="se">\ </span>/
+</span><span class="line">  D   E   F
+</span><span class="line">   <span class="se">\ </span> <span class="p">|</span>  / <span class="se">\</span>
+</span><span class="line">    <span class="se">\ </span><span class="p">|</span> /   <span class="p">|</span>
+</span><span class="line">     <span class="se">\|</span>/    <span class="p">|</span>
+</span><span class="line">      B     C
+</span><span class="line">       <span class="se">\ </span>  /
+</span><span class="line">        <span class="se">\ </span>/
+</span><span class="line">         A
+</span><span class="line">
+</span><span class="line"><span class="nv">A</span> <span class="o">=</span>      <span class="o">=</span> A^0
+</span><span class="line"><span class="nv">B</span> <span class="o">=</span> A^   <span class="o">=</span> A^1     <span class="o">=</span> A~1
+</span><span class="line"><span class="nv">C</span> <span class="o">=</span> A^2  <span class="o">=</span> A^2
+</span><span class="line"><span class="nv">D</span> <span class="o">=</span> A^^  <span class="o">=</span> A^1^1   <span class="o">=</span> A~2
+</span><span class="line"><span class="nv">E</span> <span class="o">=</span> B^2  <span class="o">=</span> A^^2
+</span><span class="line"><span class="nv">F</span> <span class="o">=</span> B^3  <span class="o">=</span> A^^3
+</span><span class="line"><span class="nv">G</span> <span class="o">=</span> A^^^ <span class="o">=</span> A^1^1^1 <span class="o">=</span> A~3
+</span><span class="line"><span class="nv">H</span> <span class="o">=</span> D^2  <span class="o">=</span> B^^2    <span class="o">=</span> A^^^2  <span class="o">=</span> A~2^2
+</span><span class="line"><span class="nv">I</span> <span class="o">=</span> F^   <span class="o">=</span> B^3^    <span class="o">=</span> A^^3^
+</span><span class="line"><span class="nv">J</span> <span class="o">=</span> F^2  <span class="o">=</span> B^3^2   <span class="o">=</span> A^^3^2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>以下是git的man page：
+<a href="http://schacon.github.io/git/git-rev-parse#_specifying_revisions">specifying revisions</a>
+or 
+<a href="http://git-scm.com/docs/git-rev-parse#_specifying_revisions">specifying revisions</a></p>
+
+
+    </div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/tech/blog/2015/04/30/git-commit-message-convention/">Git Commit Message Convention</a></h1>
     
     
@@ -230,88 +445,13 @@ two together.
 - Use a hanging indent
 </code></pre>
 
-<p>Another one:</p>
-
-<pre><code>Summarize changes in around 50 characters or less
-
-More detailed explanatory text, if necessary. Wrap it to about 72
-characters or so. In some contexts, the first line is treated as the
-subject of the commit and the rest of the text as the body. The
-blank line separating the summary from the body is critical (unless
-you omit the body entirely); various tools like `log`, `shortlog`
-and `rebase` can get confused if you run the two together.
-
-Explain the problem that this commit is solving. Focus on why you
-are making this change as opposed to how (the code explains that).
-Are there side effects or other unintuitive consequenses of this
-change? Here's the place to explain them.
-
-Further paragraphs come after blank lines.
-
-- Bullet points are okay, too
-
-- Typically a hyphen or asterisk is used for the bullet, preceded
-  by a single space, with blank lines in between, but conventions
-  vary here
-
-If you use an issue tracker, put references to them at the bottom,
-like this:
-
-Resolves: #123
-See also: #456, #789
-</code></pre>
-
-<h2 id="subject">subject</h2>
-<ul>
-  <li>Separate subject from body with a blank line</li>
-  <li>Limit the subject line to 50 characters</li>
-  <li>Capitalize the subject line</li>
-  <li>Do not end the subject line with a period</li>
-  <li>Use the imperative mood in the subject line: “Fix bug” and not “Fixed bug” or “Fixes bug.”</li>
-  <li>The subject should be a concise summary of the changes introduced by the commit</li>
-</ul>
-
-<h2 id="body">body</h2>
-<ul>
-  <li>Wrap the body at 72 characters</li>
-  <li>Use the body to explain what and why vs. how</li>
-  <li>Try to answer the following questions in your commit message
-    <ul>
-      <li>Why is this change necessary?</li>
-      <li>How does it address the issue?</li>
-      <li>What side effects does this change have?</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="others">others</h2>
-<ul>
-  <li>Never use the <code>-m &lt;msg&gt;</code> or <code>--message=&lt;msg&gt;</code> flag to git commit</li>
-  <li>The Linux kernel and git itself are great examples</li>
-</ul>
-
-<h2 id="reference">reference</h2>
-<p>These are the article I got above good practice of git commit messages. Read it carefully.</p>
-
-<ul>
-  <li><a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">A Note About Git Commit Messages</a></li>
-  <li><a href="https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message">5 Useful Tips For A Better Commit Message</a></li>
-  <li><a href="http://chris.beams.io/posts/git-commit/">How to Write a Git Commit Message</a></li>
-  <li><a href="https://github.com/torvalds/linux/pull/17#issuecomment-5659933">real stickler for a good commit message, Linus Torvalds</a></li>
-  <li><a href="https://github.com/blog/926-shiny-new-commit-styles">Shiny new commit styles</a></li>
-</ul>
-
-<h2 id="git-commit-message-line-wrapping-in-idea">git commit message line wrapping in IDEA</h2>
-<p><a href="https://youtrack.jetbrains.com/issue/IDEA-53615#comment=27-446912">git commit message line wrapping</a></p>
-
-<p>if you turn on the line margin in the commit dialog in the Setting | Version Control, commit dialog text area becomes monospaced. 
-Moreover, if you turn on “Wrap when typing reaches right margin” in Settings | Code style | General, it will affect the commit dialog text area as well (however, it will affect the main editor too).</p>
-
-<p>A separate setting to wrap when text reaches right margin has been added to Settings | Version Control.</p>
-
 
     </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/04/30/git-commit-message-convention/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -361,53 +501,13 @@ With the following method, we just touch or remove one file, it will turn on or 
 Basically, I learnt from this page:
 <a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
 
-<h2 id="change-httpdconf">Change httpd.conf</h2>
-<p>make sure the rewrite module is loaded:</p>
-
-<pre><code>LoadModule rewrite_module modules/mod_rewrite.so
-</code></pre>
-
-<p>Then add rewrite rule:</p>
-
-<pre><code>DocumentRoot "/opt/root_dir/"
-&lt;IfModule mod_rewrite.c&gt;
-   RewriteEngine On
-   #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
-   RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
-   RewriteCond %{DOCUMENT_ROOT}/maintenance.enable -f
-   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
-   RewriteRule ^.*$ /maintenance.html [R=503,L]
-   ErrorDocument 503 /maintenance.html
-   Header Set Cache-Control "max-age=0, no-store"
-&lt;/IfModule&gt;
-</code></pre>
-
-<p>Then add the <code>maintenance.html</code> page in the <code>DocumentRoot</code>.
-When the site is under maintenance mode, please touch <code>maintenance.enable</code> file in <code>DocumentRoot</code>.
-After the site becomes normally, please just remove the <code>maintenance.enable</code></p>
-
-<pre><code>TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
-</code></pre>
-
-<h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
-<p>add the following line in the <code>conf.d/myproject.conf</code> or <code>conf.d/otherproject.conf</code>:</p>
-
-<pre><code>Alias /maintenance.html /opt/root_dir/maintenance.html
-</code></pre>
-
-<h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
-<p>restart Apache, it should work.
-And I already make a demo, here are the config files with path:</p>
-
-<pre><code>httpd.conf -&gt; /opt/root_dir/httpd/conf
-devcenter.conf -&gt; /opt/root_dir/httpd/conf.d
-maintenance.html -&gt; /opt/root_dir
-maintenance.enable -&gt; /opt/root_dir
-</code></pre>
-
 
     </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/04/17/apache-maintenance-mode/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -955,93 +1055,6 @@ While there are more examples in S
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2013/01/22/github-https/">使用https连接github</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-22T13:08:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/fuck-nbsp-gfw/'>Fuck&nbsp;GFW</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=使用https连接github - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=使用https连接github - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=使用https连接github  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/22/github-https/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <p>火车票插件拖垮github的事件的结果，就是github被悲催地墙掉了。愤慨啊。Fuck GFW!</p>
-
-<p>不过有了goagent的代理，github的网站是可以上了，但是命令行上面pull，push就不灵了。新浪微博上<a href="http://www.weibo.com/neilxp">@蒋伟</a>找到了一个通过<a href="http://www.weibo.com/1791166224/zfvJvnG39">https连接github的办法</a>，总结一下如下：</p>
-
-<ol>
-  <li>安装goagent</li>
-  <li>
-    <p>导入ca.crt证书
- 导入goagent目录下的local/CA.crt   <br />
- ubuntu导入证书    <br />
- http://askubuntu.com/questions/73287/how-do-i-install-a-root-certificate        </p>
-  </li>
-  <li>启动代理 python proxy.py</li>
-  <li>设置代理： export HTTPS_PROXY=”http://127.0.0.1:8087”</li>
-  <li>github配置，关键一步是remote add的时候，方法是：   <br />
- git remote add origin https://liuhongjiang@github.com/liuhongjiang/tech.git   <br />
- 这样就可以正常地pull和push了，麻烦的是，每次都要输入秘密。      </li>
-  <li>
-    <p>接下来就是octopress的rake deploy了：
- 需要修改Rakefile：</p>
-
-    <pre><code> # user = repo_url.match(/:([^\/]+)/)[1]
- user = repo_url.match(/github\.com.([^\/]+)/)[1]
- # branch = (repo_url.match(/\/[\w-]+.github.com/).nil?) ? 'gh-pages' : 'master'
- branch = (repo_url.match(/\/[\w-]+\.github\.com$/).nil?) ? 'gh-pages' : 'master'
- # project = (branch == 'gh-pages') ? repo_url.match(/\/([^\.]+)/)[1] : ''
- project = (branch == 'gh-pages') ? repo_url.match(/\/([^\/^\.]+)$/)[1] : ''
-</code></pre>
-
-    <p>然后在<code>rake setup_github_pages</code>命令中填https的url地址：        <br />
- https://liuhongjiang@github.com/liuhongjiang/tech     <br />
- 同样在部署的时候，还是要输入密码</p>
-  </li>
-</ol>
-
-    </div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -1063,6 +1076,10 @@ While there are more examples in S
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/04/30/git-commit-message-convention/">git commit message convention</a>
       </li>
     
@@ -1078,15 +1095,11 @@ While there are more examples in S
         <a href="/tech/blog/2014/05/16/rules/">规则</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2013/11/25/learning-go/">go语言学习</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 115.0%'>git(1)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 130.0%'>git(2)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>
