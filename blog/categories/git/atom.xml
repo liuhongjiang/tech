@@ -4,7 +4,7 @@
   <title><![CDATA[分类: git | 刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-05-09T16:21:46+08:00</updated>
+  <updated>2015-05-11T11:06:33+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,65 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git tips]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/"/>
+    <updated>2015-05-09T16:27:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips</id>
+    <content type="html"><![CDATA[<h2 id="how-to-pull-after-forced-update">how to pull after forced update</h2>
+
+<p><code>
+git reset origin/master --hard
+</code></p>
+
+<p>this willResets the index and working tree. Any changes to tracked files in the working tree since are discarded.</p>
+
+<p>当前工作目录的index和本地修改，都会被丢弃（丢弃的修改包括已经提交到本地的commit)</p>
+
+<!-- more -->
+
+<p>可以使用 <code>--soft</code>
+If you want to actually keep whatever changes you’ve got locally, do a <code>--soft</code> reset instead. which will update the commit history for the branch,
+不会丢弃本地未提交的修改，但是会丢弃本地提交的修改。</p>
+
+<p>另外还有两个参数 <code>--keep --merge</code>，我在本地试了一下，都报错了，没有深入了解。</p>
+
+<h2 id="git-rebase">git rebase</h2>
+<p>You can replay your local commits ontop of any other commit/branch using git rebase
+例如你在feature分支，你可以基于master分支对当期的分支rebase</p>
+
+<p><code>bash
+git rebase -i origin/master
+</code></p>
+
+<p>this will invoke rebase in interactive mode where you can choose how to apply each individual commit that isn’t in the history you are rebasing on top of.</p>
+
+<p>你也可以基于当期分支的之前的commit进行分子</p>
+
+<p><code>bash
+git rebase -i HEAD~3
+</code></p>
+
+<p>相对于从倒退3个提交，开始rebase，这样你就可以对的多次提交进行合并。</p>
+
+<p>如果你的分支已经push到了远端，那么在rebase之后，你要push的话，只能用 forced git push。 </p>
+
+<p><a href="http://stackoverflow.com/questions/9813816/git-pull-after-forced-update">git pull after forced update</a></p>
+
+<h2 id="throw-away-local-commits-in-git">Throw away local commits in git</h2>
+
+<p>前面讲到的git reset就可以完成这个工作。例如你在master分支上</p>
+
+<p><code>bash
+git reset --hard origin/master 
+</code></p>
+
+<p>这样就可以达到需要的效果。</p>
+
+<p>不要使用git revert， git revert会提交一个新的commit去revert原来的commit，这样在history中就可以看到。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git reference]]></title>
@@ -34,6 +93,8 @@ git show HEAD
 <p>“pull” or “merge” always leaves the original tip of the current branch in ORIG_HEAD.</p>
 
 <p>HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn’t.</p>
+
+<!-- more -->
 
 <p>So HEAD is NOT a synonym for “current branch” everywhere already.</p>
 

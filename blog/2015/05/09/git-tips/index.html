@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>标签分类 - 刘洪江的流水帐</title>
+  <title>git tips - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="标签分类 查找： $('input[name=filter_tags]').keyup(function(e){ var val = $(this).val(); if (/^\s*$/.test(val) || e.keyCode == 27) { // 27 is 'esc' $('# &hellip;">
+  <meta name="description" content="how to pull after forced update 1
+git reset origin/master --hard this willResets the index and working tree. Any changes to tracked files in the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/categories/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -130,46 +131,161 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">标签分类</h1>
     
-  </header>
-  
-  <section>
-  <p>查找：<input class="search" type="text" name="filter_tags" results="0" placeholder="Filter Tags ..." /></p>
-  <script type="text/javascript">
-    $('input[name=filter_tags]').keyup(function(e){
-      var val = $(this).val();
-      if (/^\s*$/.test(val) || e.keyCode == 27) { // 27 is 'esc'
-        $('#category-list li').show();
-        $(this).val('');
-        return;
-      }
-      var pattern = new RegExp(val, 'i');
-      $('#category-list li').each(function(){
-        $(this)[pattern.test($(this).find('a').text()) ? 'show' : 'hide']();
-      });
-    });
-  </script>
-  <ul id="category-list"><li><a href="/tech/blog/categories/3rd-nbsp-tools">3rd&nbsp;tools (2)</a></li><li><a href="/tech/blog/categories/algorithm">Algorithm (1)</a></li><li><a href="/tech/blog/categories/c-c-">C/C++ (3)</a></li><li><a href="/tech/blog/categories/data-nbsp-structure">Data&nbsp;structure (1)</a></li><li><a href="/tech/blog/categories/fuck-nbsp-gfw">Fuck&nbsp;GFW (1)</a></li><li><a href="/tech/blog/categories/git">git (3)</a></li><li><a href="/tech/blog/categories/language">Language (1)</a></li><li><a href="/tech/blog/categories/linux">linux (1)</a></li><li><a href="/tech/blog/categories/machine-nbsp-learning">Machine&nbsp;Learning (4)</a></li><li><a href="/tech/blog/categories/math">math (1)</a></li><li><a href="/tech/blog/categories/octopress">octopress (2)</a></li><li><a href="/tech/blog/categories/vi">Vi (1)</a></li></ul>
-</section>
+      <h1 class="entry-title">Git Tips</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
 
   
-    <footer>
+
+
+<time datetime="2015-05-09T16:27:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git tips  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+<div class="entry-content">
+    
+    <h2 id="how-to-pull-after-forced-update">how to pull after forced update</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git reset origin/master --hard</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>this willResets the index and working tree. Any changes to tracked files in the working tree since are discarded.</p>
+
+<p>当前工作目录的index和本地修改，都会被丢弃（丢弃的修改包括已经提交到本地的commit)</p>
+
+<!-- more -->
+
+<p>可以使用 <code>--soft</code>
+If you want to actually keep whatever changes you’ve got locally, do a <code>--soft</code> reset instead. which will update the commit history for the branch,
+不会丢弃本地未提交的修改，但是会丢弃本地提交的修改。</p>
+
+<p>另外还有两个参数 <code>--keep --merge</code>，我在本地试了一下，都报错了，没有深入了解。</p>
+
+<h2 id="git-rebase">git rebase</h2>
+<p>You can replay your local commits ontop of any other commit/branch using git rebase
+例如你在feature分支，你可以基于master分支对当期的分支rebase</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git rebase -i origin/master
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>this will invoke rebase in interactive mode where you can choose how to apply each individual commit that isn’t in the history you are rebasing on top of.</p>
+
+<p>你也可以基于当期分支的之前的commit进行分子</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git rebase -i HEAD~3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>相对于从倒退3个提交，开始rebase，这样你就可以对的多次提交进行合并。</p>
+
+<p>如果你的分支已经push到了远端，那么在rebase之后，你要push的话，只能用 forced git push。 </p>
+
+<p><a href="http://stackoverflow.com/questions/9813816/git-pull-after-forced-update">git pull after forced update</a></p>
+
+<h2 id="throw-away-local-commits-in-git">Throw away local commits in git</h2>
+
+<p>前面讲到的git reset就可以完成这个工作。例如你在master分支上</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git reset --hard origin/master
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这样就可以达到需要的效果。</p>
+
+<p>不要使用git revert， git revert会提交一个新的commit去revert原来的commit，这样在history中就可以看到。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
       
+  
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
       
-        <div class="sharing">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-09T16:27:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/git/'>git</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git tips  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
   
   
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/tech/blog/2015/05/09/git-reference/" title="Previous Post: git reference">&laquo; git reference</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -256,7 +372,10 @@
       var disqus_shortname = 'andrewliu117';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

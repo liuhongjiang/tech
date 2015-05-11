@@ -9,9 +9,8 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="git ref 可以使用下面的命令查看ref 1
-git show HEAD HEAD vs ORIG_HEAD
-HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It is a commit &hellip;">
+  <meta name="description" content="how to pull after forced update 1
+git reset origin/master --hard this willResets the index and working tree. Any changes to tracked files in the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -170,6 +169,72 @@ HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It 
       
   <header>
     
+      <h1 class="entry-title"><a href="/tech/blog/2015/05/09/git-tips/">Git Tips</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-09T16:27:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=git tips  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <h2 id="how-to-pull-after-forced-update">how to pull after forced update</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">git reset origin/master --hard</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>this willResets the index and working tree. Any changes to tracked files in the working tree since are discarded.</p>
+
+<p>当前工作目录的index和本地修改，都会被丢弃（丢弃的修改包括已经提交到本地的commit)</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/05/09/git-tips/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/tech/blog/2015/05/09/git-reference/">Git Reference</a></h1>
     
     
@@ -227,152 +292,13 @@ HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It 
 
 <p>HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn’t.</p>
 
-<p>So HEAD is NOT a synonym for “current branch” everywhere already.</p>
-
-<p>HEAD means “current” everywhere in git, but it does not necessarily mean “current branch” (i.e. detached HEAD).</p>
-
-<p>But it almost always means the “current commit”.
-It is the commit “git commit” builds on top of, and “git diff –cached” and “git status” compare against.
-It means the current branch only in very limited contexts (exactly when we want a branch name to operate on — resetting and growing the branch tip via commit/rebase/etc.).</p>
-
-<p>http://stackoverflow.com/questions/964876/head-and-orig-head-in-git</p>
-
-<h2 id="detached-head">detached head</h2>
-
-<p>Detached head means you are no longer on a branch, you have checked out a single commit in the history (in this case the commit previous to HEAD, i.e. HEAD^).</p>
-
-<p><a href="http://stackoverflow.com/questions/10228760/fix-a-git-detached-head">fix a git detached head</a></p>
-
-<p>创建一个detach head，关注命令的输出</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$git</span> checkout head^
-</span><span class="line">You are in <span class="s1">&#39;detached HEAD&#39;</span> state. You can look around, make experimental
-</span><span class="line">changes and commit them, and you can discard any commits you make in this
-</span><span class="line">state without impacting any branches by performing another checkout.
-</span><span class="line">
-</span><span class="line">If you want to create a new branch to retain commits you create, you may
-</span><span class="line"><span class="k">do</span> so <span class="o">(</span>now or later<span class="o">)</span> by using -b with the checkout <span class="nb">command </span>again. Example:
-</span><span class="line">
-</span><span class="line">git checkout -b new_branch_name
-</span><span class="line">
-</span><span class="line">HEAD is now at 635b2b1... Init the test.md file
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="specifying-revision">specifying revision</h3>
-
-<p>比较常用的</p>
-
-<ul>
-  <li>
-    <p><code>&lt;sha1&gt;</code> </p>
-
-    <p>dae86e1950b1277e545cee180551750029cfe735 and dae86e both name the same commit object if there is no other object in your repository whose object name starts with dae86e.</p>
-  </li>
-  <li>
-    <p><code>&lt;refname&gt;</code>, e.g. master, heads/master, refs/heads/master</p>
-
-    <p>If $GIT_DIR/<name> exists, that is what you mean (this is usually useful only for HEAD, FETCH_HEAD, ORIG_HEAD, MERGE_HEAD and CHERRY_PICK_HEAD);</name></p>
-  </li>
-  <li>
-    <p><code>&lt;refname&gt;@{&lt;n&gt;}</code>, e.g. master@{1}</p>
-
-    <p>从refname的最新的提交倒数n个提交。
-  <code>@{&lt;n&gt;}, e.g. @{1}</code>， 当前的branch</p>
-  </li>
-  <li>
-    <p><code>&lt;refname&gt;@{upstream}, e.g. master@{upstream}, @{u}</code></p>
-
-    <p>ref的远端最新提交</p>
-  </li>
-  <li>
-    <p><code>&lt;rev&gt;^, e.g. HEAD^, v1.5.1^0</code></p>
-
-    <p>A suffix <code>^</code> to a revision parameter means the first parent of that commit object. </p>
-
-    <p><code>^&lt;n&gt;</code> means the <code>&lt;n&gt;th</code> parent, <code>&lt;rev&gt;^</code> is equivalent to <code>&lt;rev&gt;^1</code>.</p>
-
-    <p>As a special rule, <code>&lt;rev&gt;^0</code> means the commit itself.</p>
-
-    <p>注意<code>head^2</code>的意思是head的第二个parent，不是parent的parent</p>
-
-    <p><code>&lt;rev&gt;^^</code>的意思是第一个parent的第一个parent，等价于<code>&lt;rev&gt;^1^1</code></p>
-  </li>
-  <li>
-    <p><code>&lt;rev&gt;~&lt;n&gt;, e.g. master~3</code></p>
-
-    <p>A suffix <code>~&lt;n&gt;</code> to a revision parameter means the commit object that is the <n>th generation grand-parent of the named commit object, following only the first parents.</n></p>
-
-    <p><code>&lt;rev&gt;~3</code> is equivalent to <code>&lt;rev&gt;^^^</code> which is equivalent to <code>&lt;rev&gt;^1^1^1</code>. </p>
-
-    <p>注意，这一句“following only the first parents.”，这种方式只会追踪第一个parent。具体可以参考下面这个例子。</p>
-  </li>
-</ul>
-
-<p>Here is an illustration, by Jon Loeliger. Both commit nodes B and C are parents of commit node A. Parent commits are ordered left-to-right.</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">G   H   I   J
-</span><span class="line"> <span class="se">\ </span>/     <span class="se">\ </span>/
-</span><span class="line">  D   E   F
-</span><span class="line">   <span class="se">\ </span> <span class="p">|</span>  / <span class="se">\</span>
-</span><span class="line">    <span class="se">\ </span><span class="p">|</span> /   <span class="p">|</span>
-</span><span class="line">     <span class="se">\|</span>/    <span class="p">|</span>
-</span><span class="line">      B     C
-</span><span class="line">       <span class="se">\ </span>  /
-</span><span class="line">        <span class="se">\ </span>/
-</span><span class="line">         A
-</span><span class="line">
-</span><span class="line"><span class="nv">A</span> <span class="o">=</span>      <span class="o">=</span> A^0
-</span><span class="line"><span class="nv">B</span> <span class="o">=</span> A^   <span class="o">=</span> A^1     <span class="o">=</span> A~1
-</span><span class="line"><span class="nv">C</span> <span class="o">=</span> A^2  <span class="o">=</span> A^2
-</span><span class="line"><span class="nv">D</span> <span class="o">=</span> A^^  <span class="o">=</span> A^1^1   <span class="o">=</span> A~2
-</span><span class="line"><span class="nv">E</span> <span class="o">=</span> B^2  <span class="o">=</span> A^^2
-</span><span class="line"><span class="nv">F</span> <span class="o">=</span> B^3  <span class="o">=</span> A^^3
-</span><span class="line"><span class="nv">G</span> <span class="o">=</span> A^^^ <span class="o">=</span> A^1^1^1 <span class="o">=</span> A~3
-</span><span class="line"><span class="nv">H</span> <span class="o">=</span> D^2  <span class="o">=</span> B^^2    <span class="o">=</span> A^^^2  <span class="o">=</span> A~2^2
-</span><span class="line"><span class="nv">I</span> <span class="o">=</span> F^   <span class="o">=</span> B^3^    <span class="o">=</span> A^^3^
-</span><span class="line"><span class="nv">J</span> <span class="o">=</span> F^2  <span class="o">=</span> B^3^2   <span class="o">=</span> A^^3^2
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>以下是git的man page：
-<a href="http://schacon.github.io/git/git-rev-parse#_specifying_revisions">specifying revisions</a>
-or 
-<a href="http://git-scm.com/docs/git-rev-parse#_specifying_revisions">specifying revisions</a></p>
-
 
     </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/05/09/git-reference/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -966,95 +892,6 @@ While there are more examples in S
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2013/01/23/zk-overview/">ZooKeeper Overview</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-23T17:05:00+08:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2013</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/3rd-nbsp-tools/'>3rd&nbsp;tools</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=ZooKeeper Overview - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=ZooKeeper Overview  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/23/zk-overview/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <div class="abstract">
-            <table>
-                <tr>
-                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
-                    <td>简单介绍了zookeeper的概要，主要是翻译了apache zookeeper overview的内容。</td>
-                </tr>
-            </table>
-        </div>
-        
-        <h2 id="zookeeper-">ZooKeeper 简介</h2>
-
-<p>ZooKeeper是Hadoop的正式子项目，它是一个针对大型分布式系统的可靠协调系统，提供的功能包括：配置维护、名字服务、分布式同步、组服务等。ZooKeeper的目标就是封装好复杂易出错的关键服务，将简单易用的接口和性能高效、功能稳定的系统提供给用户。<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
-
-<p>Zookeeper是Google的Chubby一个开源的实现，关于Chubby，可以google一下，有论文介绍的。zookeeper是高有效和可靠的协同工作系统。Zookeeper能够用来leader选举，配置信息维护等。在一个分布式的环境中，我们需要一个Master实例或存储一些配置信息，确保文件写入的一致性等。</p>
-
-<p>ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，包含一个简单的原语集，是Hadoop和Hbase的重要组件。目前提供Java和C的接口。</p>
-
-<p>在Zookeeper中，znode是一个跟Unix文件系统路径相似的节点,可以往这个节点存储或获取数据.如果在创建znode时Flag设置为EPHEMERAL,那么当这个创建这个znode的节点和Zookeeper失去连接后,这个znode将不再存在在Zookeeper 里.Zookeeper使用Watcher察觉事件信息,当客户端接收到事件信息,比如连接超时,节点数据改变,子节点改变,可以调用相应的行为来处理数 据.Zookeeper的Wiki页面展示了如何使用Zookeeper来处理事件通知,队列,优先队列,锁,共享锁,可撤销的共享锁,两阶段提交.</p>
-
-<p>znodes与Unix文件系统路径相似相似，但是还是不同的，znode的中间节点是可以保存数据的，对应于文件系统，就即是文件又是目录。为了达到高吞吐的能力，znode在zookeeper中是放在内存中的。</p>
-
-<p>ZooKeeper是以Fast Paxos算法为基础的，paxos算法存在活锁的问题，即当有多个proposer交错提交时，有可能互相排斥导致没有一个proposer能提交成功，而Fast Paxos作了一些优化，通过选举产生一个leader，只有leader才能提交propose，具体算法可见Fast Paxos。因此，要想弄懂ZooKeeper首先得对Fast Paxos有所了解。</p>
-
-<p>ZooKeeper的基本运转流程：</p>
-
-<pre><code>1、选举Leader。
-2、同步数据。
-3、选举Leader过程中算法有很多，但要达到的选举标准是一致的。
-4、Leader要具有最高的zxid。
-5、集群中大多数的机器得到响应并follow选出的Leader。
-</code></pre>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2013/01/23/zk-overview/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -1076,6 +913,10 @@ While there are more examples in S
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/09/git-tips/">git tips</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
       </li>
     
@@ -1091,15 +932,11 @@ While there are more examples in S
         <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2014/05/16/rules/">规则</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 130.0%'>git(2)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 145.0%'>git(3)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>
