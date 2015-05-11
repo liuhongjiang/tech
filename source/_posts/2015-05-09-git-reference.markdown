@@ -26,6 +26,8 @@ HEAD is (direct or indirect, i.e. symbolic) reference to the current commit. It 
 
 HEAD is a moving pointer. Sometimes it means the current branch, sometimes it doesn't.
 
+<!-- more -->
+
 So HEAD is NOT a synonym for "current branch" everywhere already.
 
 HEAD means "current" everywhere in git, but it does not necessarily mean "current branch" (i.e. detached HEAD).

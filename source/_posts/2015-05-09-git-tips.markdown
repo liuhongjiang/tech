@@ -18,6 +18,8 @@ this willResets the index and working tree. Any changes to tracked files in the 
 
 当前工作目录的index和本地修改，都会被丢弃（丢弃的修改包括已经提交到本地的commit)
 
+<!-- more -->
+
 可以使用 `--soft`
 If you want to actually keep whatever changes you've got locally, do a `--soft` reset instead. which will update the commit history for the branch,
 不会丢弃本地未提交的修改，但是会丢弃本地提交的修改。
