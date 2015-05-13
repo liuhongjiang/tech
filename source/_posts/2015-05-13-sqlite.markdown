@@ -22,6 +22,8 @@ sqlite是一个非常小的数据库,适合小的应用,或者是app之类的.
 
 可以使用[GUI工具](http://sqlitebrowser.org/), 这个应该更方便
 
+<!-- more -->
+
 * linux
 
 using command, such as:
