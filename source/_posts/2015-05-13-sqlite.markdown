@@ -1,0 +1,110 @@
+---
+layout: post
+title: "sqlite"
+date: 2015-05-13 18:21
+comments: true
+categories: sqlite 
+math: 
+abstract: 
+---
+
+sqlite是一个非常小的数据库,适合小的应用,或者是app之类的.
+
+## install
+
+* windows command line
+
+[下载SQLite](https://www.sqlite.org/download.html), 下载的文件是sqlite-shell-win32-x86-3081001.zip
+
+下载后将sqlite3.exe放入到windows系统的path路径中，或者在pathe路径中加入sqlite3.exe所在的目录。
+
+* windows SqliteBrowser
+
+可以使用[GUI工具](http://sqlitebrowser.org/), 这个应该更方便
+
+* linux
+
+using command, such as:
+
+```bash
+sudo yum install sqlite-devel
+```
+
+## commands
+
+打开或者创建一个数据库.
+
+```bash
+$ sqlite3 ex1
+SQLite version 3.8.5 2014-05-29 12:36:14
+Enter ".help" for usage hints.
+sqlite> create table tbl1(one varchar(10), two smallint);
+sqlite> insert into tbl1 values('hello!',10);
+sqlite> insert into tbl1 values('goodbye', 20);
+sqlite> select * from tbl1;
+hello!|10
+goodbye|20sqlite>
+```
+
+Other command:
+
+```bash
+sqlite> .tables     # 查看table list
+sqlite> .schema ?TABLE? # 查看table的create语句
+sqlite> .help       # 查看help信息
+sqlite> .exit           # 退出
+sqlite> select * from tbl1; # 执行sql语句
+sqlite> .indexes ?TABLE?  # 查看table的index
+```
+
+using sqlite3 in a shell script:
+
+```bash
+$ sqlite3 ex1 'select * from tbl1' |
+>  awk '{printf "<tr><td>%s<td>%s\n",$1,$2 }'
+<tr><td>hello<td>10
+<tr><td>goodbye<td>20
+$
+```
+
+文档 https://www.sqlite.org/cli.htmlmore documents:
+
+[SQLite documents](https://www.sqlite.org/docs.html)
+
+[SQLite Syntax](https://www.sqlite.org/lang.html) or [SQLite Syntax](https://www.sqlite.org/syntax.html)
+
+## node.js for SQLite
+
+SQLite有不同的client，这里一个node为例: [node-sqlite3](https://github.com/mapbox/node-sqlite3)
+
+这里一个代码的例子:
+
+```javascript
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(':memory:');
+
+db.serialize(function() {
+     db.run("CREATE TABLE lorem (info TEXT)");
+
+       var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+         for (var i = 0; i < 10; i++) {
+               stmt.run("Ipsum " + i);
+                 }
+                   stmt.finalize();
+
+                     db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
+                               console.log(row.id + ": " + row.info);
+                                 });
+                     });
+
+db.close();
+```
+
+[API document](https://github.com/mapbox/node-sqlite3/wiki)
+
+安装的最简单方法是使用npm:
+
+
+```bash
+npm install sqlite3
+```
