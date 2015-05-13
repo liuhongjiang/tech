@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>apache maintenance mode - 刘洪江的流水帐</title>
+  <title>分类: sqlite - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="How to set devcenter or webconsole into maintenance mode
-I found a way to set devcenter or webconsole show maintenance page automatically without &hellip;">
+  <meta name="description" content="Category: sqlite">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ I found a way to set devcenter or webconsole show maintenance page automatically
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/techblog/categories/sqlite/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -131,151 +130,36 @@ I found a way to set devcenter or webconsole show maintenance page automatically
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Apache Maintenance Mode</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-04-17T19:39:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
-        
-		
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= apache maintenance mode  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
+    <h1 class="entry-title">分类: Sqlite</h1>
     
   </header>
-
-
-<div class="entry-content">
-    
-    <h2 id="how-to-set-devcenter-or-webconsole-into-maintenance-mode">How to set devcenter or webconsole into maintenance mode</h2>
-<p>I found a way to set devcenter or webconsole show maintenance page automatically without restart apache.
-With the following method, we just touch or remove one file, it will turn on or off the maintenance mode.
-Basically, I learnt from this page:
-<a href="http://www.shellhacks.com/en/Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess">Redirect-Site-to-Maintenance-Page-using-Apache-and-HTAccess</a></p>
-
-<!--more -->
-<p>## Change httpd.conf
-make sure the rewrite module is loaded:</p>
-
-<pre><code>LoadModule rewrite_module modules/mod_rewrite.so
-</code></pre>
-
-<p>Then add rewrite rule:</p>
-
-<pre><code>DocumentRoot "/opt/root_dir/"
-&lt;IfModule mod_rewrite.c&gt;
-   RewriteEngine On
-   #RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
-   RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
-   RewriteCond %{DOCUMENT_ROOT}/maintenance.enable -f
-   RewriteCond %{SCRIPT_FILENAME} !maintenance.html
-   RewriteRule ^.*$ /maintenance.html [R=503,L]
-   ErrorDocument 503 /maintenance.html
-   Header Set Cache-Control "max-age=0, no-store"
-&lt;/IfModule&gt;
-</code></pre>
-
-<p>Then add the <code>maintenance.html</code> page in the <code>DocumentRoot</code>.
-When the site is under maintenance mode, please touch <code>maintenance.enable</code> file in <code>DocumentRoot</code>.
-After the site becomes normally, please just remove the <code>maintenance.enable</code></p>
-
-<pre><code>TIPs: as we used the wsgi in apache, any changes to python file, we need to restart the apache.
-</code></pre>
-
-<h2 id="add-alias-in-wsgi-conf">Add alias in wsgi conf</h2>
-<p>add the following line in the <code>conf.d/myproject.conf</code> or <code>conf.d/otherproject.conf</code>:</p>
-
-<pre><code>Alias /maintenance.html /opt/root_dir/maintenance.html
-</code></pre>
-
-<h2 id="restart-apache-and-demo">Restart Apache and Demo</h2>
-<p>restart Apache, it should work.
-And I already make a demo, here are the config files with path:</p>
-
-<pre><code>httpd.conf -&gt; /opt/root_dir/httpd/conf
-devcenter.conf -&gt; /opt/root_dir/httpd/conf.d
-maintenance.html -&gt; /opt/root_dir
-maintenance.enable -&gt; /opt/root_dir
-</code></pre>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2015</h2>
 
-
-<time datetime="2015-04-17T19:39:00+08:00" pubdate data-updated="true">Apr 17<span>th</span>, 2015</time>
-      
-
-
-      <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=apache maintenance mode - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= apache maintenance mode  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
-
-    </p>
-    
-      <div class="sharing">
+<article>
   
-  
-  
-</div>
+<h1><a href="/tech/blog/2015/05/13/sqlite/">sqlite</a></h1>
+<time datetime="2015-05-13T18:21:00+08:00" pubdate><span class='month'>May</span> <span class='day'>13</span> <span class='year'>2015</span></time>
 
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/" title="Previous Post: The Cathedral and the Bazaar ">&laquo; The Cathedral and the Bazaar </a>
-      
-      
-        <a class="basic-alignment right" href="/tech/blog/2015/04/30/git-commit-message-convention/" title="Next Post: git commit message convention">git commit message convention &raquo;</a>
-      
-    </p>
-  </footer>
+<footer>
+  <span class="categories">posted in <a class='category' href='/tech/blog/categories/sqlite/'>sqlite</a></span>
+</footer>
+
+
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -362,10 +246,7 @@ maintenance.enable -&gt; /opt/root_dir
       var disqus_shortname = 'andrewliu117';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/';
-        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

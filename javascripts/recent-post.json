@@ -1,6 +1,12 @@
 [
 
 {
+    "title":"sqlite", 
+    "url":"http://liuhongjiang.github.com/tech/blog/2015/05/13/sqlite/", 
+    "date":"2015-05-13"
+}
+,
+{
     "title":"git tips", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/", 
     "date":"2015-05-09"
@@ -22,12 +28,6 @@
     "title":"apache maintenance mode", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/04/17/apache-maintenance-mode/", 
     "date":"2015-04-17"
-}
-,
-{
-    "title":"The Cathedral and the Bazaar ", 
-    "url":"http://liuhongjiang.github.com/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/", 
-    "date":"2014-05-16"
 }
 
 ]

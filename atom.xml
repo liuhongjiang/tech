@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-05-11T11:06:33+08:00</updated>
+  <updated>2015-05-13T18:56:06+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,155 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[sqlite]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/05/13/sqlite/"/>
+    <updated>2015-05-13T18:21:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/05/13/sqlite</id>
+    <content type="html"><![CDATA[<p>sqlite是一个非常小的数据库,适合小的应用,或者是app之类的.</p>
+
+<h2 id="install">install</h2>
+
+<ul>
+  <li>windows command line</li>
+</ul>
+
+<p><a href="https://www.sqlite.org/download.html">下载SQLite</a>, 下载的文件是sqlite-shell-win32-x86-3081001.zip</p>
+
+<p>下载后将sqlite3.exe放入到windows系统的path路径中，或者在pathe路径中加入sqlite3.exe所在的目录。</p>
+
+<ul>
+  <li>windows SqliteBrowser</li>
+</ul>
+
+<p>可以使用<a href="http://sqlitebrowser.org/">GUI工具</a>, 这个应该更方便</p>
+
+<!-- more -->
+
+<ul>
+  <li>linux</li>
+</ul>
+
+<p>using command, such as:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo yum install sqlite-devel
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="commands">commands</h2>
+
+<p>打开或者创建一个数据库.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>sqlite3 ex1
+</span><span class="line">SQLite version 3.8.5 2014-05-29 12:36:14
+</span><span class="line">Enter <span class="s2">&quot;.help&quot;</span> <span class="k">for </span>usage hints.
+</span><span class="line">sqlite&gt; create table tbl1<span class="o">(</span>one varchar<span class="o">(</span>10<span class="o">)</span>, two smallint<span class="o">)</span>;
+</span><span class="line">sqlite&gt; insert into tbl1 values<span class="o">(</span><span class="s1">&#39;hello!&#39;</span>,10<span class="o">)</span>;
+</span><span class="line">sqlite&gt; insert into tbl1 values<span class="o">(</span><span class="s1">&#39;goodbye&#39;</span>, 20<span class="o">)</span>;
+</span><span class="line">sqlite&gt; <span class="k">select</span> * from tbl1;
+</span><span class="line">hello!|10
+</span><span class="line">goodbye|20sqlite&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Other command:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sqlite&gt; .tables     <span class="c"># 查看table list</span>
+</span><span class="line">sqlite&gt; .schema ?TABLE? <span class="c"># 查看table的create语句</span>
+</span><span class="line">sqlite&gt; .help       <span class="c"># 查看help信息</span>
+</span><span class="line">sqlite&gt; .exit           <span class="c"># 退出</span>
+</span><span class="line">sqlite&gt; <span class="k">select</span> * from tbl1; <span class="c"># 执行sql语句</span>
+</span><span class="line">sqlite&gt; .indexes ?TABLE?  <span class="c"># 查看table的index</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>using sqlite3 in a shell script:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>sqlite3 ex1 <span class="s1">&#39;select * from tbl1&#39;</span> |
+</span><span class="line">&gt;  awk <span class="s1">&#39;{printf &quot;&lt;tr&gt;&lt;td&gt;%s&lt;td&gt;%s\n&quot;,$1,$2 }&#39;</span>
+</span><span class="line">&lt;tr&gt;&lt;td&gt;hello&lt;td&gt;10
+</span><span class="line">&lt;tr&gt;&lt;td&gt;goodbye&lt;td&gt;20
+</span><span class="line"><span class="err">$</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>文档 https://www.sqlite.org/cli.htmlmore documents:</p>
+
+<p><a href="https://www.sqlite.org/docs.html">SQLite documents</a></p>
+
+<p><a href="https://www.sqlite.org/lang.html">SQLite Syntax</a> or <a href="https://www.sqlite.org/syntax.html">SQLite Syntax</a></p>
+
+<h2 id="nodejs-for-sqlite">node.js for SQLite</h2>
+
+<p>SQLite有不同的client，这里一个node为例: <a href="https://github.com/mapbox/node-sqlite3">node-sqlite3</a></p>
+
+<p>这里一个代码的例子:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">var</span> <span class="nx">sqlite3</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;sqlite3&#39;</span><span class="p">).</span><span class="nx">verbose</span><span class="p">();</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">db</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">sqlite3</span><span class="p">.</span><span class="nx">Database</span><span class="p">(</span><span class="s1">&#39;:memory:&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">db</span><span class="p">.</span><span class="nx">serialize</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">     <span class="nx">db</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;CREATE TABLE lorem (info TEXT)&quot;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">       <span class="kd">var</span> <span class="nx">stmt</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">prepare</span><span class="p">(</span><span class="s2">&quot;INSERT INTO lorem VALUES (?)&quot;</span><span class="p">);</span>
+</span><span class="line">         <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">               <span class="nx">stmt</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;Ipsum &quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">);</span>
+</span><span class="line">                 <span class="p">}</span>
+</span><span class="line">                   <span class="nx">stmt</span><span class="p">.</span><span class="nx">finalize</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">                     <span class="nx">db</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="s2">&quot;SELECT rowid AS id, info FROM lorem&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                               <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">row</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nx">row</span><span class="p">.</span><span class="nx">info</span><span class="p">);</span>
+</span><span class="line">                                 <span class="p">});</span>
+</span><span class="line">                     <span class="p">});</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><a href="https://github.com/mapbox/node-sqlite3/wiki">API document</a></p>
+
+<p>安装的最简单方法是使用npm:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">npm install sqlite3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git tips]]></title>
@@ -4800,466 +4949,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 </blockquote>
 
 <p>Thanks for creating such a great tool. May you rest in peace!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[jni调用C和C++]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/07/jni-call/"/>
-    <updated>2012-12-07T13:29:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/12/07/jni-call</id>
-    <content type="html"><![CDATA[<p>已经在工作中碰到了两个这样的例子了，项目用java，但需要调用C/C++的库。之前一个是用java写hadoop的job，但是调用的算法是用C++实现的，使用的是jni。现在好像jni在android上面也有用到，但是我不了解。我自己也不懂java，但实际工作中有的时候也要看看java代码。所以决定写一个简单的jni例子，了解一下jni怎么完成C/C++调用的。</p>
-
-<!-- more -->
-
-<p>对于jni的内部实现，我也是不求甚解。编写一个java程序</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>jni调用的java代码  (Sample1.java)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/jni-call/Sample1.java">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-</pre></td><td class="code"><pre><code class="java"><span class="line"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Sample1</span> <span class="o">{</span>
-</span><span class="line">	<span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">intMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">);</span>
-</span><span class="line">	<span class="kd">public</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">booleanMethod</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">bool</span><span class="o">);</span>
-</span><span class="line">	<span class="kd">public</span> <span class="kd">native</span> <span class="n">String</span> <span class="nf">stringMethod</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">);</span>
-</span><span class="line">	<span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">intArrayMethod</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">intArray</span><span class="o">);</span>
-</span><span class="line">	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class="line">		<span class="n">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="s">&quot;Sample1&quot;</span><span class="o">);</span>
-</span><span class="line">		<span class="n">Sample1</span> <span class="n">sample</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sample1</span><span class="o">();</span>
-</span><span class="line">
-</span><span class="line">		<span class="kt">int</span> <span class="n">square</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="na">intMethod</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
-</span><span class="line">		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;intMethod: &quot;</span> <span class="o">+</span> <span class="n">square</span><span class="o">);</span>
-</span><span class="line">
-</span><span class="line">		<span class="kt">boolean</span> <span class="n">bool</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="na">booleanMethod</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-</span><span class="line">		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;booleanMethod: &quot;</span> <span class="o">+</span> <span class="n">bool</span><span class="o">);</span>
-</span><span class="line">
-</span><span class="line">		<span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="na">stringMethod</span><span class="o">(</span><span class="s">&quot;java&quot;</span><span class="o">);</span>
-</span><span class="line">		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;stringMethod: &quot;</span> <span class="o">+</span> <span class="n">text</span><span class="o">);</span>
-</span><span class="line">
-</span><span class="line">		<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="na">intArrayMethod</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">,</span> <span class="mi">13</span> <span class="o">});</span>
-</span><span class="line">		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;intArrayMethod: &quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">);</span>
-</span><span class="line">	<span class="o">}</span>
-</span><span class="line"><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后编译java文件</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line">javac Sample1.java
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>编译完以后, 使用下面的命令生成jni调用的头文件</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line">javah -classpath ./ -jni Sample1
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>生成的头文件为Sample1.h, 就是下面C/C++实现的函数的声明, <em> 注意：Sample1.h是自动生成的</em></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>jni生成的头文件  (Sample1.h)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/jni-call/Sample1.h">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cm">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
-</span><span class="line"><span class="cp">#include &lt;jni.h&gt;</span>
-</span><span class="line"><span class="cm">/* Header for class Sample1 */</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#ifndef _Included_Sample1</span>
-</span><span class="line"><span class="cp">#define _Included_Sample1</span>
-</span><span class="line"><span class="cp">#ifdef __cplusplus</span>
-</span><span class="line"><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-</span><span class="line"><span class="cp">#endif</span>
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * Class:     Sample1</span>
-</span><span class="line"><span class="cm"> * Method:    intMethod</span>
-</span><span class="line"><span class="cm"> * Signature: (I)I</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span> <span class="n">Java_Sample1_intMethod</span>
-</span><span class="line">  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">,</span> <span class="n">jint</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * Class:     Sample1</span>
-</span><span class="line"><span class="cm"> * Method:    booleanMethod</span>
-</span><span class="line"><span class="cm"> * Signature: (Z)Z</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jboolean</span> <span class="n">JNICALL</span> <span class="n">Java_Sample1_booleanMethod</span>
-</span><span class="line">  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">,</span> <span class="n">jboolean</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * Class:     Sample1</span>
-</span><span class="line"><span class="cm"> * Method:    stringMethod</span>
-</span><span class="line"><span class="cm"> * Signature: (Ljava/lang/String;)Ljava/lang/String;</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jstring</span> <span class="n">JNICALL</span> <span class="n">Java_Sample1_stringMethod</span>
-</span><span class="line">  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">,</span> <span class="n">jstring</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * Class:     Sample1</span>
-</span><span class="line"><span class="cm"> * Method:    intArrayMethod</span>
-</span><span class="line"><span class="cm"> * Signature: ([I)I</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span> <span class="n">Java_Sample1_intArrayMethod</span>
-</span><span class="line">  <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">,</span> <span class="n">jintArray</span><span class="p">);</span>
-</span><span class="line">
-</span><span class="line"><span class="cp">#ifdef __cplusplus</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="cp">#endif</span>
-</span><span class="line"><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>有了头文件后，就可以实现这些调用的C/C++代码</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>C++实现的Sample1.cpp  (Sample1.cpp)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/jni-call/Sample1.cpp">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="cp">#include &quot;Sample1.h&quot;</span>
-</span><span class="line"><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;ctype.h&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_intMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jint</span> <span class="n">num</span><span class="p">){</span>
-</span><span class="line">   <span class="k">return</span> <span class="n">num</span> <span class="o">*</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jboolean</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_booleanMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jboolean</span> <span class="n">boolean</span><span class="p">){</span>
-</span><span class="line">   <span class="k">return</span> <span class="o">!</span><span class="n">boolean</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jstring</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_stringMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jstring</span> <span class="n">jstr</span><span class="p">){</span>
-</span><span class="line">     <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">GetStringUTFChars</span><span class="p">(</span><span class="n">jstr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="kt">char</span> <span class="n">cap</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
-</span><span class="line">     <span class="n">strcpy</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-</span><span class="line">     <span class="n">env</span><span class="o">-&gt;</span><span class="n">ReleaseStringUTFChars</span><span class="p">(</span><span class="n">jstr</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-</span><span class="line">	 <span class="kt">char</span><span class="o">*</span> <span class="n">ptr</span> <span class="o">=</span> <span class="n">cap</span><span class="p">;</span>
-</span><span class="line">	 <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">ptr</span> <span class="o">!=</span> <span class="sc">&#39;\0&#39;</span><span class="p">){</span>
-</span><span class="line">		 <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="o">*</span><span class="n">ptr</span><span class="p">);</span>
-</span><span class="line">		 <span class="n">ptr</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">	 <span class="p">}</span>
-</span><span class="line">     <span class="k">return</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">NewStringUTF</span><span class="p">(</span><span class="n">cap</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_intArrayMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jintArray</span> <span class="n">array</span><span class="p">){</span>
-</span><span class="line">     <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">     <span class="n">jsize</span> <span class="n">len</span> <span class="o">=</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">GetArrayLength</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
-</span><span class="line">     <span class="n">jint</span> <span class="o">*</span><span class="n">body</span> <span class="o">=</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">GetIntArrayElements</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">		<span class="n">sum</span> <span class="o">+=</span> <span class="n">body</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class="line">     <span class="p">}</span>
-</span><span class="line">     <span class="n">env</span><span class="o">-&gt;</span><span class="n">ReleaseIntArrayElements</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后调用下面的命令生成动态链接库(系统:ubuntu 12.04，gcc编译）</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line">g++ -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.cpp -fPIC -shared -o libSample1.so
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>具体的jdk的路径应该是和本地的相适应的。</p>
-
-<p>然后运行java程序</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line">java Sample1
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>运行结果如下</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/jni-call/cpp-output.jpg" /></p>
-
-<p>图中加入了一个环境变量的声明，<code>export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH</code>, 当java加载动态链接库时，会在本地路径下找libSample1.so。</p>
-
-<p>上面是调用C++的代码，C实现的代码如下</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>C语言实现的Sample1.c  (Sample1.c)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/jni-call/Sample1.c">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="cm">/*</span>
-</span><span class="line"><span class="cm"> * the difference between C++ and c like this:</span>
-</span><span class="line"><span class="cm"> *		const char *str = (*env)-&gt;GetStringUTFChars(env, jstr, 0);</span>
-</span><span class="line"><span class="cm"> *		const char *str = env-&gt;GetStringUTFChars(jstr, 0);</span>
-</span><span class="line"><span class="cm"> */</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="cp">#include &quot;Sample1.h&quot;</span>
-</span><span class="line"><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class="line"><span class="cp">#include &lt;ctype.h&gt;</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_intMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jint</span> <span class="n">num</span><span class="p">){</span>
-</span><span class="line">   <span class="k">return</span> <span class="n">num</span> <span class="o">*</span> <span class="n">num</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jboolean</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_booleanMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jboolean</span> <span class="n">boolean</span><span class="p">){</span>
-</span><span class="line">   <span class="k">return</span> <span class="o">!</span><span class="n">boolean</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jstring</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_stringMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jstring</span> <span class="n">jstr</span><span class="p">){</span>
-</span><span class="line">     <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetStringUTFChars</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">jstr</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="kt">char</span> <span class="n">cap</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
-</span><span class="line">     <span class="n">strcpy</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-</span><span class="line">     <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ReleaseStringUTFChars</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">jstr</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-</span><span class="line">	 <span class="kt">char</span><span class="o">*</span> <span class="n">ptr</span> <span class="o">=</span> <span class="n">cap</span><span class="p">;</span>
-</span><span class="line">	 <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">ptr</span> <span class="o">!=</span> <span class="sc">&#39;\0&#39;</span><span class="p">){</span>
-</span><span class="line">		 <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="o">*</span><span class="n">ptr</span><span class="p">);</span>
-</span><span class="line">		 <span class="n">ptr</span><span class="o">++</span><span class="p">;</span>
-</span><span class="line">	 <span class="p">}</span>
-</span><span class="line">     <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">NewStringUTF</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">cap</span><span class="p">);</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span>
-</span><span class="line"><span class="n">Java_Sample1_intArrayMethod</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jintArray</span> <span class="n">array</span><span class="p">){</span>
-</span><span class="line">     <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class="line">     <span class="n">jsize</span> <span class="n">len</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetArrayLength</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">array</span><span class="p">);</span>
-</span><span class="line">     <span class="n">jint</span> <span class="o">*</span><span class="n">body</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetIntArrayElements</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">		<span class="n">sum</span> <span class="o">+=</span> <span class="n">body</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-</span><span class="line">     <span class="p">}</span>
-</span><span class="line">     <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ReleaseIntArrayElements</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class="line">     <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>C与C++的实现基本一样，唯一的差异在于用来访问 JNI 函数的方法。在 C 中，JNI 函数调用由“(*env)-&gt;”作前缀，目的是为了取出函数指针所引用的值。在 C++ 中，JNIEnv 类拥有处理函数指针查找的内联成员函数。下面将说明这个细微的差异，其中，这两行代码访问同一函数，但每种语言都有各自的语法。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="n">C</span> <span class="err">语法：</span><span class="n">jsize</span> <span class="n">len</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">GetArrayLength</span><span class="p">(</span><span class="n">env</span><span class="p">,</span><span class="n">array</span><span class="p">);</span>
-</span><span class="line"><span class="n">C</span><span class="o">++</span> <span class="err">语法：</span><span class="n">jsize</span> <span class="n">len</span> <span class="o">=</span> <span class="n">env</span><span class="o">-&gt;</span><span class="n">GetArrayLength</span><span class="p">(</span><span class="n">array</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>编译命令</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line">gcc -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.c -fPIC -shared -o libSample1.so
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>运行结果与上面C++的输出是一致的。</p>
-
-<p>实际上我是用了一个脚本完成编译等工作的</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>完成整个过程的脚本  (run.sh)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/jni-call/run.sh">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-</pre></td><td class="code"><pre><code class="sh"><span class="line"><span class="c">#!/bin/bash</span>
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### compile Sample1.java&quot;</span>
-</span><span class="line">javac Sample1.java
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### generate jni headerfile Sample1.h&quot;</span>
-</span><span class="line">javah -classpath ./ -jni Sample1
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### compile cpp Sample1.so&quot;</span>
-</span><span class="line">g++ -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.cpp -fPIC -shared -o libSample1.so
-</span><span class="line">
-</span><span class="line"><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.:<span class="nv">$LD_LIBRARY_PATH</span>
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### run cpp&quot;</span>
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;---------------&quot;</span>
-</span><span class="line">java Sample1
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;--------------- end&quot;</span>
-</span><span class="line">
-</span><span class="line">rm libSample1.so
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### compile c Sample1.so&quot;</span>
-</span><span class="line">gcc -I /usr/lib/jvm/java-1.6.0-openjdk/include/ -I /usr/lib/jvm/java-1.6.0-openjdk/include/linux/ Sample1.c -fPIC -shared -o libSample1.so
-</span><span class="line">
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;### run c&quot;</span>
-</span><span class="line"><span class="nb">echo</span> <span class="s2">&quot;---------------&quot;</span>
-</span><span class="line">java Sample1
-</span><span class="line">
-</span><span class="line"><span class="c">#rm libSample1.so Sample1.class Sample1.h</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>脚本的运行结果如下图</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/jni-call/run-output.jpg" /></p>
-
-<p>github上本文的例子代码 <a href="https://github.com/andrewliu117/test/tree/master/cpp_test/jni">jni调用的例子</a></p>
-
-<p>本文参考了以下两个blog的内容, 代码来自第二个blog。</p>
-
-<ul>
-  <li><a href="http://www.cnblogs.com/hoys/archive/2011/09/30/2196290.html">Java基础知识——JNI入门介绍</a></li>
-  <li><a href="http://blog.sina.com.cn/s/blog_60c8379d01015epl.html">第二篇：一个jni例子</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

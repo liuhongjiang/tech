@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类: sqlite | 刘洪江的流水帐]]></title>
+  <link href="http://liuhongjiang.github.com/tech/blog/categories/sqlite/atom.xml" rel="self"/>
+  <link href="http://liuhongjiang.github.com/tech/"/>
+  <updated>2015-05-13T18:56:06+08:00</updated>
+  <id>http://liuhongjiang.github.com/tech/</id>
+  <author>
+    <name><![CDATA[刘洪江]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[sqlite]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/05/13/sqlite/"/>
+    <updated>2015-05-13T18:21:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/05/13/sqlite</id>
+    <content type="html"><![CDATA[<p>sqlite是一个非常小的数据库,适合小的应用,或者是app之类的.</p>
+
+<h2 id="install">install</h2>
+
+<ul>
+  <li>windows command line</li>
+</ul>
+
+<p><a href="https://www.sqlite.org/download.html">下载SQLite</a>, 下载的文件是sqlite-shell-win32-x86-3081001.zip</p>
+
+<p>下载后将sqlite3.exe放入到windows系统的path路径中，或者在pathe路径中加入sqlite3.exe所在的目录。</p>
+
+<ul>
+  <li>windows SqliteBrowser</li>
+</ul>
+
+<p>可以使用<a href="http://sqlitebrowser.org/">GUI工具</a>, 这个应该更方便</p>
+
+<!-- more -->
+
+<ul>
+  <li>linux</li>
+</ul>
+
+<p>using command, such as:</p>
+
+<p><code>bash
+sudo yum install sqlite-devel
+</code></p>
+
+<h2 id="commands">commands</h2>
+
+<p>打开或者创建一个数据库.</p>
+
+<p><code>bash
+$ sqlite3 ex1
+SQLite version 3.8.5 2014-05-29 12:36:14
+Enter ".help" for usage hints.
+sqlite&gt; create table tbl1(one varchar(10), two smallint);
+sqlite&gt; insert into tbl1 values('hello!',10);
+sqlite&gt; insert into tbl1 values('goodbye', 20);
+sqlite&gt; select * from tbl1;
+hello!|10
+goodbye|20sqlite&gt;
+</code></p>
+
+<p>Other command:</p>
+
+<p><code>bash
+sqlite&gt; .tables     # 查看table list
+sqlite&gt; .schema ?TABLE? # 查看table的create语句
+sqlite&gt; .help       # 查看help信息
+sqlite&gt; .exit           # 退出
+sqlite&gt; select * from tbl1; # 执行sql语句
+sqlite&gt; .indexes ?TABLE?  # 查看table的index
+</code></p>
+
+<p>using sqlite3 in a shell script:</p>
+
+<p>```bash
+$ sqlite3 ex1 ‘select * from tbl1’ |
+&gt;  awk ‘{printf “&lt;tr&gt;&lt;td&gt;%s&lt;td&gt;%s\n”,$1,$2 }’</p>
+<tr><td>hello<td>10
+<tr><td>goodbye<td>20
+$
+```
+
+文档 https://www.sqlite.org/cli.htmlmore documents:
+
+[SQLite documents](https://www.sqlite.org/docs.html)
+
+[SQLite Syntax](https://www.sqlite.org/lang.html) or [SQLite Syntax](https://www.sqlite.org/syntax.html)
+
+## node.js for SQLite
+
+SQLite有不同的client，这里一个node为例: [node-sqlite3](https://github.com/mapbox/node-sqlite3)
+
+这里一个代码的例子:
+
+```javascript
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(':memory:');
+
+db.serialize(function() {
+     db.run("CREATE TABLE lorem (info TEXT)");
+
+       var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+         for (var i = 0; i &lt; 10; i++) {
+               stmt.run("Ipsum " + i);
+                 }
+                   stmt.finalize();
+
+                     db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
+                               console.log(row.id + ": " + row.info);
+                                 });
+                     });
+
+db.close();
+```
+
+[API document](https://github.com/mapbox/node-sqlite3/wiki)
+
+安装的最简单方法是使用npm:
+
+
+```bash
+npm install sqlite3
+```
+</td></td></tr></td></td></tr>
+]]></content>
+  </entry>
+  
+</feed>

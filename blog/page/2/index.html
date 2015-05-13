@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="摘要： 简单介绍了zookeeper的概要，主要是翻译了apache zookeeper overview的内容。 ZooKeeper 简介 ZooKeeper是Hadoop的正式子项目，它是一个针对大型分布式系统的可靠协调系统，提供的功能包括：配置维护、名字服务、分布式同步、组服务等。 &hellip;">
+  <meta name="description" content="摘要： 本文介绍了svm的一种online learning算法pegasos，并基于pegasoso算法实现了一个数字手写识别脚本。 本文参考了博文Online Learning in Clojure和论文Pegasos: Primal Estimated sub-GrAdient &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,92 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/01/31/svm-pegasos/">Pegasos算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T11:49:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/machine-nbsp-learning/'>Machine&nbsp;Learning</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=Pegasos算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=Pegasos算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/01/31/svm-pegasos/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <div class="abstract">
+            <table>
+                <tr>
+                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                    <td>本文介绍了svm的一种online learning算法pegasos，并基于pegasoso算法实现了一个数字手写识别脚本。</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p>本文参考了博文<a href="http://mark.reid.name/sap/online-learning-in-clojure.html">Online Learning in Clojure</a>和论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>(<a href="http://www.machinelearning.org/proceedings/icml2007/papers/587.pdf">PDF</a>)</p>
+
+<h2 id="online-learning">online learning</h2>
+
+<p>Online learning的算法结构是非常简单的，下面的描述是监督的online learning算法框架，其中有经验损失函数$L$，样本流$S$，样本的格式为$(x,y)$:</p>
+
+<pre><code>Initialise a starting model w
+While there are more examples in S
+    Get the next feature vector x
+    Predict the label y' for x using the model w
+    Get the true label y for x and incur a penaly L(y,y')
+    Update the model w if y ≠ y'
+</code></pre>
+
+<p>一般来是，训练出来的模型都是一个与样本相同维度的向量。对应二分的分类器，往往涉及到的是计算内积$\langle w,x \rangle$，模型的更新是沿着损失函数的梯度下降方向的。</p>
+
+<h2 id="pegasos">Pegasos</h2>
+
+<p>论文<a href="http://www.machinelearning.org/proceedings/icml2007/abstracts/587.htm">Pegasos: Primal Estimated sub-GrAdient SOlver for SVM</a>是一种svm的online learning算法。</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2013/01/31/svm-pegasos/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -883,74 +969,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/12/07/jni-call/">jni调用C和C++</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-07T13:29:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/c-c-/'>C/C++</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=jni调用C和C++ - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/07/jni-call/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=jni调用C和C++ - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/07/jni-call/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=jni调用C和C++  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/07/jni-call/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <div class="abstract">
-            <table>
-                <tr>
-                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
-                    <td>java程序可以通过jni调用C或者C++的库。本文实现了一个简单的jni调用例子。</td>
-                </tr>
-            </table>
-        </div>
-        
-        <p>已经在工作中碰到了两个这样的例子了，项目用java，但需要调用C/C++的库。之前一个是用java写hadoop的job，但是调用的算法是用C++实现的，使用的是jni。现在好像jni在android上面也有用到，但是我不了解。我自己也不懂java，但实际工作中有的时候也要看看java代码。所以决定写一个简单的jni例子，了解一下jni怎么完成C/C++调用的。</p>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2012/12/07/jni-call/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -974,6 +992,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/13/sqlite/">sqlite</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/09/git-tips/">git tips</a>
       </li>
     
@@ -989,15 +1011,11 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
         <a href="/tech/blog/2015/04/17/apache-maintenance-mode/">apache maintenance mode</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/">The Cathedral and the Bazaar </a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 145.0%'>git(3)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 145.0%'>git(3)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>
