@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>规则 - 刘洪江的流水帐</title>
+  <title>sublime tips - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="这篇博文是由两个问题想到的。 一是火车票实名制后，但是仍然还是有黄牛党倒票。倒票的手法是，先用几百张身份证抢下火车票，然后联系买主，联系到买主后，在乘车时间的前一两天，在一个窗口退票，另外一个窗口买票，一退票后系统上显示有一张鱼票后，马上买入。虽然理论上还是有被其它人抢走，失手的可能， &hellip;">
+  <meta name="description" content="显示cjk
+安装了sublime以后，默认字体对cjk（中文，韩文，日文）支持不是很好，可以使用 YaHei Consolas Hybrid字体。
+下载 YaHei Consolas Hybrid，可使用链接： 从google code下载 从github下载 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -134,7 +136,7 @@
   
   <header>
     
-      <h1 class="entry-title">规则</h1>
+      <h1 class="entry-title">Sublime Tips</h1>
     
     
       <p class="meta">
@@ -150,14 +152,14 @@
   
 
 
-<time datetime="2014-05-16T14:41:00+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2015-05-15T16:40:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2015</time>
         
 		
         
         <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 规则  - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=sublime tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=sublime tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= sublime tips  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
  
       </p>
@@ -167,31 +169,67 @@
 
 <div class="entry-content">
     
-    <p>这篇博文是由两个问题想到的。</p>
+    <h2 id="cjk">显示cjk</h2>
+<p>安装了sublime以后，默认字体对cjk（中文，韩文，日文）支持不是很好，可以使用 YaHei Consolas Hybrid字体。
+下载 YaHei Consolas Hybrid，可使用链接：</p>
 
-<p>一是火车票实名制后，但是仍然还是有黄牛党倒票。倒票的手法是，先用几百张身份证抢下火车票，然后联系买主，联系到买主后，在乘车时间的前一两天，在一个窗口退票，另外一个窗口买票，一退票后系统上显示有一张鱼票后，马上买入。虽然理论上还是有被其它人抢走，失手的可能，但由于该车次的票早早就买光了，临开车的前1、2天，很少会有人去查询，所以还是比较安全的。
-针对这种倒票方式，设置怎样的规则杜绝呢？首先一个方法就是，退掉的票，半个小时后才能买入。这样就可以增加退掉的票被被人抢走的可能性。开车前半个小时，退掉的票可以立马买进。这样就讲黄牛党的倒票时间窗口缩短到了开车前半个小时。
-复杂的规则，就还有调查哪些身份证存在大量这种买了票后，又退票的行为，并加以惩罚。例如半年内不能买车票，或在春运期间不能买火车票。但这里有个风险，就是如果黄牛党用假身份证买票，那么这条规则就会伤及到真身份证的那个无辜的人。</p>
+<p><a href="https://code.google.com/p/uigroupcode/downloads/detail?name=YaHei.Consolas.1.12.zip&amp;can=2&amp;q=">从google code下载</a></p>
 
-<p>第二个问题是成都的公交车票，有两种，一种是电子钱包，就是充一定数量的钱，这个钱永远在卡里，一直可以用，主要目的是方便，不用每次乘公交都要准备零钱，而且还打9折。
-还有一种是次卡，就是用前买一定数量的乘车次数，相当于打5折，而且用次卡乘车，2个小时内免费换乘公交车3次。而电子钱包换乘的时候，是要再次给钱的。对于我们这些上班族，每天上班要换乘几次的，非常划算。
-但次卡有个规定，买的次数是当月有效的，一到下个月，无论你买了多少次，就作废了。我想公交公司是想用这种方式，吃点别人多充次数的油头。最开始的时候，次卡只能10块钱的倍数买，后来大家反对，于是可以1块钱的倍数买。乘公交用次卡的最低单位也是1块钱，所以基本上，公交公司就没有什么油头了。</p>
+<p><a href="https://github.com/liangfeng/consolas-font-for-airline/blob/master/YaHei%20Consolas%20Hybrid.ttf">从github下载</a></p>
+
+<p>放入windows下面的font目录。</p>
+
+<p>在sublime里面： <code>preferences</code>-&gt;<code>settings - User</code>, 加入下面一行</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">"font_face": "YaHei Consolas Hybrid",</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!-- more -->
 
-<p>但是广大人民群众是不能让公交公司占便宜的。于是大家都按照每月的次数，然后卡着次数充，或者少充一点，到了月末再买剩下不足的次数。但有保不齐因为什么原因，多用了一两次，那么就可以看到每月的最后1、2天，有人充1块钱2块钱的情况。其实这是一种资源的浪费。一是充卡点工作人员的劳动浪费，本来一次可以完成的工作，却要分成2次或者3、4次完成。当然更有甚者，家楼下就是充卡点，每天出门充个1、2块，仅仅满足当天乘公交的需求，明天的明天再充。二是每次充卡都要到充卡点去，排队交钱，充卡，快的话2、3分钟，慢的话5、6分钟，如果算上去充卡点和回来的时间，那就不止几分钟的时间了。如果每个人都浪费这几分钟，加起来，对整个社会来说就是大损失了。
-所以一个坏规则的影响是难以想像的，而且往往都还不知道怎么影响的。人都是趋利的，不可能白白承受损失。但绝大多数的时候也是遵守规则的，所以人往往会在规则允许的情况下，做对自己最有利的事情。</p>
+<p>参考：<a href="http://www.w3cfuns.com/blog-1-5399368.html">前端最爱的字体YaHei Consolas Hybrid</a></p>
 
-<p>对于上面的公交卡的例子，如果不改变规则，你很难改变人们充卡的方式。
-改变的方法其实也很简单，最粗暴的方式是取消1个月有效期的限制，但是这将会给公交公司带来损失，因为这样的话，电子钱包就没有人买了，那部分收入就损失了。公交公司肯定不愿意的。</p>
+<h2 id="pretty-json">pretty json</h2>
 
-<p>还有另外一种方式，就是每个月有几天次卡使用的重叠期，举个例子，这个月充的次卡，到下个月10号之前有效，下个月的前面几天充的次卡，是本月就可以用的，那么就有10天的重叠期，充钱的时候，就可以在本月的使用次数的基础上，多充几个天的次卡，即使我本月有什么变动，多乘了几次公交，也不会出现，卡着次数充，而月底需要再充钱的情况，同时，我也不担心要多充的那几次浪费，当然也可以杜绝大家害怕因为请个假什么的，当月少乘了几次，所有充卡的时候，估计少充1、2天的情况。</p>
+<p>在sublime里面安装pretty json插件，首先要安装<a href="https://packagecontrol.io/installation">sublime package control</a></p>
 
-<p>这样，一个简单的规则改变，可以避免上面说的临充1、2块而带来的资源浪费。</p>
+<p>然后可以简单阅读一下package control的使用方法。</p>
 
-<p>其实生活中有很多值得思考的问题，特别是制度的制定。有人说过：一个好的制度，让坏人做好事；一个坏的制度，让好人做坏事。如何制定一个更好的更好的更民主的政治制度，也许是我们每一个中国人应该关心的话题，和应该去读的书。</p>
+<p>这里我们使用install package，操作方式: <code>ctrl+shift+p</code>, 然后输入 install, 之后按照提示选择<code>Package Control: Install Package</code>。</p>
 
-<p>同样我们在实现系统时，或实现一个平台的时候，怎么设计用户的参与规则，如何避免上面讲到的两个例子问题，都应该在实现的过程中，认真思考。</p>
+<p>然后输入”Pretty JSON”, 就可以找到，选择就会安装。</p>
+
+<p>安装好以后，在windows上就可以通过<code>ctrl+shif+j</code>进行format了。</p>
+
+<p>其余设置参考： <a href="https://github.com/dzhibas/SublimePrettyJson">SublimePrettyJson</a></p>
+
+<h2 id="markdown-preview">Markdown preview</h2>
+
+<p>按照上面的方式，在<code>Package Control: Install Package</code>搜索<code>Markdown Preview</code>, 然后选择安装。</p>
+
+<p>安装以后，可以通过sublime的Command Palette（ctrl+shift+p)中输入command进行操作：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">Markdown Preview: Preview in Browser
+</span><span class="line">Markdown Preview: Export HTML in Sublime Text
+</span><span class="line">Markdown Preview: Copy to Clipboard
+</span><span class="line">Markdown Preview: Open Markdown Cheat sheet</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以绑定快捷键: <code>Preferences</code> -&gt; <code>Key Binding - User</code>, 加入下面一行：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{ "keys": ["alt+m"], "command": "markdown_preview", "args": {"target": "browser", "parser":"markdown"} }</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>也可以设置为自己选择markdown语法解析器。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">{ "keys": ["alt+m"], "command": "markdown_preview_select", "args": {"target": "browser"} }</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这样快捷键就绑定为<code>alt+m</code></p>
+
+<p>更多可以参考：<a href="https://github.com/revolunet/sublimetext-markdown-preview">sublimetext-markdown-preview</a></p>
 </div>
 
 
@@ -214,14 +252,14 @@
   
 
 
-<time datetime="2014-05-16T14:41:00+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
+<time datetime="2015-05-15T16:40:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2015</time>
       
 
 
       <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= 规则  - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=sublime tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=sublime tips - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= sublime tips  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
 </span>
 
     </p>
@@ -235,10 +273,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/tech/blog/2013/11/25/learning-go/" title="Previous Post: go语言学习">&laquo; go语言学习</a>
+        <a class="basic-alignment left" href="/tech/blog/2015/05/13/sqlite/" title="Previous Post: sqlite">&laquo; sqlite</a>
       
-      
-        <a class="basic-alignment right" href="/tech/blog/2014/05/16/the-cathedral-and-the-bazaar/" title="Next Post: The Cathedral and the Bazaar ">The Cathedral and the Bazaar  &raquo;</a>
       
     </p>
   </footer>
@@ -336,8 +372,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/';
-        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/';
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="摘要： 本文介绍了svm的一种online learning算法pegasos，并基于pegasoso算法实现了一个数字手写识别脚本。 本文参考了博文Online Learning in Clojure和论文Pegasos: Primal Estimated sub-GrAdient &hellip;">
+  <meta name="description" content="下面是在看《ANSI common lisp》这本书和做习题的时候的一些笔记。 lisp 约翰麦卡锡和他的学生于 1958 年展开 Lisp 的初次实现工作。 Lisp 是继 FORTRAN 之后，仍在使用的最古老的程序语言。 更值得注意的是，它仍走在程序语言技术的最前面。懂 Lisp &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,74 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2013/02/25/lisp-notes/">Lisp笔记</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-25T17:31:00+08:00" pubdate data-updated="true">Feb 25<span>th</span>, 2013</time>
+        
+		
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=lisp笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/02/25/lisp-notes/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=lisp笔记 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/02/25/lisp-notes/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=lisp笔记  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/02/25/lisp-notes/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>下面是在看《<a href="http://acl.readthedocs.org/en/latest/index.html">ANSI common lisp</a>》这本书和做习题的时候的一些笔记。</p>
+
+<h2 id="lisp">lisp</h2>
+
+<p>约翰麦卡锡和他的学生于 1958 年展开 Lisp 的初次实现工作。 Lisp 是继 FORTRAN 之后，仍在使用的最古老的程序语言。 更值得注意的是，它仍走在程序语言技术的最前面。懂 Lisp 的程序员会告诉你，有某种东西使 Lisp 与众不同。</p>
+
+<p>Lisp 与众不同的部分原因是，它被设计成能够自己进化。你能用 Lisp 定义新的 Lisp 操作符。当新的抽象概念风行时（如面向对象程序设计），我们总是发现这些新概念在 Lisp 是最容易来实现的。Lisp 就像生物的 DNA 一样，这样的语言永远不会过时。</p>
+
+<p>Lisp能够自己进化的特点，注定了它有很多方言存在(真的是方言，<a href="http://en.wikipedia.org/wiki/Lisp_%28programming_language%29">英语里面用的是dialects</a>)。
+其中common lisp就是其中的一种方言。</p>
+
+<p>下面几篇关于lisp的文章值得一读：</p>
+
+<ul>
+  <li>《<a href="http://www.ruanyifeng.com/blog/2010/10/why_lisp_is_superior.html">为什么Lisp语言如此先进</a>》比较系统地介绍了lisp的特点，可以一读。        </li>
+  <li><a href="http://tianchunbinghe.blog.163.com/blog/static/7001200692314249376/">用sbcl,asdf和cl-launch编写可分发的lisp程序</a></li>
+</ul>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2013/02/25/lisp-notes/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -895,80 +963,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2012/12/26/svm/">SVM支持向量机</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-26T19:40:00+08:00" pubdate data-updated="true">Dec 26<span>th</span>, 2012</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/machine-nbsp-learning/'>Machine&nbsp;Learning</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=SVM支持向量机 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=SVM支持向量机 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=SVM支持向量机  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <div class="abstract">
-            <table>
-                <tr>
-                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
-                    <td>SVM（support vector machine, 支持向量机）是一个二分的分类器。本文简单讲解了线性svm和非线性svm的原理。</td>
-                </tr>
-            </table>
-        </div>
-        
-        <p>是今年工作中才开始接触机器学习的，之前有所听说，但是也没有深入了解过。其实所谓的接触主要是照着李航的这本<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>学习。当时我们是几个同事每人学习一章，学完了，然后给大家办个讲座。我想既然学习了，就应该写博客把这些内容记录下来。于是，就开始写了。</p>
-
-<p>机器学习是最近十年兴起的一门学科。人工智能是计算机学界的一个公认的难题，而机器学习被认为是最有可能解决这个难题的一门学科。当然机器学习在其它很多领域都有应用，比如数据挖掘，信息检索，语言识别，图像识别等很多领域。对于机器学习的基本概念，可以看<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的第一章，发展历史可以看wikipedia的<a href="http://en.wikipedia.org/wiki/Machine_learning">Machine learning</a>。我这里就不罗嗦了。等以后再写一篇机器学习的综述文章吧。</p>
-
-<p>按照<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的划分，机器学习可以分为监督学习，无监督学习和半监督学习、强化学习等。该书讲了监督学习，总共讲了这些学习模型：感知机、k近邻法、朴素贝叶斯法、决策树、逻辑斯谛回归、最大熵、支持向量机、EM算法、隐马尔科夫模型、条件随机场。我先把我们学习过的模型写成博客吧。但其实每个模型都有很多内容，以我一个初学者的水平估计也讲不了什么，我就按照我的理解讲，每个模型争取能实现一个例子，供大家参考。</p>
-
-<p>今天第一篇，SVM（support vector machine, 支持向量机）。</p>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2012/12/26/svm/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/3/">&larr; Older</a>
@@ -992,6 +986,10 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/15/sublime-tips/">sublime tips</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/13/sqlite/">sqlite</a>
       </li>
     
@@ -1005,10 +1003,6 @@ f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
     
       <li class="post">
         <a href="/tech/blog/2015/04/30/git-commit-message-convention/">git commit message convention</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2015/04/17/apache-maintenance-mode/">apache maintenance mode</a>
       </li>
     
   </ul>
