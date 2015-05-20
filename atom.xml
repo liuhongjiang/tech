@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-05-15T16:53:02+08:00</updated>
+  <updated>2015-05-20T15:49:20+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,128 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git workflow]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/"/>
+    <updated>2015-05-20T14:49:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow</id>
+    <content type="html"><![CDATA[<p>参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
+基本上是参考了gitflow的这篇文章。<a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>。</p>
+
+<p>重点是下面这一张图片。</p>
+
+<p><img class="center" src="http://nvie.com/img/git-model@2x.png" /></p>
+
+<h2 id="section">名词</h2>
+
+<p>以上图片中的各个分支的解释。</p>
+
+<ul>
+  <li>
+    <p>master分支</p>
+
+    <p>master分支保存了最新的发布代码，是稳定分支。永久保存。</p>
+  </li>
+  <li>
+    <p>develop分支</p>
+
+    <p>保存了最新的下一个版本要发布的feature和bugfix的代码，是稳定分支，但是可以运行在一定时间内不稳定。永久保存。</p>
+
+    <p>在没有创建release分支的时候，可以提交bugfix的代码（bug的fix version填写下一个版本的版本号）。一但创建了release分支，那么只能提交下一个版本的feature和bugfix代码。</p>
+  </li>
+</ul>
+
+<!-- more -->
+
+<ul>
+  <li>
+    <p>release分支</p>
+
+    <p>在develop分支的上创建。它是当前要发布的版本的分支，只允许提交bugfix（bug的fix version填写当前版本和下一个版本），原则上不运行提交feature代码。完成测试以后，合并到master分支和develop分支。</p>
+
+    <p>创建release分支后，当前版本要修复的bug，只需要提交到release分支。当release分支发布的时候，合并到master分支和develop分支后，在master分支上打上release的tag，删除release分支。</p>
+
+    <p>命名规则：release/{version name} (version name是项目内部定义的项目名称，可以是版本号，例如v1.2.3，可以是发布日志rb_2015.03.19)</p>
+  </li>
+  <li>
+    <p>feature分支</p>
+
+    <p>新功能开发分支，从develop分支上创建，合并到develop分支。完成feature开发后，删除feature分支。</p>
+
+    <p>命名规则：feature/xxxxxx (xxxxx为新特性描述，建议不要太长了, 例如add sticker)</p>
+  </li>
+  <li>
+    <p>bug分支</p>
+
+    <p>当没有release分支的时候，基于develop分支创建，合并到develop分支。删除bug分支。这时的fix version填下一个版本。</p>
+
+    <p>当创建了release分支后：如果bug是需要在当前release版本的：基于release分支创建，合并到release分支中去。这时的fix version填当前版本和下一个版本。</p>
+
+    <p>如果是下一个版本发布的：基于develop分支创建，合并到develop分支。这时的fix version填下一个版本。</p>
+
+    <p>命名规则：bug/{issue-number}-xxxx ({issue-number}部分为issue号，例如MyProject-3555， xxxx部分为简单的说明，也可以省略，例如MyProject-3555-fix-deadlock)</p>
+  </li>
+  <li>
+    <p>hotfix</p>
+
+    <p>hotfix是当某一个版本发布到了真实环境中以后，发现了严重的bug，必要紧急修复的情况下，出现的版本。</p>
+
+    <p>hotfix版本基于master分支上对应的release tag创建，合并到master分支和develop分支。如果hotfix的修复发布的时候，存在release分支，那么hotfix需要合并到release分支，而不是develop分支。</p>
+
+    <p>hotfix分支合并以后，需要删除hotfix分支。</p>
+  </li>
+  <li>
+    <p>maintenance分支</p>
+
+    <p>由于在生产环境中，只有一个版本，所以不需要保留maintenance分支。</p>
+
+    <p>如果生产环境中，有多个长期的维护版本，那么就需要保留这些版本对应的maintenance分支（有使用maint作为分支前缀）。当有bug在对应的维护分支上有bug的时候，需要基于这个维护分支创建bugfix分支， 完成修复后，需要将这个bugfix分支在合并回这个维护分支。</p>
+
+    <p>如果其他对应维护分支也有同样的问题话，需要将这个bugfix的分支合并到那些对应的维护分支上去。并且如果在master和development分支上存在着相同的bug，也要将这个bugfix合并到master，development，如果还有release分支，也要合并到当前的release分支。</p>
+  </li>
+  <li>
+    <p>release tag
+  发布了release分支以后，将release合并到master分支，打上release tag，现在的命名规则：TC_2015.05.09.</p>
+  </li>
+</ul>
+
+<h2 id="section-1">开发人员需要关注的</h2>
+
+<p>平时开发feature的时候，从develop分支上拉feature分支，提pull request的时候，也是合并到develop中，feature命名的规则：命名规则：feature/xxxxxx (xxxxx为新特性描述，建议不要超过4个单词)</p>
+
+<p>修复bug的时候，如果没有release分支，那么从develop上拉bug分支，合并到develop分支上。这时的fix version填下一个版本。</p>
+
+<p>如果有release分支，那么从release分支上拉bug分支，合并到bug分支上。这时的fix version填当前版本和下一个版本。</p>
+
+<p>如果有release分支，但是这个bug是下一个版本修复，那么就从从develop上拉bug分支，合并到develop分支上。这时的fix version填下一个版本。</p>
+
+<p>bug分支的命名规则：bug/{issue-number}-xxxx ({issue-number}部分为issue号，例如MyProject-3555， xxxx部分为简单的说明，一两个单词就可以了，也可以省略)</p>
+
+<h2 id="ci">CI</h2>
+
+<p>CI需要在develop和release两个分支上构建。</p>
+
+<h2 id="section-2">其他</h2>
+
+<p>在合并分支时，如果希望保留合并的信息，建议使用<code>git merge --no-ff</code>, 不适用fast forward.</p>
+
+<p>在发起pull request的时候，为了减少项目合并的管理者的负担，并且保证当前需要合并的分支，有一个比较干净的提交记录，使用<code>git rebase -i</code></p>
+
+<h2 id="section-3">参考</h2>
+
+<p><a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>
+<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow">Gitflow workflow</a>
+<a href="http://git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows">Distributed Git - Distributed Workflows</a>
+<a href="http://git-scm.com/book/en/v2/Distributed-Git-Maintaining-a-Project">Distributed Git - Maintaining a Project</a></p>
+
+<h2 id="gitflow-">gitflow 工具</h2>
+
+<p><a href="https://github.com/nvie/gitflow">gitflow</a>
+<a href="https://datasift.github.io/gitflow/TheHubFlowTools.html">hubflow</a>
+<a href="http://danielkummer.github.io/git-flow-cheatsheet/">git-flow cheatsheet</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[sublime tips]]></title>
@@ -4191,569 +4313,6 @@ x_i=(x_i^0,x_i^1,\cdot \cdot \cdot,x_i^{1023})
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SMO序列最小最优化算法]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/"/>
-    <updated>2012-12-28T09:01:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo</id>
-    <content type="html"><![CDATA[<p>上一篇blog讲到了<a href="http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/">svm的原理</a>，最后将需要解决问题抽象成了数学公式，但如何利用计算机，解出这些数学公式的答案。换句话说，就是怎么通过计算机算出我们的svm模型的参数呢？方法就是序列最小最优化(sequential minimal optimization, SMO)算法。</p>
-
-<p>首先回顾一下SVM模型的数学表达，即svm的对偶问题:</p>
-
-<script type="math/tex; mode=display">
-\begin{array}{l}
-\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
-{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
-\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
-\end{array}
-</script>
-
-<p>选择一个 $ {a^*} $ 的正分量 $ 0 \lt {a_j^*} \lt C $ , 计算（或者通过所有解求平均值）：</p>
-
-<script type="math/tex; mode=display">
-{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
-</script>
-
-<p>决策函数为</p>
-
-<script type="math/tex; mode=display">
-f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
-</script>
-
-<p>svm的学习，就是通过训练数据计算出${a^*}$和${b^*}$，然后通过决策函数判定${x_j}$的分类。其中${a^*}$是一个向量，长度与训练数据的样本数相同，如果训练数据很大，那么这个向量会很长，不过绝大部分的分量值都是0，只有支持向量的对应的分量值大于0 。</p>
-
-<p>SMO是一种启发式算法，其基本思想是：如果所有变量的解都满足了此最优化问题的KKT条件，那么这个最优化问题的解就得到了。否则，选择两个变量，固定其它变量，针对这两个变量构建一个二次规划问题，然后关于这个二次规划的问题的解就更接近原始的二次归还问题的解，因为这个解使得需要优化的问题的函数值更小。</p>
-
-<p>翻译一下：对于svm我们要求解${a^*}$，如果 ${a^*}$ 的所有分量满足svm对偶问题的KKT条件，那么这个问题的解就求出来了，我们svm模型学习也就完成了。如果没有满足KKT，那么我们就在 ${a^*}$ 中找两个分量 ${a_i}$ 和 ${a_j}$，其中 ${a_i}$ 是违反KKT条件最严重的分量，通过计算，使得 ${a_i}$ 和 ${a_j}$ 满足KKT条件，直到${a^*}$ 的所有分量都满足KKT条件。而且这个计算过程是收敛的，因为每次计算出来的新的两个分量，使得对偶问题中要优化的目标函数（就是min对应的那个函数）值更小。至于为什么是收敛的，是因为，每次求解的那两个分量，是要优化问题在这两个分量上的极小值，所以每一次优化，都会使目标函数比上一次的优化结果的值变小。</p>
-
-<!-- more -->
-
-<p>我们来看看KKT条件。</p>
-
-<h2 id="kkt">KKT</h2>
-
-<p>上面的问题，是通过svm的原始问题，构造拉格朗日函数，并通过对偶换算得出的对偶问题。与对偶问题等价的是对偶问题的KKT条件，参考<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的附录C的定理C.3。换句话说，就是只要找到对应的${a^*}$满足了下列KKT条件，那么原始问题和对偶问题就解决了。</p>
-
-<p>SVM的对偶问题对应的KKT条件为：</p>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\begin{array}{l}
-\quad {a_i} = 0 \quad \Leftrightarrow \quad {y_i}g({x_i}) \ge 1\\
-0 < {a_i} < C \quad \Leftrightarrow \quad {y_i}g({x_i}) = 1\\
-\quad {a_i} = C \quad \Leftrightarrow \quad {y_i}g({x_i}) \le 1
-\end{array}
- %]]&gt;</script>
-
-<p>其中:</p>
-
-<script type="math/tex; mode=display">
-g(x) = \sum\limits_{i = 1}^N { {a_i}{y_i}K({x_i},{x_j}) + b} 
-</script>
-
-<p>因为计算机在计算的时候是有精度范围的，所以我们引入一个计算精度值$\varepsilon$，</p>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\left\{ \begin{array}{l}
-{a_i} = 0 \Leftrightarrow {y_i}g({x_i}) \ge 1 - \varepsilon \\
-0 < {a_i} < C \Leftrightarrow 1 - \varepsilon  \le {y_i}g({x_i}) \le 1 + \varepsilon \\
-{a_i} = C \Leftrightarrow {y_i}g({x_i}) \le 1 + \varepsilon 
-\end{array} \right\} \Rightarrow \left\{ \begin{array}{l}
-{a_i} < C \Leftrightarrow 1 - \varepsilon  \le {y_i}g({x_i})\\
-0 < {a_i} \Leftrightarrow {y_i}g({x_i}) \le 1 + \varepsilon 
-\end{array} \right\}
- %]]&gt;</script>
-
-<p>同时由于${y_i} =  \pm 1$，所以${y_i}*{y_i}=1$，上面的公式可以换算为</p>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\begin{array}{l}
-{a_i} < C \Leftrightarrow  - \varepsilon  \le {y_i}(g({x_i}) - {y_i})\\
-        0 < {a_i} \Leftrightarrow {y_i}(g({x_i}) - {y_i}) \le  + \varepsilon 
-        \end{array}
- %]]&gt;</script>
-
-<p>定义:</p>
-
-<script type="math/tex; mode=display">
-{E_i} = g({x_i}) - {y_i}
-</script>
-
-<p>其中，$g({x})$其实就是决策函数，所以${E_i}$可以认为是对输入的${x_i}$的预测值与真实输出${y_i}$之差。</p>
-
-<p>上面的公式就可以换算为，即KKT条件可以表示为：</p>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\begin{array}{l}
-{a_i} < C \Leftrightarrow  - \varepsilon  \le {y_i}{E_i}\\
-        0 < {a_i} \Leftrightarrow {y_i}{E_i} \le  + \varepsilon 
-        \end{array}
- %]]&gt;</script>
-
-<p>那么相应的违规KKT条件的分量应该满足下列不等式：</p>
-
-<script type="math/tex; mode=display">
-{\rm{Against\ KKT:}}
-</script>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-\begin{array}{l}
-{a_i} < C \quad \Leftrightarrow \quad  - \varepsilon  > {y_i}{E_i}\\
-0 < {a_i} \quad \Leftrightarrow \quad {y_i}{E_i} >  + \varepsilon 
-\end{array}
- %]]&gt;</script>
-
-<p>其实上面的推导过程不必关心，只需要应用违犯KKT条件的公式就可以了。</p>
-
-<h2 id="smo">SMO算法描述</h2>
-
-<p style="text-indent:0"><em style="color:blue"> 输入：</em>训练数据集 $ T=&#92;{({x\_1},{y\_1}),({x\_2},{y\_2}), \cdot \cdot \cdot ,({x\_N},{y\_N})&#92;} $ </p>
-
-<p>其中$ {x_i} \in \chi  \in {\mathbb{R}^n}$，${y_i} \in \{-1,+1\}$，$i=1,2,\cdot\cdot\cdot,N$，精度$\varepsilon$。</p>
-
-<p style="text-indent:0"><em style="color:blue">输出：</em>近似解$\hat a$</p>
-
-<p style="text-indent:0"><em style="color:blue">算法描述：</em></p>
-
-<p>(1) 取初始值${a^{(0)}}=0$，令$K=0$</p>
-
-<p>(2) 选取优化变量 ${a_1^{(k)}}$ , ${a_2^{(k)}}$ , 针对优化问题，求得最优解 ${a_1^{(k+1)}}$ , ${a_2^{(k+1)}}$ 更新 ${a^{(k)}}$ 为 ${a^{(k+1)}}$ 。</p>
-
-<p>(3) 在精度条件范围内是否满足停机条件，即是否有变量违反KKT条件，如果违反了，则令$k=k+1$，跳转(2)，否则(4)。</p>
-
-<p>(4) 求得近似解$\hat a = a^{(k+1)}$</p>
-
-<p>上面算法的(1)、(3)、(4)步都不难理解，其中第(3)步中，是否违反KKT条件，对于$a^{(k)}$的每个分量按照上一节的违反KKT条件的公式进行验算即可。难于理解的是第(2)步，下面就重点解释优化变量选取和如何更新选取变量。</p>
-
-<h3 id="section">变量选取</h3>
-
-<p>变量选取分为两步，第一步是选取违反KKT条件最严重的${a_i}$，第二步是根据已经选取的第一个变量，选择优化程度最大的第二个变量。</p>
-
-<p>违反KKT条件最严重的变量可以按照这样的规则选取，首先看$0 \lt {a_i} \lt C$的那些分量中，是否有违反KKT条件的，如果有，则选取${y_i}g({x_i})$最小的那个做为${a_1}$。如果没有则遍历所有的样本点，在违反KKT条件的分量中选取${y_i}g({x_i})$最小的做为${a_1}$。</p>
-
-<p>当选择了${a_1}$后，如果${a_1}$对应的$E_1$为正，选择$E_i$最小的那个分量最为${a_2}$，如果$E_1$为负，选择$E_i$最大的那个分量最为${a_2}$，这是因为${a_2^{new}}$依赖于$\left| {E_1 - E_2} \right|$（后面的公式会讲到）。
-如果选择的${a_2}$，不能满足下降的最小步长，那么就遍历所有的支持向量点做为${a_2}$进行试用，如果仍然都不能满足下降的最小步长，那么就遍历所有的样本点做为${a_2}$试用。如果还算是不能满足下降的最小步长，那么就重新选择${a_1}$。</p>
-
-<h3 id="section-1">计算选取变量的新值</h3>
-
-<p>首先计算出来的新值必须满足约束条件$\sum\limits_{i = 1}^N { {a_i}{y_i} = 0}$ ，那么求出来的${a_2^{new}}$需要满足下列条件（具体推导见《统计学习方法》的7.4.1）:</p>
-
-<script type="math/tex; mode=display">
-\begin{array}{l}
-L \le a_2^{new} \le H\\
-L = \max (0,a_2^{old} - a_1^{old}),H = \min (C,C + a_2^{old} - a_1^{old}), \qquad {y_1} \ne {y_2}\\
-L = \max (0,a_2^{old} + a_1^{old} - C),H = \min (C,a_2^{old} + a_1^{old}), \qquad {y_1} = {y_2}
-\end{array}
-</script>
-
-<p>未经过裁剪的${a_2}$的解为：</p>
-
-<script type="math/tex; mode=display">
-\begin{array}{l}
-{a_2^{new,unc}} = {a_2^{old}} + \frac{ {y_2}({E_1}-{E_2)}}{\eta} \\
-\eta = K_{11} + K_{22} - 2{K_{12}}
-\end{array}
-</script>
-
-<p>裁剪后的解为</p>
-
-<script type="math/tex; mode=display">% &lt;![CDATA[
-
-a_2^{new} = \left\{ \begin{array}{l}
-H,a_2^{new,unc} > H\\
-        a_2^{new,unc},L \le a_2^{new,unc} \le H\\
-        L,a_2^{new,unc} < L
-        \end{array} \right.
- %]]&gt;</script>
-
-<p>第一个变量的解为</p>
-
-<script type="math/tex; mode=display">
-a_1^{new} = a_1^{old} + {y_1}{y_2}(a_2^{old} - a_2^{new})
-</script>
-
-<p>还需要更新$b$:</p>
-
-<script type="math/tex; mode=display">
-\begin{array}{l}
-b_1^{new} =  - {E_1} - {y_1}{K_{11}}(a_1^{new} - a_1^{old}) - {y_2}{K_{21}}(a_2^{new} - a_2^{old}) + {b^{old}}\\
-        b_2^{new} =  - {E_2} - {y_1}{K_{12}}(a_1^{new} - a_1^{old}) - {y_2}{K_{22}}(a_2^{new} - a_2^{old}) + {b^{old}}
-        \end{array}
-</script>
-
-<p>在更新$b$时，如果有$0 \lt a_1^{new} \lt C$, 则$b^{new}=b_1^{new}$，如果有$0 \lt a_2^{new} \lt C$, 则 $b^{new}=b_2^{new}$， 否则$b^{new}=\frac{b_1^{new} + b_2^{new}}{2}$。</p>
-
-<p>由于缓存了${E_i}$,所以需要计算新的${E_i}$:</p>
-
-<script type="math/tex; mode=display">
-E_i^{new} = \sum\limits_{j=1}^N { {y_j}{a_j}K({x_i},{x_j})} + b^{new} - y_i
-</script>
-
-<h2 id="smo-1">SMO的一个实现例子</h2>
-
-<p>我实现了一个简单的基于SMO的线性svm，是一个python脚本。实现的过程中，变量的选取并未严格按照算法讲的方法选取，选择了一个简单的选取方法。
-一次迭代中，遍历所有的${a_i}$，如果${a_i}$违反了KKT条件，那么就将它做为第一个变量，然后再遍历所有的${a_i}$，依次做为第二个变量，如果第二个变量有足够的下降，那么就更新两个变量。如果没有，就不更新。</p>
-
-<p>实现的python脚本如下：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>使用python实现的基于SMO的SVM  (smo.py)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/smo/smo.py">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#!/usr/bin/env python</span>
-</span><span class="line"><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># SMO的一个简单实现</span>
-</span><span class="line"><span class="c"># implement SMO</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="nn">sys</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">math</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-</span><span class="line">
-</span><span class="line"><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line"><span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line"><span class="k">class</span> <span class="nc">svm_params</span><span class="p">:</span>
-</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">
-</span><span class="line"><span class="n">params</span> <span class="o">=</span> <span class="n">svm_params</span><span class="p">()</span>
-</span><span class="line"><span class="n">e_dict</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">
-</span><span class="line"><span class="c">#train_data = &quot;svm.train_mix_ok&quot;</span>
-</span><span class="line"><span class="n">train_data</span> <span class="o">=</span> <span class="s">&quot;svm.train&quot;</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">loaddata</span><span class="p">():</span>
-</span><span class="line">    <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fn</span><span class="p">:</span>
-</span><span class="line">        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span class="line">        <span class="n">vlist</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
-</span><span class="line">        <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-</span><span class="line">        <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-</span><span class="line">    <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># linear</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-</span><span class="line">    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
-</span><span class="line">        <span class="n">ret</span> <span class="o">+=</span> <span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">ret</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">        <span class="n">diff</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">diff</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">init_e_dict</span><span class="p">():</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
-</span><span class="line">        <span class="n">e_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">update_e_dict</span><span class="p">():</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
-</span><span class="line">        <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict_real_diff</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
-</span><span class="line">    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">    <span class="n">init_e_dict</span><span class="p">()</span>
-</span><span class="line">    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class="line">    <span class="k">while</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">times</span> <span class="ow">and</span> <span class="n">updated</span><span class="p">:</span>
-</span><span class="line">        <span class="n">updated</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class="line">        <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
-</span><span class="line">            <span class="n">ai</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">            <span class="n">Ei</span> <span class="o">=</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">            <span class="c"># 违反KKT</span>
-</span><span class="line">            <span class="c"># agaist the KKT</span>
-</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">tolerance</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span class="line">                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span> <span class="k">continue</span>
-</span><span class="line">                    <span class="n">eta</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">eta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="line">                        <span class="k">continue</span>
-</span><span class="line">                    <span class="n">new_aj</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">eta</span>
-</span><span class="line">                    <span class="n">L</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">                    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-</span><span class="line">                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span>
-</span><span class="line">                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</span><span class="line">                    <span class="k">else</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</span><span class="line">                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">C</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="n">H</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">H</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">L</span>
-</span><span class="line">                    <span class="c"># 《统计学习方法》公式7.109（下同）</span>
-</span><span class="line">                    <span class="c"># formula 7.109</span>
-</span><span class="line">                    <span class="n">new_ai</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">                    <span class="c"># 第二个变量下降是否达到最小步长</span>
-</span><span class="line">                    <span class="c"># decline enough for new_aj</span>
-</span><span class="line">                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
-</span><span class="line">                        <span class="k">print</span> <span class="s">&quot;j = </span><span class="si">%d</span><span class="s">, is not moving enough&quot;</span> <span class="o">%</span> <span class="n">j</span>
-</span><span class="line">                        <span class="k">continue</span>
-</span><span class="line">
-</span><span class="line">                    <span class="c"># formula 7.115</span>
-</span><span class="line">                    <span class="n">new_b1</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-</span><span class="line">                    <span class="c"># formula 7.116</span>
-</span><span class="line">                    <span class="n">new_b2</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">e_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">kernel</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_ai</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b1</span>
-</span><span class="line">                    <span class="k">elif</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b2</span>
-</span><span class="line">                    <span class="k">else</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_b1</span> <span class="o">+</span> <span class="n">new_b2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
-</span><span class="line">
-</span><span class="line">                    <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ai</span>
-</span><span class="line">                    <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_aj</span>
-</span><span class="line">                    <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">new_b</span>
-</span><span class="line">                    <span class="n">update_e_dict</span><span class="p">()</span>
-</span><span class="line">                    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class="line">                    <span class="k">print</span> <span class="s">&quot;iterate: </span><span class="si">%d</span><span class="s">, changepair: i: </span><span class="si">%d</span><span class="s">, j:</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">u&quot;x1&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">u&quot;x2&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;SVM - </span><span class="si">%s</span><span class="s">, tolerance </span><span class="si">%f</span><span class="s">, C </span><span class="si">%f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
-</span><span class="line">    <span class="n">ftrain</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">ftrain</span><span class="p">:</span>
-</span><span class="line">        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span class="line">        <span class="n">sam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="line">            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;or&#39;</span><span class="p">)</span>
-</span><span class="line">        <span class="k">else</span><span class="p">:</span>
-</span><span class="line">            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sam</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sam</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;og&#39;</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="n">w2</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
-</span><span class="line">        <span class="n">w1</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-</span><span class="line">        <span class="n">w2</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-</span><span class="line">    <span class="n">w</span> <span class="o">=</span> <span class="o">-</span> <span class="n">w1</span> <span class="o">/</span> <span class="n">w2</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">b</span> <span class="o">=</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="n">w2</span>
-</span><span class="line">    <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">w2</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">lp_x1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
-</span><span class="line">    <span class="n">lp_x2</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">    <span class="n">lp_x2up</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">    <span class="n">lp_x2down</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">x1</span> <span class="ow">in</span> <span class="n">lp_x1</span><span class="p">:</span>
-</span><span class="line">        <span class="n">lp_x2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-</span><span class="line">        <span class="n">lp_x2up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span>
-</span><span class="line">        <span class="n">lp_x2down</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2up</span><span class="p">,</span> <span class="s">&#39;b--&#39;</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lp_x1</span><span class="p">,</span> <span class="n">lp_x2down</span><span class="p">,</span> <span class="s">&#39;b--&#39;</span><span class="p">)</span>
-</span><span class="line">    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span class="line">    <span class="n">loaddata</span><span class="p">()</span>
-</span><span class="line">    <span class="k">print</span> <span class="n">samples</span>
-</span><span class="line">    <span class="k">print</span> <span class="n">labels</span>
-</span><span class="line">    <span class="c"># 惩罚系数</span>
-</span><span class="line">    <span class="c"># penalty for mis classify</span>
-</span><span class="line">    <span class="n">C</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class="line">    <span class="c"># 计算精度</span>
-</span><span class="line">    <span class="c"># computational accuracy </span>
-</span><span class="line">    <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.0001</span>
-</span><span class="line">    <span class="n">train</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;a = &quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;b = &quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">b</span>
-</span><span class="line">    <span class="n">support</span> <span class="o">=</span>  <span class="p">[]</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">)):</span>
-</span><span class="line">        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span>
-</span><span class="line">            <span class="n">support</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;support vector = &quot;</span><span class="p">,</span> <span class="n">support</span>
-</span><span class="line">    <span class="n">draw</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>脚本使用的训练数据可以下载<a href="https://github.com/liuhongjiang/blog_projects/tree/master/svm">SMO实现的代码</a>的svm.train文件，或者使用<a href="https://github.com/liuhongjiang/blog_projects/blob/master/svm/blog_linear.py">blog_linear.py</a>，通过改变变量<code>separable</code>可以生成能够完全划分开的样本和不能划分开的样本。</p>
-
-<p>这个smo.py脚本是一个线性的svm，替换掉脚本中<code>kernel</code>函数，就可以成为一个非线性的svm。
-下面这两张图片是用训练数据训练的结果。这一张是样本能完全分离开的:</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/svm/svm_sep_ok.png" /></p>
-
-<p>这一张是样本不能完全分离开的：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/svm/svm_not_sep.png" /></p>
-
-<p>以上就是如何实现SMO的全部内容。之前的一个同事实现了一个简单的识别手写数字ocr，下一章，我们也来用svm实现一个简单的识别数字的ocr吧。</p>
 ]]></content>
   </entry>
   

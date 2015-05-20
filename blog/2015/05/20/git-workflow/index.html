@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>分类: C/C++ - 刘洪江的流水帐</title>
+  <title>git workflow - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="Category: C/C++">
+  <meta name="description" content="参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
+基本上是参考了gitflow的这篇文章。A successful Git branching model。 重点是下面这一张图片。 名词 以上图片中的各个分支的解释。 master分支 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/techblog/categories/c-c-/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -130,64 +131,225 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">分类: C/C++</h1>
+    
+      <h1 class="entry-title">Git Workflow</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-20T14:49:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git workflow  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content">
+    
+    <p>参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
+基本上是参考了gitflow的这篇文章。<a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>。</p>
 
-  
-  <h2>2012</h2>
+<p>重点是下面这一张图片。</p>
 
-<article>
-  
-<h1><a href="/tech/blog/2012/12/07/jni-call/">jni调用C和C++</a></h1>
-<time datetime="2012-12-07T13:29:00+08:00" pubdate><span class='month'>Dec</span> <span class='day'>07</span> <span class='year'>2012</span></time>
+<p><img class="center" src="http://nvie.com/img/git-model@2x.png" /></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/tech/blog/categories/c-c-/'>C/C++</a></span>
-</footer>
+<h2 id="section">名词</h2>
 
+<p>以上图片中的各个分支的解释。</p>
 
-</article>
+<ul>
+  <li>
+    <p>master分支</p>
 
+    <p>master分支保存了最新的发布代码，是稳定分支。永久保存。</p>
+  </li>
+  <li>
+    <p>develop分支</p>
 
+    <p>保存了最新的下一个版本要发布的feature和bugfix的代码，是稳定分支，但是可以运行在一定时间内不稳定。永久保存。</p>
 
-<article>
-  
-<h1><a href="/tech/blog/2012/11/30/virtual-inheritance/">虚继承</a></h1>
-<time datetime="2012-11-30T15:13:00+08:00" pubdate><span class='month'>Nov</span> <span class='day'>30</span> <span class='year'>2012</span></time>
+    <p>在没有创建release分支的时候，可以提交bugfix的代码（bug的fix version填写下一个版本的版本号）。一但创建了release分支，那么只能提交下一个版本的feature和bugfix代码。</p>
+  </li>
+</ul>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/tech/blog/categories/c-c-/'>C/C++</a></span>
-</footer>
+<!-- more -->
 
+<ul>
+  <li>
+    <p>release分支</p>
 
-</article>
+    <p>在develop分支的上创建。它是当前要发布的版本的分支，只允许提交bugfix（bug的fix version填写当前版本和下一个版本），原则上不运行提交feature代码。完成测试以后，合并到master分支和develop分支。</p>
 
+    <p>创建release分支后，当前版本要修复的bug，只需要提交到release分支。当release分支发布的时候，合并到master分支和develop分支后，在master分支上打上release的tag，删除release分支。</p>
 
+    <p>命名规则：release/{version name} (version name是项目内部定义的项目名称，可以是版本号，例如v1.2.3，可以是发布日志rb_2015.03.19)</p>
+  </li>
+  <li>
+    <p>feature分支</p>
 
-<article>
-  
-<h1><a href="/tech/blog/2012/11/29/virtual-function/">虚函数</a></h1>
-<time datetime="2012-11-29T09:30:00+08:00" pubdate><span class='month'>Nov</span> <span class='day'>29</span> <span class='year'>2012</span></time>
+    <p>新功能开发分支，从develop分支上创建，合并到develop分支。完成feature开发后，删除feature分支。</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/tech/blog/categories/c-c-/'>C/C++</a></span>
-</footer>
+    <p>命名规则：feature/xxxxxx (xxxxx为新特性描述，建议不要太长了, 例如add sticker)</p>
+  </li>
+  <li>
+    <p>bug分支</p>
 
+    <p>当没有release分支的时候，基于develop分支创建，合并到develop分支。删除bug分支。这时的fix version填下一个版本。</p>
 
-</article>
+    <p>当创建了release分支后：如果bug是需要在当前release版本的：基于release分支创建，合并到release分支中去。这时的fix version填当前版本和下一个版本。</p>
 
+    <p>如果是下一个版本发布的：基于develop分支创建，合并到develop分支。这时的fix version填下一个版本。</p>
+
+    <p>命名规则：bug/{issue-number}-xxxx ({issue-number}部分为issue号，例如MyProject-3555， xxxx部分为简单的说明，也可以省略，例如MyProject-3555-fix-deadlock)</p>
+  </li>
+  <li>
+    <p>hotfix</p>
+
+    <p>hotfix是当某一个版本发布到了真实环境中以后，发现了严重的bug，必要紧急修复的情况下，出现的版本。</p>
+
+    <p>hotfix版本基于master分支上对应的release tag创建，合并到master分支和develop分支。如果hotfix的修复发布的时候，存在release分支，那么hotfix需要合并到release分支，而不是develop分支。</p>
+
+    <p>hotfix分支合并以后，需要删除hotfix分支。</p>
+  </li>
+  <li>
+    <p>maintenance分支</p>
+
+    <p>由于在生产环境中，只有一个版本，所以不需要保留maintenance分支。</p>
+
+    <p>如果生产环境中，有多个长期的维护版本，那么就需要保留这些版本对应的maintenance分支（有使用maint作为分支前缀）。当有bug在对应的维护分支上有bug的时候，需要基于这个维护分支创建bugfix分支， 完成修复后，需要将这个bugfix分支在合并回这个维护分支。</p>
+
+    <p>如果其他对应维护分支也有同样的问题话，需要将这个bugfix的分支合并到那些对应的维护分支上去。并且如果在master和development分支上存在着相同的bug，也要将这个bugfix合并到master，development，如果还有release分支，也要合并到当前的release分支。</p>
+  </li>
+  <li>
+    <p>release tag
+  发布了release分支以后，将release合并到master分支，打上release tag，现在的命名规则：TC_2015.05.09.</p>
+  </li>
+</ul>
+
+<h2 id="section-1">开发人员需要关注的</h2>
+
+<p>平时开发feature的时候，从develop分支上拉feature分支，提pull request的时候，也是合并到develop中，feature命名的规则：命名规则：feature/xxxxxx (xxxxx为新特性描述，建议不要超过4个单词)</p>
+
+<p>修复bug的时候，如果没有release分支，那么从develop上拉bug分支，合并到develop分支上。这时的fix version填下一个版本。</p>
+
+<p>如果有release分支，那么从release分支上拉bug分支，合并到bug分支上。这时的fix version填当前版本和下一个版本。</p>
+
+<p>如果有release分支，但是这个bug是下一个版本修复，那么就从从develop上拉bug分支，合并到develop分支上。这时的fix version填下一个版本。</p>
+
+<p>bug分支的命名规则：bug/{issue-number}-xxxx ({issue-number}部分为issue号，例如MyProject-3555， xxxx部分为简单的说明，一两个单词就可以了，也可以省略)</p>
+
+<h2 id="ci">CI</h2>
+
+<p>CI需要在develop和release两个分支上构建。</p>
+
+<h2 id="section-2">其他</h2>
+
+<p>在合并分支时，如果希望保留合并的信息，建议使用<code>git merge --no-ff</code>, 不适用fast forward.</p>
+
+<p>在发起pull request的时候，为了减少项目合并的管理者的负担，并且保证当前需要合并的分支，有一个比较干净的提交记录，使用<code>git rebase -i</code></p>
+
+<h2 id="section-3">参考</h2>
+
+<p><a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>
+<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow">Gitflow workflow</a>
+<a href="http://git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows">Distributed Git - Distributed Workflows</a>
+<a href="http://git-scm.com/book/en/v2/Distributed-Git-Maintaining-a-Project">Distributed Git - Maintaining a Project</a></p>
+
+<h2 id="gitflow-">gitflow 工具</h2>
+
+<p><a href="https://github.com/nvie/gitflow">gitflow</a>
+<a href="https://datasift.github.io/gitflow/TheHubFlowTools.html">hubflow</a>
+<a href="http://danielkummer.github.io/git-flow-cheatsheet/">git-flow cheatsheet</a></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-20T14:49:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/git/'>git</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git workflow  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/tech/blog/2015/05/15/sublime-tips/" title="Previous Post: sublime tips">&laquo; sublime tips</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -274,7 +436,10 @@
       var disqus_shortname = 'andrewliu117';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

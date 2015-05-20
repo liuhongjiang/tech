@@ -9,9 +9,8 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="显示cjk
-安装了sublime以后，默认字体对cjk（中文，韩文，日文）支持不是很好，可以使用 YaHei Consolas Hybrid字体。
-下载 YaHei Consolas Hybrid，可使用链接： 从google code下载 从github下载 &hellip;">
+  <meta name="description" content="参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
+基本上是参考了gitflow的这篇文章。A successful Git branching model。 重点是下面这一张图片。 名词 以上图片中的各个分支的解释。 master分支 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -164,6 +163,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2015/05/20/git-workflow/">Git Workflow</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-20T14:49:00+08:00" pubdate data-updated="true">May 20<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git workflow - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=git workflow  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
+基本上是参考了gitflow的这篇文章。<a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a>。</p>
+
+<p>重点是下面这一张图片。</p>
+
+<p><img class="center" src="http://nvie.com/img/git-model@2x.png" /></p>
+
+<h2 id="section">名词</h2>
+
+<p>以上图片中的各个分支的解释。</p>
+
+<ul>
+  <li>
+    <p>master分支</p>
+
+    <p>master分支保存了最新的发布代码，是稳定分支。永久保存。</p>
+  </li>
+  <li>
+    <p>develop分支</p>
+
+    <p>保存了最新的下一个版本要发布的feature和bugfix的代码，是稳定分支，但是可以运行在一定时间内不稳定。永久保存。</p>
+
+    <p>在没有创建release分支的时候，可以提交bugfix的代码（bug的fix version填写下一个版本的版本号）。一但创建了release分支，那么只能提交下一个版本的feature和bugfix代码。</p>
+  </li>
+</ul>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/05/20/git-workflow/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -795,90 +877,6 @@ Basically, I learnt from this page:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2013/08/18/tree/">数据结构&#8211;树</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-18T00:23:00+08:00" pubdate data-updated="true">Aug 18<span>th</span>, 2013</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/data-nbsp-structure/'>Data&nbsp;structure</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=数据结构--树 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/08/18/tree/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=数据结构--树 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/08/18/tree/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=数据结构--树  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/08/18/tree/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <div class="abstract">
-            <table>
-                <tr>
-                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
-                    <td>本文介绍了一种重要的数据结构树。绝大部分内容都是收集于网络博客。</td>
-                </tr>
-            </table>
-        </div>
-        
-        <p>树，计算机中比较纠结的一种数据结构。种类太多了，涉及到的算法也太多了。主要目的是汇总一下。参考了网上的几篇博客。<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup><sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup></p>
-
-<h2 id="section">二叉树</h2>
-
-<p>就是binary tree，搜索二叉数特点：</p>
-
-<ol>
-  <li>所有非叶子结点至多拥有两个儿子（Left和Right）；</li>
-  <li>所有结点存储一个关键字；</li>
-  <li>非叶子结点的左指针指向小于其关键字的子树，右指针指向大于其关键字的子树；</li>
-</ol>
-
-<p>但二叉树在经过多次插入与删除后，有可能导致不同的结构, 例如下图也是一个二叉数，但是其查找效率已经是线性的了：</p>
-
-<p><img class="center" src="/tech/images/blogimages/2013/tree/unbalanced-b-tree.jpg" /> </p>
-
-<p>所以，使用二叉树还要考虑尽可能让二叉树保持左图的结构，和避免右图的结构，也就是所谓的“平衡”问题； 实际使用的二叉数都是在原二叉树的基础上加上平衡算法, 即“平衡二叉树”;如何保持二叉树结点分布均匀的平衡算法是平衡二叉树的关键; 平衡算法是一种在二叉数中插入和删除结点的策略。</p>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2013/08/18/tree/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -900,6 +898,10 @@ Basically, I learnt from this page:
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/20/git-workflow/">git workflow</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/15/sublime-tips/">sublime tips</a>
       </li>
     
@@ -915,15 +917,11 @@ Basically, I learnt from this page:
         <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2015/04/30/git-commit-message-convention/">git commit message convention</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 145.0%'>git(3)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(4)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>

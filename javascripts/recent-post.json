@@ -1,6 +1,12 @@
 [
 
 {
+    "title":"git workflow", 
+    "url":"http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/", 
+    "date":"2015-05-20"
+}
+,
+{
     "title":"sublime tips", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/05/15/sublime-tips/", 
     "date":"2015-05-15"
@@ -22,12 +28,6 @@
     "title":"git reference", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/", 
     "date":"2015-05-09"
-}
-,
-{
-    "title":"git commit message convention", 
-    "url":"http://liuhongjiang.github.com/tech/blog/2015/04/30/git-commit-message-convention/", 
-    "date":"2015-04-30"
 }
 
 ]

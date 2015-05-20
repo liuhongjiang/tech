@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="摘要： SVM（support vector machine, 支持向量机）是一个二分的分类器。本文简单讲解了线性svm和非线性svm的原理。 是今年工作中才开始接触机器学习的，之前有所听说，但是也没有深入了解过。其实所谓的接触主要是照着李航的这本《统计学习方法》学习。 &hellip;">
+  <meta name="description" content="摘要： 序列最小最优化(sequential minimal optimization, SMO)算法是支持向量机的学习算法，本文主要讲解了SMO算法，并且实现了一个简单基于smo的svm。 上一篇blog讲到了svm的原理，最后将需要解决问题抽象成了数学公式，但如何利用计算机， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +162,102 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2012/12/28/svm-smo/">SMO序列最小最优化算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-28T09:01:00+08:00" pubdate data-updated="true">Dec 28<span>th</span>, 2012</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/machine-nbsp-learning/'>Machine&nbsp;Learning</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=SMO序列最小最优化算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=SMO序列最小最优化算法 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=SMO序列最小最优化算法  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <div class="abstract">
+            <table>
+                <tr>
+                    <td style="font-size:18px;font-weight:bold;width:60px">摘要：</td>
+                    <td>序列最小最优化(sequential minimal optimization, SMO)算法是支持向量机的学习算法，本文主要讲解了SMO算法，并且实现了一个简单基于smo的svm。</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p>上一篇blog讲到了<a href="/tech/blog/2012/12/26/svm/">svm的原理</a>，最后将需要解决问题抽象成了数学公式，但如何利用计算机，解出这些数学公式的答案。换句话说，就是怎么通过计算机算出我们的svm模型的参数呢？方法就是序列最小最优化(sequential minimal optimization, SMO)算法。</p>
+
+<p>首先回顾一下SVM模型的数学表达，即svm的对偶问题:</p>
+
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\mathop {\min }\limits_a \qquad \frac{1}{2}\sum\limits_{i = 1}^N {\sum\limits_{j = 1}^N { {a_i}{a_j}{y_i}{y_j}K({x_i},{x_j}) - \sum\limits_{i = 1}^N { {a_i}} } } \\
+{\rm{s.t.}}\qquad\sum\limits_{i = 1}^N { {a_i}{y_i} = 0} \\
+\qquad\qquad 0 \le {a_i} \le C, \qquad i = 1,2,\cdot\cdot\cdot,N
+\end{array}
+</script>
+
+<p>选择一个 $ {a^*} $ 的正分量 $ 0 \lt {a_j^*} \lt C $ , 计算（或者通过所有解求平均值）：</p>
+
+<script type="math/tex; mode=display">
+{b^*} = {y_j} - \sum\limits_{i = 1}^N {a_i^*{y_i}K({x_i} \cdot {x_j})} 
+</script>
+
+<p>决策函数为</p>
+
+<script type="math/tex; mode=display">
+f(x) = sign(\sum\limits_{i=1}^N {a_i^*{y_i}K({x_i}, {x_j})} + {b^*})
+</script>
+
+<p>svm的学习，就是通过训练数据计算出${a^*}$和${b^*}$，然后通过决策函数判定${x_j}$的分类。其中${a^*}$是一个向量，长度与训练数据的样本数相同，如果训练数据很大，那么这个向量会很长，不过绝大部分的分量值都是0，只有支持向量的对应的分量值大于0 。</p>
+
+<p>SMO是一种启发式算法，其基本思想是：如果所有变量的解都满足了此最优化问题的KKT条件，那么这个最优化问题的解就得到了。否则，选择两个变量，固定其它变量，针对这两个变量构建一个二次规划问题，然后关于这个二次规划的问题的解就更接近原始的二次归还问题的解，因为这个解使得需要优化的问题的函数值更小。</p>
+
+<p>翻译一下：对于svm我们要求解${a^*}$，如果 ${a^*}$ 的所有分量满足svm对偶问题的KKT条件，那么这个问题的解就求出来了，我们svm模型学习也就完成了。如果没有满足KKT，那么我们就在 ${a^*}$ 中找两个分量 ${a_i}$ 和 ${a_j}$，其中 ${a_i}$ 是违反KKT条件最严重的分量，通过计算，使得 ${a_i}$ 和 ${a_j}$ 满足KKT条件，直到${a^*}$ 的所有分量都满足KKT条件。而且这个计算过程是收敛的，因为每次计算出来的新的两个分量，使得对偶问题中要优化的目标函数（就是min对应的那个函数）值更小。至于为什么是收敛的，是因为，每次求解的那两个分量，是要优化问题在这两个分量上的极小值，所以每一次优化，都会使目标函数比上一次的优化结果的值变小。</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2012/12/28/svm-smo/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -816,6 +912,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/05/20/git-workflow/">git workflow</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/15/sublime-tips/">sublime tips</a>
       </li>
     
@@ -831,15 +931,11 @@
         <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2015/04/30/git-commit-message-convention/">git commit message convention</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 145.0%'>git(3)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(4)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>
