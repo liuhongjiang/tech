@@ -5,11 +5,24 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en" xmlns:wb=“http://open.weibo.com/wb"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>最新评论 - 刘洪江的流水帐</title>
+  <title>git crlf - 刘洪江的流水帐</title>
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="最新评论 本人 一个码农，苦逼而卑微地活着，同时也正直、善良而坚持地活着。相信梦想，相信真理。写过C/C++，python。开发过网站服务器后端程序。更多介绍... 声明：本站使用的图片等，甚至部分文章都来自网络，原作者享有对著作的一切权利。 欢迎在新浪微博上关注我： 最新博文 git crlf &hellip;">
+  <meta name="description" content="跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。 如何将git的所有crlf文件转换成lf格式 将git库中的crlf转换为lf 下面这个脚本可以将库中的所有文件中的crlf去掉 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +31,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://liuhongjiang.github.com/tech/recent-comment/">
+  <link rel="canonical" href="http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/">
   <link href="/tech/favicon.png" rel="icon">
   <link href="/tech/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/tech/javascripts/modernizr-2.0.js"></script>
@@ -130,30 +143,250 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">最新评论</h1>
+    
+      <h1 class="entry-title">Git Crlf</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-05T11:17:00+08:00" pubdate data-updated="true">Jun 5<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git crlf  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
     
   </header>
+
+
+<div class="entry-content">
+    
+    <p>跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。</p>
+
+<h2 id="gitcrlflf">如何将git的所有crlf文件转换成lf格式</h2>
+
+<p><a href="http://stackoverflow.com/questions/1510798/trying-to-fix-line-endings-with-git-filter-branch-but-having-no-luck/1511273#1511273">将git库中的crlf转换为lf</a></p>
+
+<p>下面这个脚本可以将库中的所有文件中的crlf去掉
+<!--more--></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class=""><span class="line"># From the root of your repository remove everything from the index
+</span><span class="line">git rm --cached -r .
+</span><span class="line">
+</span><span class="line"># Change the autocrlf setting of the repository (you may want 
+</span><span class="line">#  to use true on windows):
+</span><span class="line">git config core.autocrlf input
+</span><span class="line">
+</span><span class="line"># Re-add all the deleted files to the index
+</span><span class="line"># (You should get lots of messages like:
+</span><span class="line">#   warning: CRLF will be replaced by LF in &lt;file&gt;.)
+</span><span class="line">git diff --cached --name-only -z | xargs -0 git add
+</span><span class="line">
+</span><span class="line"># Commit
+</span><span class="line">git commit -m "Fixed crlf issue"
+</span><span class="line">
+</span><span class="line"># If you're doing this on a Unix/Mac OSX clone then optionally remove
+</span><span class="line"># the working tree and re-check everything out with the correct line endings.
+</span><span class="line">git ls-files -z | xargs -0 rm
+</span><span class="line">git checkout .</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="gitattribute">gitattribute</h2>
+
+<p><a href="https://help.github.com/articles/dealing-with-line-endings/">github上面的关于crlf的处理</a></p>
+
+<p>其中一个重点，可以在<a href="https://help.github.com/articles/dealing-with-line-endings/#per-repository-settings">git库里面加入.gitattributes文件处理crlf的问题</a></p>
+
+<p>例子:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line"># Set the default behavior, in case people don't have core.autocrlf set.
+</span><span class="line">* text=auto
+</span><span class="line">
+</span><span class="line"># Explicitly declare text files you want to always be normalized and converted
+</span><span class="line"># to native line endings on checkout.
+</span><span class="line">*.c text
+</span><span class="line">*.h text
+</span><span class="line">
+</span><span class="line"># Declare files that will always have CRLF line endings on checkout.
+</span><span class="line">*.sln text eol=crlf
+</span><span class="line">
+</span><span class="line"># Denote all files that are truly binary and should not be modified.
+</span><span class="line">*.png binary
+</span><span class="line">*.jpg binary</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>you’ll notice that files are matched–<code>*.c</code>, <code>*.sln</code>, <code>*.png</code>–, separated by a space, then given a setting–<code>text</code>, <code>text eol=crlf</code>, <code>binary</code>. We’ll go over some possible settings below.</p>
+
+<p><code>text=auto</code></p>
+
+<p>Git will handle the files in whatever way it thinks is best. This is a good default option.</p>
+
+<p><code>text eol=crlf</code></p>
+
+<p>Git will always convert line endings to CRLF on checkout. You should use this for files that must keep CRLF endings, even on OSX or Linux. For example, here is a Windows project that enforces CRLF line endings.</p>
+
+<p><code>text eol=lf</code></p>
+
+<p>Git will always convert line endings to LF on checkout. You should use this for files that must keep LF endings, even on Windows. For example, here is a project that enforces LF line endings.</p>
+
+<p><code>binary</code></p>
+
+<p>Git will understand that the files specified are not text, and it should not try to change them. The binary setting is also an alias for -text -diff.</p>
+
+<p>另外一个是：
+<a href="https://help.github.com/articles/dealing-with-line-endings/#refreshing-a-repository-after-changing-line-endings">Refreshing a repository after changing line endings</a></p>
+
+<p>这部分和上面第一节是基本一样的内容，（前提是设置了core.autocrlf或.gitattributes文件)</p>
+
+<h2 id="coreautocrlf">配置core.autocrlf</h2>
+<p><a href="http://stackoverflow.com/questions/1967370/git-replacing-lf-with-crlf#20653073">core.autocrlf的解释</a></p>
+
+<p>How core.autocrlf works:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">core.autocrlf=true:    core.autocrlf=input:      core.autocrlf=false:
+</span><span class="line">
+</span><span class="line">       repo                     repo                    repo
+</span><span class="line">    /        \               /        \              /        \
+</span><span class="line">crlf-&gt;lf    lf-&gt;crlf     crlf-&gt;lf       \          /            \      
+</span><span class="line"> /              \        /                \      /                \
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">Reminder: crlf = win-style end-of-line marker, lf = unix-style.
+</span><span class="line">
+</span><span class="line">Note that cr (mac-style) in not affected for any of three options above.</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>tips: 建议搭建使用编辑器的时候，如果是windows下，特别关注一下回车的格式
+提交到代码仓库的时候，按照unix的格式提交。例如上面的<code>core.autocrlf=input</code>。
+如果想在checkout的文件为crlf，就设置为<code>core.autocrlf=true</code></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <script type="text/javascript" src="http://andrewliu117.disqus.com/recent_comments_widget.js?num_items=30&amp;hide_avatars=0&amp;avatar_size=32&amp;excerpt_length=200"></script>
+
+<span class="byline author vcard">Posted by <span class="fn">刘洪江</span></span>
+
+      
+
+
+
+
+
+
 
 
   
-    <footer>
+
+
+<time datetime="2015-06-05T11:17:00+08:00" pubdate data-updated="true">Jun 5<span>th</span>, 2015</time>
       
-      
-        <div class="sharing">
+
+<span class="categories">
+  
+    <a class='category' href='/tech/blog/categories/git/'>git</a>
+  
+</span>
+
+
+      <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text= git crlf  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+
+    </p>
+    
+      <div class="sharing">
   
   
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/tech/blog/2015/05/20/git-workflow/" title="Previous Post: git workflow">&laquo; git workflow</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -240,7 +473,10 @@
       var disqus_shortname = 'andrewliu117';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/';
+        var disqus_url = 'http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -9,8 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content="参考了网上的多篇文章，然后结合现在自己参与的项目，总结了一个关于项目的git workflow的流程。
-基本上是参考了gitflow的这篇文章。A successful Git branching model。 重点是下面这一张图片。 名词 以上图片中的各个分支的解释。 master分支 &hellip;">
+  <meta name="description" content=" 跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。 如何将git的所有crlf文件转换成lf格式 将git库中的crlf转换为lf 下面这个脚本可以将库中的所有文件中的crlf去掉 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -163,6 +162,70 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2015/06/05/git-crlf/">Git Crlf</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-05T11:17:00+08:00" pubdate data-updated="true">Jun 5<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/git/'>git</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=git crlf - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=git crlf  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。</p>
+
+<h2 id="gitcrlflf">如何将git的所有crlf文件转换成lf格式</h2>
+
+<p><a href="http://stackoverflow.com/questions/1510798/trying-to-fix-line-endings-with-git-filter-branch-but-having-no-luck/1511273#1511273">将git库中的crlf转换为lf</a></p>
+
+<p>下面这个脚本可以将库中的所有文件中的crlf去掉
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/06/05/git-crlf/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -781,102 +844,6 @@ Basically, I learnt from this page:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2013/11/25/learning-go/">Go语言学习</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-25T18:28:00+08:00" pubdate data-updated="true">Nov 25<span>th</span>, 2013</time>
-        
-		
-        
-        <span style="text-transform:none">
-		  | Tags: 
-          
-            <a class='category' href='/tech/blog/categories/language/'>Language</a>
-          
-        </span>
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=go语言学习 - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=go语言学习  - &amp;url=http://liuhongjiang.github.com/tech/blog/2013/11/25/learning-go/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <h2 id="section">一点体会</h2>
-
-<p>下面这篇博文是在看<a href="http://book.douban.com/subject/11577300/">《go语言编程》</a>书的笔记。
-在看书的过程中，其实也没有对go语言进行深入的学习。仅仅是停留在对语法的简单了解。</p>
-
-<p>总的来说，go语言没有它多的新东西，仅仅是将各个语言比较有特色的内容，集中到以一个语言中，而且还是基于C语言的，因为go语言的作者就是C语言的作者。哪些比较有特色的呢，例如闭包，接口，垃圾回收，还有必然语言级别支持协程。这种炒大杂烩的方式，个人感觉不可能会成功。只不过go语言已一个比较强大的干爹google，所有才多多少少掀起了几个波浪。</p>
-
-<p>很有意思的一件事情是，虽然这个语言生在美国，生在google，但是目前go语言的社区最活跃的，还是我们中国的屌丝程序员。我认为这是一件极好的事情，说明了我们中国在IT方面对新事物的开明态度和勇于追逐，虽然成功可能不在go语言，但是有这种态度，终会有所作为。</p>
-
-<h2 id="go">go语言简介</h2>
-
-<p>go语言是google推出的一个可以提高并发编程的语言，它着不同一般的背景。</p>
-
-<ul>
-  <li>回溯至1969 年, 肯·汤普逊（Ken Thompson）和丹尼斯·里奇（Dennis Ritchie ）在贝尔实验室的计算科学研究中心里开发出了Unix ，还因为开发Unix而衍生——C语言。</li>
-  <li>80年代，开始Plan 9 的操作系统研究项目，解决Unix 中的一些问题, 又演变出了Inferno 的项目分支，以及一个名为Limbo 的编程语言</li>
-  <li>Limbo是用于开发运行在小型计算机上的分布式应用的编程语言，它支持模块化编程，编译期和运行时的强类型检查，进程内基于具有类型的通信通道，原子性垃圾收集和简单的抽象数据类型。它被设计为：即便是在没有硬件内存保护的小型设备上，也能安全运行。</li>
-  <li>Limbo 语言被认为是Go语言的前身，不仅仅因为是同一批人设计的语言，而是Go语言确实从Limbo 语言中继承了众多优秀的特性。</li>
-  <li>贝尔实验室后来经历了多次的动荡，包括肯·汤普逊在内的Plan 9 项目原班人马加入了Google 。在Google ，他们创造了Go语言。</li>
-  <li>2007 年9月，Go语言还是这帮大牛的20% 自由时间的实验项目</li>
-  <li>2008 年5月，Google 发现了Go语言的巨大潜力，从而开始全力支持这个项目</li>
-  <li>2009年11 月，发布第一个版本在</li>
-  <li>2012年3月28 日，发布第一个正式版本</li>
-</ul>
-
-<h2 id="go-1">go语言特性</h2>
-
-<ul>
-  <li>自动垃圾回收 </li>
-  <li>更丰富的内置类型 </li>
-  <li>函数多返回值 </li>
-  <li>错误处理 </li>
-  <li>匿名函数和闭包 </li>
-  <li>类型和接口 </li>
-  <li>并发编程 </li>
-  <li>反射 </li>
-  <li>语言交互性 (Cgo, C语言库)</li>
-</ul>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2013/11/25/learning-go/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -898,6 +865,10 @@ Basically, I learnt from this page:
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/06/05/git-crlf/">git crlf</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/05/20/git-workflow/">git workflow</a>
       </li>
     
@@ -913,15 +884,11 @@ Basically, I learnt from this page:
         <a href="/tech/blog/2015/05/09/git-tips/">git tips</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2015/05/09/git-reference/">git reference</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 130.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 115.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 145.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 115.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 115.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(4)</a> <a href='/tech/blog/categories/language' style='font-size: 115.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 115.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 160.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 115.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 130.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 115.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 115.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 124.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 112.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 136.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 112.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 112.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(5)</a> <a href='/tech/blog/categories/language' style='font-size: 112.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 112.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 148.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 112.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 124.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 112.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 112.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>

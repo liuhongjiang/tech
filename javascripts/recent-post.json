@@ -1,6 +1,12 @@
 [
 
 {
+    "title":"git crlf", 
+    "url":"http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/", 
+    "date":"2015-06-05"
+}
+,
+{
     "title":"git workflow", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/05/20/git-workflow/", 
     "date":"2015-05-20"
@@ -21,12 +27,6 @@
 {
     "title":"git tips", 
     "url":"http://liuhongjiang.github.com/tech/blog/2015/05/09/git-tips/", 
-    "date":"2015-05-09"
-}
-,
-{
-    "title":"git reference", 
-    "url":"http://liuhongjiang.github.com/tech/blog/2015/05/09/git-reference/", 
     "date":"2015-05-09"
 }
 

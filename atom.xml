@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-05-20T15:49:20+08:00</updated>
+  <updated>2015-06-05T11:44:27+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,153 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git crlf]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf/"/>
+    <updated>2015-06-05T11:17:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/06/05/git-crlf</id>
+    <content type="html"><![CDATA[<p>跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。</p>
+
+<h2 id="gitcrlflf">如何将git的所有crlf文件转换成lf格式</h2>
+
+<p><a href="http://stackoverflow.com/questions/1510798/trying-to-fix-line-endings-with-git-filter-branch-but-having-no-luck/1511273#1511273">将git库中的crlf转换为lf</a></p>
+
+<p>下面这个脚本可以将库中的所有文件中的crlf去掉
+<!--more--></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class=""><span class="line"># From the root of your repository remove everything from the index
+</span><span class="line">git rm --cached -r .
+</span><span class="line">
+</span><span class="line"># Change the autocrlf setting of the repository (you may want 
+</span><span class="line">#  to use true on windows):
+</span><span class="line">git config core.autocrlf input
+</span><span class="line">
+</span><span class="line"># Re-add all the deleted files to the index
+</span><span class="line"># (You should get lots of messages like:
+</span><span class="line">#   warning: CRLF will be replaced by LF in &lt;file&gt;.)
+</span><span class="line">git diff --cached --name-only -z | xargs -0 git add
+</span><span class="line">
+</span><span class="line"># Commit
+</span><span class="line">git commit -m "Fixed crlf issue"
+</span><span class="line">
+</span><span class="line"># If you're doing this on a Unix/Mac OSX clone then optionally remove
+</span><span class="line"># the working tree and re-check everything out with the correct line endings.
+</span><span class="line">git ls-files -z | xargs -0 rm
+</span><span class="line">git checkout .</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="gitattribute">gitattribute</h2>
+
+<p><a href="https://help.github.com/articles/dealing-with-line-endings/">github上面的关于crlf的处理</a></p>
+
+<p>其中一个重点，可以在<a href="https://help.github.com/articles/dealing-with-line-endings/#per-repository-settings">git库里面加入.gitattributes文件处理crlf的问题</a></p>
+
+<p>例子:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line"># Set the default behavior, in case people don't have core.autocrlf set.
+</span><span class="line">* text=auto
+</span><span class="line">
+</span><span class="line"># Explicitly declare text files you want to always be normalized and converted
+</span><span class="line"># to native line endings on checkout.
+</span><span class="line">*.c text
+</span><span class="line">*.h text
+</span><span class="line">
+</span><span class="line"># Declare files that will always have CRLF line endings on checkout.
+</span><span class="line">*.sln text eol=crlf
+</span><span class="line">
+</span><span class="line"># Denote all files that are truly binary and should not be modified.
+</span><span class="line">*.png binary
+</span><span class="line">*.jpg binary</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>you’ll notice that files are matched–<code>*.c</code>, <code>*.sln</code>, <code>*.png</code>–, separated by a space, then given a setting–<code>text</code>, <code>text eol=crlf</code>, <code>binary</code>. We’ll go over some possible settings below.</p>
+
+<p><code>text=auto</code></p>
+
+<p>Git will handle the files in whatever way it thinks is best. This is a good default option.</p>
+
+<p><code>text eol=crlf</code></p>
+
+<p>Git will always convert line endings to CRLF on checkout. You should use this for files that must keep CRLF endings, even on OSX or Linux. For example, here is a Windows project that enforces CRLF line endings.</p>
+
+<p><code>text eol=lf</code></p>
+
+<p>Git will always convert line endings to LF on checkout. You should use this for files that must keep LF endings, even on Windows. For example, here is a project that enforces LF line endings.</p>
+
+<p><code>binary</code></p>
+
+<p>Git will understand that the files specified are not text, and it should not try to change them. The binary setting is also an alias for -text -diff.</p>
+
+<p>另外一个是：
+<a href="https://help.github.com/articles/dealing-with-line-endings/#refreshing-a-repository-after-changing-line-endings">Refreshing a repository after changing line endings</a></p>
+
+<p>这部分和上面第一节是基本一样的内容，（前提是设置了core.autocrlf或.gitattributes文件)</p>
+
+<h2 id="coreautocrlf">配置core.autocrlf</h2>
+<p><a href="http://stackoverflow.com/questions/1967370/git-replacing-lf-with-crlf#20653073">core.autocrlf的解释</a></p>
+
+<p>How core.autocrlf works:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">core.autocrlf=true:    core.autocrlf=input:      core.autocrlf=false:
+</span><span class="line">
+</span><span class="line">       repo                     repo                    repo
+</span><span class="line">    /        \               /        \              /        \
+</span><span class="line">crlf-&gt;lf    lf-&gt;crlf     crlf-&gt;lf       \          /            \      
+</span><span class="line"> /              \        /                \      /                \
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">Reminder: crlf = win-style end-of-line marker, lf = unix-style.
+</span><span class="line">
+</span><span class="line">Note that cr (mac-style) in not affected for any of three options above.</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>tips: 建议搭建使用编辑器的时候，如果是windows下，特别关注一下回车的格式
+提交到代码仓库的时候，按照unix的格式提交。例如上面的<code>core.autocrlf=input</code>。
+如果想在checkout的文件为crlf，就设置为<code>core.autocrlf=true</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git workflow]]></title>
@@ -3598,721 +3745,6 @@ $ curl -XGET localhost:9200/_msearch --data-binary @requests; echo
 </ul>
 
 <p>还有elasticsearch的中文站点<a href="http://www.elasticsearch.cn/">http://www.elasticsearch.cn/</a>，不过这个网站还在构建中，翻译工作也才刚刚开始，大家就期盼早点完成。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[基于SVM的手写数字识别]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr/"/>
-    <updated>2012-12-29T22:37:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2012/12/29/svm-ocr</id>
-    <content type="html"><![CDATA[<p>前面两篇blog介绍了<a href="http://liuhongjiang.github.com/tech/blog/2012/12/26/svm/">支持向量机SVM</a>和<a href="http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/">SMO算法</a>，这一篇就讲讲SVM的一个简单实际应用：使用svm实现一个简单的数字手写识别软件。首先要解决如何使用svm进行多类分类。</p>
-
-<h2 id="svm1">svm与多类分类<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></h2>
-
-<p>svm是一个二类的分类器，即它只回答属于正类还是负类的问题。而现实中要解决的问题，往往是多类的问题，比如文本分类，比如数字识别。如何由两类分类器得到多类分类器, 一般有三种方法：</p>
-
-<h3 id="section">一对多（一对其余）</h3>
-
-<p>比如我们有5个类别，第一次就把类别1的样本定为正样本，其余2，3，4，5的样本合起来定为负样本，这样得到一个两类分类器。
-通过类似的方法构造类别2、3、4、5的分类器，对于测试数据，每一个分类器都过一次，在那个分类器中，被判定为正，那么就认识它属于那个分类。
-但有两个问题还没有解决：一是被多个分类器判定为正，二是被所有分类器判定为负。第一种情况，可以简单地选择第一个被判定为正的分类，对二种情况，可以视为分类失败了。另外一个问题是，“其余”的那一类样本数总是要数倍于正类（因为它是除正类以外其他类别的样本之和嘛），这就人为的造成了的<a href="http://www.blogjava.net/zhenandaci/archive/2009/03/17/260315.html">“数据集偏斜”</a>问题。</p>
-
-<!-- more -->
-
-<h3 id="section-1">一对一</h3>
-
-<p>这种方法需要构造n*(n-1)/2个分类器。简单地可以理解为所有分类1v1进行pk,具体做法，还是每次选一个类的样本作正类样本，而负类样本则变成只选一个类，(例如构造一个1 pk 2的分类器，它的正样本为1的分类，负样本为2的分类）这就避免了偏斜。
-因此过程就是算出这样一些分类器，第一个只回答“是第1类还是第2类”，第二个只回答“是第1类还是第3类”，第三个只回答“是第1类还是第4类”，如此下去，所以一共有5*(5-1)/2=10个分类器。</p>
-
-<p>虽然分类器的数目多了，但是在训练阶段（也就是算出这些分类器的分类平面时）所用的总时间却比“一类对其余”方法少很多，在真正用来分类的时候，把一个测试数据扔给所有分类器，第一个分类器会投票说它是“1”或者“2”，第二个会说它是“1”或者“3”，让每一个都投上自己的一票，最后统计票数，如果类别“1”得票最多，就判这篇文章属于第1类。但这有个问题，分类器的数量是类别数量的平方,例如，类别数如果是1000，要调用的分类器数目会上升至约500,000个（类别数的平方量级）。</p>
-
-<h3 id="dag-svm">DAG SVM</h3>
-
-<p>这种方法是构造一个DAG SVM，（有向无环的svm)。
-还是像一对一方法那样来训练，只是在对一篇文章进行分类之前，先按照下面图的样子来组织分类器这样在分类时,我们就可以先问分类器“1对5”（意思是它能够回答“是第1类还是第5类”），如果它回答5，我们就往左走，再问“2对5”这个分类器，如果它还说是“5”，我们就继续往左走，这样一直问下去，就可以得到分类结果。</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/svm-ocr/dag-svm.jpg" /></p>
-
-<p>好处在哪？我们其实只调用了4个分类器（如果类别数是k，则只调用k-1个），分类速度飞快，且没有分类重叠和不可分类现象！缺点在哪？假如最一开始的分类器回答错误（明明是类别1的文章，它说成了5），那么后面的分类器是无论如何也无法纠正它的错误的（因为后面的分类器压根没有出现“1”这个类别标签），其实对下面每一层的分类器都存在这种错误向下累积的现象。
-不过不要被DAG方法的错误累积吓倒，错误累积在一对其余和一对一方法中也都存在，DAG方法好于它们的地方就在于，累积的上限，不管是大是小，总是有定论的，有理论证明。而一对其余和一对一方法中，尽管每一个两类分类器的泛化误差限是知道的，但是合起来做多类分类的时候，误差上界是多少，没人知道，这意味着准确率低到0也是有可能的，这多让人郁闷。</p>
-
-<p>而且现在DAG方法根节点的选取（也就是如何选第一个参与分类的分类器），也有一些方法可以改善整体效果，我们总希望根节点少犯错误为好，因此参与第一次分类的两个类别，最好是差别特别特别大，大到以至于不太可能把他们分错；或者我们就总取在两类分类中正确率最高的那个分类器作根节点，或者我们让两类分类器在分类的时候，不光输出类别的标签，还输出一个类似“置信度”的东东，当它对自己的结果不太自信的时候，我们就不光按照它的输出走，把它旁边的那条路也走一走，等等。 </p>
-
-<h2 id="section-2">高斯核函数</h2>
-
-<p>这个手写识别svm的核函数采用了高斯核函数。高斯核函数的公式如下</p>
-
-<script type="math/tex; mode=display">
-K({x_i},{x_j})=e^{- \frac { {\left \| {x_i - x_j} \right \| }^2}{2\delta ^2}}
-</script>
-
-<p>其中的径向基函数的宽度$\delta$对分类器的性能比较敏感，对取不同的$\delta$时，高斯核支持向量机的性能进行分析，若$\delta \to 0 $ ，则所有的训练样本点都是支持向量，且它们全部能被正确的分类，但容易出现“过学习”的现象，推广能力较差，对测试样本的错误识别率较高；若$\delta \to \infty$ ，高斯核支持向量机对所有样本一视同仁，推广能力或对测试样本的正确判别能力为零，即它把所有样本点判为同一类。
-实际上，当$\delta$取比训练样本点之间的平均距离小得多时，就能达到$\delta \to 0 $的效果；当$\delta$取比训练样本点之间的平均距离大得多时，就能达到$\delta \to \infty$的效果。
-在确定高斯径向基函数的宽度$\delta$时，最基本的方法是对$\delta$取不同的值，然后分别采用支持向量机方法进行训练，选择最小分类错误率的一组$\delta$参数。比较典型的方法有梯度下降法与交叉验证法。<sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup></p>
-
-<h2 id="section-3">数据</h2>
-
-<p>我实现的这个数学手写识别的数据是<a href="http://www.manning.com/pharrington/">“Machine Learning in Action”</a>的第二章的数据，可以下载这本的<a href="http://www.manning.com/pharrington/MLiA_SourceCode.zip">source code</a>获得。解压后的路径为machinelearninginaction/Ch02/digits.zip。</p>
-
-<p>将digits.zip解压后就可以得到训练数据和测试数据。这些都是原始数据经过处理后的数据，是一个各个文件，一个文件是一个手写数据，文件名像这样”0_52.txt”，签名的0表示这个手写数据对应的数字，后面的数字52，是0这一类手写数据的文件编号。书写数据如下图所示，是一个32*32的黑白位图。</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/svm-ocr/data-sample.jpg" /></p>
-
-<p>在处理手写数据时，例子中是将它们存放到一个32*32的矩阵中，也可以存放到一个有1024的一维数组。计算高斯核函数的${\left \| {x_i} - {x_j} \right \|} ^2 $如下，以一维数组为例：</p>
-
-<script type="math/tex; mode=display">
-\begin{array}{l}
-{\left \| {x_i} - {x_j} \right \|}^2 = \sum\limits_{k=0}^{1023}{ {(x_i^k - x_j^k)}^2} \\
-x_i=(x_i^0,x_i^1,\cdot \cdot \cdot,x_i^{1023})
-\end{array}
-</script>
-
-<h2 id="section-4">实现</h2>
-
-<p>我实现了一个简单的基于svm的数字手写识别的python脚本，多类分类的模型采用的是一对多（一对其余）的方式，所以一共构造了10个分类器，分别对应0到9。算法采用的是前一篇blog讲的<a href="http://liuhongjiang.github.com/tech/blog/2012/12/28/svm-smo/">SMO</a>，算法的实现也基本是一样的。下面是具体的代码，可以下载<a href="https://github.com/liuhongjiang/blog_projects/tree/master/svm_ocr">github上的代码和数据</a>。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>基于svm的数字手写识别  (svm_ocr.py)</span> <a href="http://liuhongjiang.github.com/tech/code/2012/svm-ocr/svm_ocr.py">download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-<span class="line-number">37</span>
-<span class="line-number">38</span>
-<span class="line-number">39</span>
-<span class="line-number">40</span>
-<span class="line-number">41</span>
-<span class="line-number">42</span>
-<span class="line-number">43</span>
-<span class="line-number">44</span>
-<span class="line-number">45</span>
-<span class="line-number">46</span>
-<span class="line-number">47</span>
-<span class="line-number">48</span>
-<span class="line-number">49</span>
-<span class="line-number">50</span>
-<span class="line-number">51</span>
-<span class="line-number">52</span>
-<span class="line-number">53</span>
-<span class="line-number">54</span>
-<span class="line-number">55</span>
-<span class="line-number">56</span>
-<span class="line-number">57</span>
-<span class="line-number">58</span>
-<span class="line-number">59</span>
-<span class="line-number">60</span>
-<span class="line-number">61</span>
-<span class="line-number">62</span>
-<span class="line-number">63</span>
-<span class="line-number">64</span>
-<span class="line-number">65</span>
-<span class="line-number">66</span>
-<span class="line-number">67</span>
-<span class="line-number">68</span>
-<span class="line-number">69</span>
-<span class="line-number">70</span>
-<span class="line-number">71</span>
-<span class="line-number">72</span>
-<span class="line-number">73</span>
-<span class="line-number">74</span>
-<span class="line-number">75</span>
-<span class="line-number">76</span>
-<span class="line-number">77</span>
-<span class="line-number">78</span>
-<span class="line-number">79</span>
-<span class="line-number">80</span>
-<span class="line-number">81</span>
-<span class="line-number">82</span>
-<span class="line-number">83</span>
-<span class="line-number">84</span>
-<span class="line-number">85</span>
-<span class="line-number">86</span>
-<span class="line-number">87</span>
-<span class="line-number">88</span>
-<span class="line-number">89</span>
-<span class="line-number">90</span>
-<span class="line-number">91</span>
-<span class="line-number">92</span>
-<span class="line-number">93</span>
-<span class="line-number">94</span>
-<span class="line-number">95</span>
-<span class="line-number">96</span>
-<span class="line-number">97</span>
-<span class="line-number">98</span>
-<span class="line-number">99</span>
-<span class="line-number">100</span>
-<span class="line-number">101</span>
-<span class="line-number">102</span>
-<span class="line-number">103</span>
-<span class="line-number">104</span>
-<span class="line-number">105</span>
-<span class="line-number">106</span>
-<span class="line-number">107</span>
-<span class="line-number">108</span>
-<span class="line-number">109</span>
-<span class="line-number">110</span>
-<span class="line-number">111</span>
-<span class="line-number">112</span>
-<span class="line-number">113</span>
-<span class="line-number">114</span>
-<span class="line-number">115</span>
-<span class="line-number">116</span>
-<span class="line-number">117</span>
-<span class="line-number">118</span>
-<span class="line-number">119</span>
-<span class="line-number">120</span>
-<span class="line-number">121</span>
-<span class="line-number">122</span>
-<span class="line-number">123</span>
-<span class="line-number">124</span>
-<span class="line-number">125</span>
-<span class="line-number">126</span>
-<span class="line-number">127</span>
-<span class="line-number">128</span>
-<span class="line-number">129</span>
-<span class="line-number">130</span>
-<span class="line-number">131</span>
-<span class="line-number">132</span>
-<span class="line-number">133</span>
-<span class="line-number">134</span>
-<span class="line-number">135</span>
-<span class="line-number">136</span>
-<span class="line-number">137</span>
-<span class="line-number">138</span>
-<span class="line-number">139</span>
-<span class="line-number">140</span>
-<span class="line-number">141</span>
-<span class="line-number">142</span>
-<span class="line-number">143</span>
-<span class="line-number">144</span>
-<span class="line-number">145</span>
-<span class="line-number">146</span>
-<span class="line-number">147</span>
-<span class="line-number">148</span>
-<span class="line-number">149</span>
-<span class="line-number">150</span>
-<span class="line-number">151</span>
-<span class="line-number">152</span>
-<span class="line-number">153</span>
-<span class="line-number">154</span>
-<span class="line-number">155</span>
-<span class="line-number">156</span>
-<span class="line-number">157</span>
-<span class="line-number">158</span>
-<span class="line-number">159</span>
-<span class="line-number">160</span>
-<span class="line-number">161</span>
-<span class="line-number">162</span>
-<span class="line-number">163</span>
-<span class="line-number">164</span>
-<span class="line-number">165</span>
-<span class="line-number">166</span>
-<span class="line-number">167</span>
-<span class="line-number">168</span>
-<span class="line-number">169</span>
-<span class="line-number">170</span>
-<span class="line-number">171</span>
-<span class="line-number">172</span>
-<span class="line-number">173</span>
-<span class="line-number">174</span>
-<span class="line-number">175</span>
-<span class="line-number">176</span>
-<span class="line-number">177</span>
-<span class="line-number">178</span>
-<span class="line-number">179</span>
-<span class="line-number">180</span>
-<span class="line-number">181</span>
-<span class="line-number">182</span>
-<span class="line-number">183</span>
-<span class="line-number">184</span>
-<span class="line-number">185</span>
-<span class="line-number">186</span>
-<span class="line-number">187</span>
-<span class="line-number">188</span>
-<span class="line-number">189</span>
-<span class="line-number">190</span>
-<span class="line-number">191</span>
-<span class="line-number">192</span>
-<span class="line-number">193</span>
-<span class="line-number">194</span>
-<span class="line-number">195</span>
-<span class="line-number">196</span>
-<span class="line-number">197</span>
-<span class="line-number">198</span>
-<span class="line-number">199</span>
-<span class="line-number">200</span>
-<span class="line-number">201</span>
-<span class="line-number">202</span>
-<span class="line-number">203</span>
-<span class="line-number">204</span>
-<span class="line-number">205</span>
-<span class="line-number">206</span>
-<span class="line-number">207</span>
-<span class="line-number">208</span>
-<span class="line-number">209</span>
-<span class="line-number">210</span>
-<span class="line-number">211</span>
-<span class="line-number">212</span>
-<span class="line-number">213</span>
-<span class="line-number">214</span>
-<span class="line-number">215</span>
-<span class="line-number">216</span>
-<span class="line-number">217</span>
-<span class="line-number">218</span>
-<span class="line-number">219</span>
-<span class="line-number">220</span>
-<span class="line-number">221</span>
-<span class="line-number">222</span>
-<span class="line-number">223</span>
-<span class="line-number">224</span>
-<span class="line-number">225</span>
-<span class="line-number">226</span>
-<span class="line-number">227</span>
-<span class="line-number">228</span>
-<span class="line-number">229</span>
-<span class="line-number">230</span>
-<span class="line-number">231</span>
-<span class="line-number">232</span>
-<span class="line-number">233</span>
-<span class="line-number">234</span>
-<span class="line-number">235</span>
-<span class="line-number">236</span>
-<span class="line-number">237</span>
-<span class="line-number">238</span>
-<span class="line-number">239</span>
-<span class="line-number">240</span>
-<span class="line-number">241</span>
-<span class="line-number">242</span>
-<span class="line-number">243</span>
-<span class="line-number">244</span>
-<span class="line-number">245</span>
-<span class="line-number">246</span>
-<span class="line-number">247</span>
-<span class="line-number">248</span>
-<span class="line-number">249</span>
-<span class="line-number">250</span>
-<span class="line-number">251</span>
-<span class="line-number">252</span>
-<span class="line-number">253</span>
-<span class="line-number">254</span>
-<span class="line-number">255</span>
-<span class="line-number">256</span>
-<span class="line-number">257</span>
-<span class="line-number">258</span>
-<span class="line-number">259</span>
-<span class="line-number">260</span>
-<span class="line-number">261</span>
-<span class="line-number">262</span>
-<span class="line-number">263</span>
-<span class="line-number">264</span>
-<span class="line-number">265</span>
-<span class="line-number">266</span>
-<span class="line-number">267</span>
-<span class="line-number">268</span>
-<span class="line-number">269</span>
-<span class="line-number">270</span>
-<span class="line-number">271</span>
-<span class="line-number">272</span>
-<span class="line-number">273</span>
-<span class="line-number">274</span>
-<span class="line-number">275</span>
-<span class="line-number">276</span>
-<span class="line-number">277</span>
-<span class="line-number">278</span>
-<span class="line-number">279</span>
-<span class="line-number">280</span>
-<span class="line-number">281</span>
-<span class="line-number">282</span>
-<span class="line-number">283</span>
-<span class="line-number">284</span>
-<span class="line-number">285</span>
-<span class="line-number">286</span>
-<span class="line-number">287</span>
-<span class="line-number">288</span>
-<span class="line-number">289</span>
-<span class="line-number">290</span>
-<span class="line-number">291</span>
-<span class="line-number">292</span>
-<span class="line-number">293</span>
-<span class="line-number">294</span>
-<span class="line-number">295</span>
-<span class="line-number">296</span>
-<span class="line-number">297</span>
-<span class="line-number">298</span>
-<span class="line-number">299</span>
-<span class="line-number">300</span>
-<span class="line-number">301</span>
-<span class="line-number">302</span>
-<span class="line-number">303</span>
-<span class="line-number">304</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#!/usr/bin/env python</span>
-</span><span class="line"><span class="c"># -*- coding: utf-8 -*-</span>
-</span><span class="line">
-</span><span class="line"><span class="c">### ###</span>
-</span><span class="line"><span class="c"># handwriting numbers OCR based on svm.</span>
-</span><span class="line"><span class="c"># data from &quot;Machine Learning in Action&quot; chapter 02.</span>
-</span><span class="line"><span class="c"># 基于SVM的手写数字的识别程序</span>
-</span><span class="line"><span class="c"># 数据：采用了《Machine Learning in Action》第二章的数据</span>
-</span><span class="line"><span class="c">### ###</span>
-</span><span class="line">
-</span><span class="line"><span class="kn">import</span> <span class="nn">sys</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">os</span>
-</span><span class="line"><span class="kn">import</span> <span class="nn">math</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">model</span><span class="p">:</span>
-</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">GV</span><span class="p">:</span>
-</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c"># 样本数据</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">tests</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c"># 测试数据</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c"># 训练的模型</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">diff_dict</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c"># 用于缓存预测知与真实y之差Ei</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="mi">0</span>         <span class="c"># 当前正使用或训练的模型</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c"># 缓存kernel函数的计算结果</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">use_linear</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c"># 是否使用线性核函数</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">RBF_dlt</span> <span class="o">=</span> <span class="mi">10</span>        <span class="c"># 径向基函数的宽度</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">def</span> <span class="nf">init_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-</span><span class="line">            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
-</span><span class="line">            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">                <span class="n">m</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">def</span> <span class="nf">init_cache_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
-</span><span class="line">            <span class="k">print</span> <span class="n">i</span>
-</span><span class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
-</span><span class="line">            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">            <span class="k">for</span> <span class="n">mj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
-</span><span class="line">                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">j</span><span class="p">:</span>
-</span><span class="line">                    <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-</span><span class="line">                <span class="k">else</span><span class="p">:</span>
-</span><span class="line">                    <span class="bp">self</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span><span class="n">mj</span><span class="p">))</span>
-</span><span class="line">                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">
-</span><span class="line"><span class="k">class</span> <span class="nc">image</span><span class="p">:</span>
-</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">def</span> <span class="nf">printself</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class="line">        <span class="k">print</span> <span class="s">&quot;data&quot;</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-</span><span class="line">            <span class="k">print</span> <span class="n">line</span>
-</span><span class="line">        <span class="k">print</span> <span class="s">&quot;num&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span>
-</span><span class="line">        <span class="k">print</span> <span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span>
-</span><span class="line">        <span class="k">print</span> <span class="s">&quot;fn&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># global variables</span>
-</span><span class="line"><span class="n">gv</span> <span class="o">=</span> <span class="n">GV</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">parse_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-</span><span class="line">    <span class="n">img_map</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
-</span><span class="line">        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-</span><span class="line">        <span class="n">img_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">img_map</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># load samples and tests</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">loaddata</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
-</span><span class="line">    <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
-</span><span class="line">    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-</span><span class="line">        <span class="n">img</span> <span class="o">=</span> <span class="n">image</span><span class="p">()</span>
-</span><span class="line">        <span class="n">img</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">parse_image</span><span class="p">(</span><span class="n">dirpath</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
-</span><span class="line">        <span class="n">img</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span class="line">        <span class="n">img</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="nb">file</span>
-</span><span class="line">        <span class="n">col</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
-</span><span class="line">    <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">use_linear</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">kernel_linear</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span><span class="n">mi</span><span class="p">)</span>
-</span><span class="line">    <span class="k">else</span><span class="p">:</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">kernel_RBF</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span><span class="n">mi</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="c"># 高斯核函数</span>
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">kernel_RBF</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
-</span><span class="line">    <span class="k">if</span> <span class="n">mj</span> <span class="o">==</span> <span class="n">mi</span><span class="p">:</span>
-</span><span class="line">        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class="line">    <span class="n">dlt</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">RBF_dlt</span>
-</span><span class="line">    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
-</span><span class="line">            <span class="n">ret</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
-</span><span class="line">    <span class="n">ret</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">ret</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dlt</span><span class="o">*</span><span class="n">dlt</span><span class="p">))</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">ret</span>
-</span><span class="line">
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="c"># 线性</span>
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">kernel_linear</span><span class="p">(</span><span class="n">mj</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
-</span><span class="line">    <span class="n">ret</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
-</span><span class="line">            <span class="n">ret</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">ret</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="c"># g(x)</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-</span><span class="line">    <span class="n">pred</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">        <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="line">            <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">m</span><span class="p">)</span>
-</span><span class="line">    <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">pred</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># the same as predict(m), only with different parmaters</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">predict_train</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-</span><span class="line">    <span class="n">pred</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">        <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="line">            <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">    <span class="n">pred</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">pred</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># 决策函数对xi的预测值和真实值之差</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">predict_diff_real</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">=</span> <span class="n">predict_train</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">-=</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">diff</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># 优化计算Ei</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">predict_diff_real_optimized</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_aj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">):</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">+=</span> <span class="p">(</span><span class="n">new_aj</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">+=</span> <span class="n">new_b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span>
-</span><span class="line">    <span class="n">diff</span> <span class="o">+=</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-</span><span class="line">    <span class="k">return</span> <span class="n">diff</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">init_predict_diff_real_dict</span><span class="p">():</span>
-</span><span class="line">    <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">        <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predict_diff_real</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">update_diff_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_bj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">):</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">        <span class="c"># 原来的函数</span>
-</span><span class="line">        <span class="c"># gv.diff_dict[idx] = predict_diff_real(idx)</span>
-</span><span class="line">        <span class="c"># 有优化后的</span>
-</span><span class="line">        <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict_diff_real_optimized</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_bj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">update_samples_label</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
-</span><span class="line">        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
-</span><span class="line">            <span class="n">img</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span class="line">        <span class="k">else</span><span class="p">:</span>
-</span><span class="line">            <span class="n">img</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="c">#  svmocr train</span>
-</span><span class="line"><span class="c">#  基于算法SMO</span>
-</span><span class="line"><span class="c">#  T: tolerance 误差容忍度(精度)</span>
-</span><span class="line"><span class="c">#  times: 迭代次数</span>
-</span><span class="line"><span class="c">#  C: 惩罚系数</span>
-</span><span class="line"><span class="c">#  Mno: 模型序号0到9</span>
-</span><span class="line"><span class="c">#  step: aj移动的最小步长</span>
-</span><span class="line"><span class="c">######</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">SVM_SMO_train</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Mno</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-</span><span class="line">    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">    <span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="n">Mno</span>
-</span><span class="line">    <span class="n">update_samples_label</span><span class="p">(</span><span class="n">Mno</span><span class="p">)</span>
-</span><span class="line">    <span class="n">init_predict_diff_real_dict</span><span class="p">()</span>
-</span><span class="line">    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class="line">    <span class="k">while</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="n">times</span> <span class="ow">and</span> <span class="n">updated</span><span class="p">:</span>
-</span><span class="line">        <span class="n">updated</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class="line">        <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">            <span class="n">ai</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">            <span class="n">Ei</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">
-</span><span class="line">            <span class="c"># agaist the KKT</span>
-</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">T</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ei</span> <span class="o">&gt;</span> <span class="n">T</span> <span class="ow">and</span> <span class="n">ai</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span class="line">                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)):</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span> <span class="k">continue</span>
-</span><span class="line">                    <span class="n">kii</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">                    <span class="n">kjj</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-</span><span class="line">                    <span class="n">kji</span> <span class="o">=</span> <span class="n">kij</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">cache_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-</span><span class="line">                    <span class="n">eta</span> <span class="o">=</span> <span class="n">kii</span> <span class="o">+</span> <span class="n">kjj</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">kij</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">eta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">continue</span>
-</span><span class="line">                    <span class="n">new_aj</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">eta</span> <span class="c"># f 7.106</span>
-</span><span class="line">                    <span class="n">L</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">                    <span class="n">H</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span class="line">                    <span class="n">a1_old</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class="line">                    <span class="n">a2_old</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">==</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]:</span>
-</span><span class="line">                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">+</span> <span class="n">a1_old</span> <span class="o">-</span> <span class="n">C</span><span class="p">)</span>
-</span><span class="line">                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">+</span> <span class="n">a1_old</span><span class="p">)</span>
-</span><span class="line">                    <span class="k">else</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">L</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a2_old</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span>
-</span><span class="line">                        <span class="n">H</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">C</span> <span class="o">+</span> <span class="n">a2_old</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="n">H</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">H</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">:</span>
-</span><span class="line">                        <span class="n">new_aj</span> <span class="o">=</span> <span class="n">L</span>
-</span><span class="line">                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a2_old</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">step</span><span class="p">:</span>
-</span><span class="line">                        <span class="k">print</span> <span class="s">&quot;j = </span><span class="si">%d</span><span class="s">, is not moving enough&quot;</span> <span class="o">%</span> <span class="n">j</span>
-</span><span class="line">                        <span class="k">continue</span>
-</span><span class="line">
-</span><span class="line">                    <span class="n">new_ai</span> <span class="o">=</span> <span class="n">a1_old</span> <span class="o">+</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">a2_old</span> <span class="o">-</span> <span class="n">new_aj</span><span class="p">)</span> <span class="c"># f 7.109 </span>
-</span><span class="line">                    <span class="n">new_b1</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kii</span> <span class="o">*</span> <span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span> <span class="o">*</span> <span class="n">kji</span> <span class="o">*</span> <span class="p">(</span><span class="n">new_aj</span> <span class="o">-</span> <span class="n">a2_old</span><span class="p">)</span> <span class="c"># f7.115</span>
-</span><span class="line">                    <span class="n">new_b2</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">diff_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">*</span><span class="n">kji</span><span class="o">*</span><span class="p">(</span><span class="n">new_ai</span> <span class="o">-</span> <span class="n">a1_old</span><span class="p">)</span> <span class="o">-</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">*</span><span class="n">kjj</span><span class="o">*</span><span class="p">(</span><span class="n">new_aj</span><span class="o">-</span><span class="n">a2_old</span><span class="p">)</span>    <span class="c"># f7.116</span>
-</span><span class="line">                    <span class="k">if</span> <span class="n">new_ai</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_ai</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b1</span>
-</span><span class="line">                    <span class="k">elif</span> <span class="n">new_aj</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_aj</span> <span class="o">&lt;</span> <span class="n">C</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="n">new_b2</span>
-</span><span class="line">                    <span class="k">else</span><span class="p">:</span> <span class="n">new_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_b1</span> <span class="o">+</span> <span class="n">new_b2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
-</span><span class="line">
-</span><span class="line">                    <span class="n">update_diff_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">new_ai</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">new_aj</span><span class="p">,</span> <span class="n">new_b</span><span class="p">)</span>
-</span><span class="line">                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ai</span>
-</span><span class="line">                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_aj</span>
-</span><span class="line">                    <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">new_b</span>
-</span><span class="line">                    <span class="n">updated</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class="line">                    <span class="k">print</span> <span class="s">&quot;iterate: </span><span class="si">%d</span><span class="s">, changepair: i: </span><span class="si">%d</span><span class="s">, j:</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-</span><span class="line">                    <span class="c">#break</span>
-</span><span class="line">
-</span><span class="line"><span class="c"># 测试数据</span>
-</span><span class="line"><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-</span><span class="line">    <span class="n">recog</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">    <span class="n">recog_correct</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
-</span><span class="line">        <span class="k">print</span> <span class="s">&quot;test for&quot;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">fn</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">mno</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-</span><span class="line">            <span class="n">gv</span><span class="o">.</span><span class="n">cur_mno</span> <span class="o">=</span> <span class="n">mno</span>
-</span><span class="line">            <span class="k">if</span> <span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="line">                <span class="k">print</span> <span class="n">mno</span>
-</span><span class="line">                <span class="k">print</span> <span class="n">img</span><span class="o">.</span><span class="n">fn</span>
-</span><span class="line">                <span class="n">recog</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">                <span class="k">if</span> <span class="n">mno</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-</span><span class="line">                    <span class="n">recog_correct</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">                <span class="k">break</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;recog:&quot;</span><span class="p">,</span> <span class="n">recog</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;recog_correct:&quot;</span><span class="p">,</span> <span class="n">recog_correct</span>
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;total:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">save_models</span><span class="p">():</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-</span><span class="line">        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_a.model&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">:</span>
-</span><span class="line">            <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ai</span><span class="p">))</span>
-</span><span class="line">            <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
-</span><span class="line">        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_b.model&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="n">fn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
-</span><span class="line">        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="k">def</span> <span class="nf">load_models</span><span class="p">():</span>
-</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-</span><span class="line">        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_a.model&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fn</span><span class="p">:</span>
-</span><span class="line">            <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-</span><span class="line">            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class="line">        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">        <span class="n">fn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;models/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;_b.model&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
-</span><span class="line">        <span class="n">gv</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-</span><span class="line">        <span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span class="line">    <span class="n">training</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class="line">    <span class="n">loaddata</span><span class="p">(</span><span class="s">&quot;trainingDigits/&quot;</span><span class="p">,</span> <span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
-</span><span class="line">    <span class="n">loaddata</span><span class="p">(</span><span class="s">&quot;testDigits/&quot;</span><span class="p">,</span> <span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
-</span><span class="line">    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span>
-</span><span class="line">    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">gv</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">if</span> <span class="n">training</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class="line">        <span class="n">gv</span><span class="o">.</span><span class="n">init_cache_kernel</span><span class="p">()</span>
-</span><span class="line">    <span class="n">gv</span><span class="o">.</span><span class="n">init_models</span><span class="p">()</span>
-</span><span class="line">
-</span><span class="line">    <span class="k">print</span> <span class="s">&quot;init_models done&quot;</span>
-</span><span class="line">
-</span><span class="line">    <span class="n">T</span> <span class="o">=</span> <span class="mf">0.0001</span>
-</span><span class="line">    <span class="n">C</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class="line">    <span class="n">step</span> <span class="o">=</span> <span class="mf">0.0001</span>
-</span><span class="line">    <span class="n">gv</span><span class="o">.</span><span class="n">RBF_dlt</span> <span class="o">=</span> <span class="mi">8</span>
-</span><span class="line">    <span class="k">if</span> <span class="n">training</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-</span><span class="line">            <span class="k">print</span> <span class="s">&quot;traning model no:&quot;</span><span class="p">,</span> <span class="n">i</span>
-</span><span class="line">            <span class="n">SVM_SMO_train</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-</span><span class="line">        <span class="n">save_models</span><span class="p">()</span>
-</span><span class="line">    <span class="k">else</span><span class="p">:</span>
-</span><span class="line">        <span class="n">load_models</span><span class="p">()</span>
-</span><span class="line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-</span><span class="line">            <span class="n">update_samples_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span class="line">    <span class="n">test</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>训练数据一共是1934个，测试数据是946，一共是识别出来了914个，其中有911个识别正确。运行结果的截图如下：</p>
-
-<p><img class="center" src="http://liuhongjiang.github.com/tech/images/blogimages/2012/svm-ocr/ocr_test_output.jpg" /></p>
-
-<p>在实现的过程中，第一个版本效率很低，主要是做了两个地方的改进，一是，缓存了核函数的运算结果，二是，计算预测值的与真实值之差$E_i$，改用增量变化的方式，即每次只计算出$new\_a_i$, $new\_a_j$对$E_i$的改变量。
-同样一开始，还有识别率低的问题，主要通过配置精度，惩罚系数，$a_i$改变最小步长，这三个参数来提高识别率。但还是对高斯核函数的径向基函数的宽度$\delta$的调整最有效果，针对本例最优情况是当$\delta=10$左右。</p>
-
-<h2 id="section-5">不足</h2>
-
-<p>本文实现的例子，还有很多不足之处:</p>
-
-<ol>
-  <li>样本数据的偏移，训练时，正负样本的数量应该是相当的。本文中的例子，负样本是正样本的9倍。</li>
-  <li>高斯径向基函数的宽度，没有经过训练</li>
-  <li>选择第二个变量时，本文使用的是遍历方式，也可以改成寻找改变量最大的第二个参数，具体<a href="http://book.douban.com/subject/10590856/">《统计学习方法》</a>的P129</li>
-  <li>核函数计算时，效率比较低，主要影响测试分类时的速度，如果能用到位运算，应该效率会高很多。</li>
-</ol>
-
-<p>其实上面的情况都还可以慢慢改进，最大的坑还是训练的时间太长了，我在虚拟机上装的ubuntu server运行的脚本，训练数据接近2000个，测试数据1000个，总共可能花了4个小时左右，时间太长。我之前的同事实现的ocr是居于online learing的，那么我们下一篇blog也来实现一个online learning的数字手写ocr，与今天这个对比一下。</p>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>主要参考了：<a href="http://www.blogjava.net/zhenandaci/archive/2009/03/26/262113.html">SVM入门（十）将SVM用于多类分类</a>。<a href="#fnref:1" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p>张翔，肖小玲，徐光祐，一种确定高斯核模型参数的新方法，计算机工程，第33卷，第12期，2007年6月。<a href="#fnref:2" rel="reference">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   
