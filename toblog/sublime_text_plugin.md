@@ -24,3 +24,8 @@ The only configuration option is plugin_debugger_python, which can be set in you
 I recommend using Preferences Editor to set it ;) .
 
 我安装的sublime text 3，所以我只有在下载一个python 27，并且安装了winpdb这个插件。
+
+winpdp依赖wxPython这个库，所以还需要安装这个库。通过官网下载即可。http://www.wxpython.org/download.php
+
+用sublime2？
+配置："plugin_debugger_python": "C:\\Python27\\python.exe" ？
