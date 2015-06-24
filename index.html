@@ -9,7 +9,8 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content=" 跨平台的情况下，windows和unix的换行符谁不一样的。这个和git结合起来的时候有点烦哈。 如何将git的所有crlf文件转换成lf格式 将git库中的crlf转换为lf 下面这个脚本可以将库中的所有文件中的crlf去掉 ">
+  <meta name="description" content="没什么内容，慎看。 how to write a Greasemonkey script
+Greasemonkey是火狐下面的一个扩展应用，通过它安装一些用户自定义的脚本，这脚本可以在浏览器运行的时候，对网页进行实时的改变。在chrome上也有一个对应的插件Tampermonkey。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -162,6 +163,71 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tech/blog/2015/06/24/greasemonkey-script/">Greasemonkey Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-24T09:34:00+08:00" pubdate data-updated="true">Jun 24<span>th</span>, 2015</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/javascript/'>javascript</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=greasemonkey script - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/24/greasemonkey-script/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=greasemonkey script - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/24/greasemonkey-script/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=greasemonkey script  - &amp;url=http://liuhongjiang.github.com/tech/blog/2015/06/24/greasemonkey-script/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>没什么内容，慎看。</p>
+
+<h2 id="how-to-write-a-greasemonkey-script">how to write a Greasemonkey script</h2>
+<p>Greasemonkey是火狐下面的一个扩展应用，通过它安装一些用户自定义的脚本，这脚本可以在浏览器运行的时候，对网页进行实时的改变。在chrome上也有一个对应的插件Tampermonkey。
+这个工具很强大，我们可以添加自己脚本，来年完成一些我们自己想要完成的功能。</p>
+
+<p>下面用给一个例子来介绍写这个脚本相关的知识。</p>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2015/06/24/greasemonkey-script/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -784,66 +850,6 @@ Basically, I learnt from this page:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/tech/blog/2014/05/16/rules/">规则</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-16T14:41:00+08:00" pubdate data-updated="true">May 16<span>th</span>, 2014</time>
-        
-		
-        
-        <span class="share-to-weibo">
-  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
-  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=规则 - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
-  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=规则  - &amp;url=http://liuhongjiang.github.com/tech/blog/2014/05/16/rules/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
-</span>
- 
-      </p>
-    
-  </header>
-
-
-    <div class="entry-content">
-        
-        <p>这篇博文是由两个问题想到的。</p>
-
-<p>一是火车票实名制后，但是仍然还是有黄牛党倒票。倒票的手法是，先用几百张身份证抢下火车票，然后联系买主，联系到买主后，在乘车时间的前一两天，在一个窗口退票，另外一个窗口买票，一退票后系统上显示有一张鱼票后，马上买入。虽然理论上还是有被其它人抢走，失手的可能，但由于该车次的票早早就买光了，临开车的前1、2天，很少会有人去查询，所以还是比较安全的。
-针对这种倒票方式，设置怎样的规则杜绝呢？首先一个方法就是，退掉的票，半个小时后才能买入。这样就可以增加退掉的票被被人抢走的可能性。开车前半个小时，退掉的票可以立马买进。这样就讲黄牛党的倒票时间窗口缩短到了开车前半个小时。
-复杂的规则，就还有调查哪些身份证存在大量这种买了票后，又退票的行为，并加以惩罚。例如半年内不能买车票，或在春运期间不能买火车票。但这里有个风险，就是如果黄牛党用假身份证买票，那么这条规则就会伤及到真身份证的那个无辜的人。</p>
-
-<p>第二个问题是成都的公交车票，有两种，一种是电子钱包，就是充一定数量的钱，这个钱永远在卡里，一直可以用，主要目的是方便，不用每次乘公交都要准备零钱，而且还打9折。
-还有一种是次卡，就是用前买一定数量的乘车次数，相当于打5折，而且用次卡乘车，2个小时内免费换乘公交车3次。而电子钱包换乘的时候，是要再次给钱的。对于我们这些上班族，每天上班要换乘几次的，非常划算。
-但次卡有个规定，买的次数是当月有效的，一到下个月，无论你买了多少次，就作废了。我想公交公司是想用这种方式，吃点别人多充次数的油头。最开始的时候，次卡只能10块钱的倍数买，后来大家反对，于是可以1块钱的倍数买。乘公交用次卡的最低单位也是1块钱，所以基本上，公交公司就没有什么油头了。</p>
-
-
-    </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/tech/blog/2014/05/16/rules/">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/tech/blog/page/2/">&larr; Older</a>
@@ -865,6 +871,10 @@ Basically, I learnt from this page:
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/06/24/greasemonkey-script/">greasemonkey script</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/06/05/git-crlf/">git crlf</a>
       </li>
     
@@ -880,15 +890,11 @@ Basically, I learnt from this page:
         <a href="/tech/blog/2015/05/13/sqlite/">sqlite</a>
       </li>
     
-      <li class="post">
-        <a href="/tech/blog/2015/05/09/git-tips/">git tips</a>
-      </li>
-    
   </ul>
 </section>
 <section id="tag-clouds">
   <h1>分类</h1>
-    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 124.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 112.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 136.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 112.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 112.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(5)</a> <a href='/tech/blog/categories/language' style='font-size: 112.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 112.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 148.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 112.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 124.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 112.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 112.0%'>Vi(1)</a> </span>
+    <span class="tag-cloud"><a href='/tech/blog/categories/3rd-nbsp-tools' style='font-size: 124.0%'>3rd&nbsp;tools(2)</a> <a href='/tech/blog/categories/algorithm' style='font-size: 112.0%'>Algorithm(1)</a> <a href='/tech/blog/categories/c-c-' style='font-size: 136.0%'>C/C++(3)</a> <a href='/tech/blog/categories/data-nbsp-structure' style='font-size: 112.0%'>Data&nbsp;structure(1)</a> <a href='/tech/blog/categories/fuck-nbsp-gfw' style='font-size: 112.0%'>Fuck&nbsp;GFW(1)</a> <a href='/tech/blog/categories/git' style='font-size: 160.0%'>git(5)</a> <a href='/tech/blog/categories/javascript' style='font-size: 112.0%'>javascript(1)</a> <a href='/tech/blog/categories/language' style='font-size: 112.0%'>Language(1)</a> <a href='/tech/blog/categories/linux' style='font-size: 112.0%'>linux(1)</a> <a href='/tech/blog/categories/machine-nbsp-learning' style='font-size: 148.0%'>Machine&nbsp;Learning(4)</a> <a href='/tech/blog/categories/math' style='font-size: 112.0%'>math(1)</a> <a href='/tech/blog/categories/octopress' style='font-size: 124.0%'>octopress(2)</a> <a href='/tech/blog/categories/sqlite' style='font-size: 112.0%'>sqlite(1)</a> <a href='/tech/blog/categories/vi' style='font-size: 112.0%'>Vi(1)</a> </span>
 </section>
 <section>
   <h1>友情链接</h1>

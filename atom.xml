@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-06-19T09:53:57+08:00</updated>
+  <updated>2015-06-24T09:55:45+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,1081 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[greasemonkey script]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/06/24/greasemonkey-script/"/>
+    <updated>2015-06-24T09:34:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/06/24/greasemonkey-script</id>
+    <content type="html"><![CDATA[<p>没什么内容，慎看。</p>
+
+<h2 id="how-to-write-a-greasemonkey-script">how to write a Greasemonkey script</h2>
+<p>Greasemonkey是火狐下面的一个扩展应用，通过它安装一些用户自定义的脚本，这脚本可以在浏览器运行的时候，对网页进行实时的改变。在chrome上也有一个对应的插件Tampermonkey。
+这个工具很强大，我们可以添加自己脚本，来年完成一些我们自己想要完成的功能。</p>
+
+<p>下面用给一个例子来介绍写这个脚本相关的知识。</p>
+
+<!--more-->
+
+<h2 id="metadata-block">Metadata Block</h2>
+<p>我在chrome上使用的是Tampermonkey的插件。先创建一个新的脚本。新脚本的内容如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// ==UserScript==</span>
+</span><span class="line"><span class="c1">// @name         My Fancy New Userscript</span>
+</span><span class="line"><span class="c1">// @namespace    http://your.homepage/</span>
+</span><span class="line"><span class="c1">// @version      0.1</span>
+</span><span class="line"><span class="c1">// @description  enter something useful</span>
+</span><span class="line"><span class="c1">// @author       You</span>
+</span><span class="line"><span class="c1">// @match        http://www.webmonkey.com/2010/02/get_started_with_greasemonkey/</span>
+</span><span class="line"><span class="c1">// @grant        none</span>
+</span><span class="line"><span class="c1">// ==/UserScript==</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这个部分就是脚本的metadata部分，关于各个字段的定义，可以参考这里
+http://wiki.greasespot.net/Metadata_Block</p>
+
+<p>下面是一些比较重要的字段的介绍</p>
+
+<ul>
+  <li>@include和@exclude，这两个字段用于匹配脚本作用的url，如果没有定义@include，那么将会匹配所有的url。参考：http://wiki.greasespot.net/Include_and_exclude_rules。同时这两个字段还支持正则表达式的匹配。</li>
+  <li>@match字段与@include字段类似的。在匹配<code>*</code>但它更为安全，对于匹配更加细致的规则，chrome先实现的是@match。参考https://developer.chrome.com/extensions/match_patterns</li>
+  <li>@namespace和@name字段，可保证相同@namespace和@name下的不同版本的脚本，只有一个被安装。</li>
+  <li>@run-at，用于控制脚本运行的时机，有两个可选值： document-end and document-start.</li>
+  <li>@updateURL， 用于脚本的升级，如果版本更新，脚本会提示用户是否升级。</li>
+  <li>@require，下载需要的脚本，在安装greasescript的时候，一起下载和安装。所以只会下载一次</li>
+</ul>
+
+<h2 id="implement-your-code">implement your code</h2>
+
+<p>在实现你的脚本的功能的时候，可以使用原生的js，也可以使用jquery等工具。使用@require关键字。参考<a href="http://stackoverflow.com/questions/859024/how-can-i-use-jquery-in-greasemonkey">How can I use jQuery in Greasemonkey?</a></p>
+
+<p>可以参考以下的一些资料。
+例如：
+<a href="http://commons.oreilly.com/wiki/index.php/Greasemonkey_Hacks/Getting_Started#Pitfall_.231:_Auto-eval_Strings">Avoid Common Pitfalls in Greasemonkey</a>
+中提到的使用addEventListener。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line">  <span class="kd">var</span> <span class="nx">elmLink</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;somelink&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">elmLink</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="nx">my_func</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><a href="http://commons.oreilly.com/wiki/index.php/Greasemonkey_Hacks/Getting_Started#Avoid_Common_Pitfalls">Common Pitfalls</a></p>
+
+<h2 id="section">例子</h2>
+
+<p><a href="http://userscripts-mirror.org/scripts/review/292083">highlight text</a></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+<span class="line-number">126</span>
+<span class="line-number">127</span>
+<span class="line-number">128</span>
+<span class="line-number">129</span>
+<span class="line-number">130</span>
+<span class="line-number">131</span>
+<span class="line-number">132</span>
+<span class="line-number">133</span>
+<span class="line-number">134</span>
+<span class="line-number">135</span>
+<span class="line-number">136</span>
+<span class="line-number">137</span>
+<span class="line-number">138</span>
+<span class="line-number">139</span>
+<span class="line-number">140</span>
+<span class="line-number">141</span>
+<span class="line-number">142</span>
+<span class="line-number">143</span>
+<span class="line-number">144</span>
+<span class="line-number">145</span>
+<span class="line-number">146</span>
+<span class="line-number">147</span>
+<span class="line-number">148</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// ==UserScript==</span>
+</span><span class="line"><span class="c1">// @name          Text Highlighter</span>
+</span><span class="line"><span class="c1">// @namespace     erosman</span>
+</span><span class="line"><span class="c1">// @description   Highlights User-defined Text</span>
+</span><span class="line"><span class="c1">// @updateURL     https://userscripts.org/scripts/source/292083.meta.js</span>
+</span><span class="line"><span class="c1">// @downloadURL   https://userscripts.org/scripts/source/292083.user.js</span>
+</span><span class="line"><span class="c1">// @exclude       *</span>
+</span><span class="line"><span class="c1">// @grant         GM_registerMenuCommand</span>
+</span><span class="line"><span class="c1">// @grant         GM_setValue</span>
+</span><span class="line"><span class="c1">// @grant         GM_getValue</span>
+</span><span class="line"><span class="c1">// @author        erosman</span>
+</span><span class="line"><span class="c1">// @version       1.7</span>
+</span><span class="line"><span class="c1">// ==/UserScript==</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/* --------- Note ---------</span>
+</span><span class="line"><span class="cm">  This script highlights User-defined case-insensitive Text on a page.</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  It can run on any page but that adds unnecessary load to your computer.</span>
+</span><span class="line"><span class="cm">  I have set it not to run on any page for now</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  Go to Add-ons - User Scripts (&#39;Ctrl+ Shift + a&#39; on Firefox)</span>
+</span><span class="line"><span class="cm">  Click on the Script&#39;s Option</span>
+</span><span class="line"><span class="cm">  Under User Settings Tab, Add Included/Excluded Pages that you want the script to run on</span>
+</span><span class="line"><span class="cm">  Click OK</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  Setting Keywords &amp; Highlight Style:</span>
+</span><span class="line"><span class="cm">  Click on GreaseMonkey Icon</span>
+</span><span class="line"><span class="cm">  User Scripts Commands...</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">      Set Keywords</span>
+</span><span class="line"><span class="cm">      Input keywords separated by comma</span>
+</span><span class="line"><span class="cm">      Example: word 1,word 2,word 3</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">      Set Highlight Style</span>
+</span><span class="line"><span class="cm">      Input the Highlight Style (use proper CSS)</span>
+</span><span class="line"><span class="cm">      Example: color: #f00; font-weight: bold; background-color: #ffe4b5;</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  Note: If you find that another script clashes with this script, set Text Highlighter to Execute first.</span>
+</span><span class="line"><span class="cm">  Go to Add-ons - User Scripts (&#39;Ctrl+ Shift + a&#39; on Firefox)</span>
+</span><span class="line"><span class="cm">  Right Click on the Script</span>
+</span><span class="line"><span class="cm">  On the context menu click: Execute first</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  On Add-ons - User Scripts, you can also Click on the Execution Order (top Right) and</span>
+</span><span class="line"><span class="cm">  change the execution order so that Text Highlighter runs before those scripts that clashes with it.</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="cm">  --------- History ---------</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">  1.7 Changed script from matching whole words to do partial word match </span>
+</span><span class="line"><span class="cm">      similar to browser&#39;s FIND + escaped RegEx Quantifiers in keywords</span>
+</span><span class="line"><span class="cm">  1.6 Code Improvement, using test()</span>
+</span><span class="line"><span class="cm">  1.5 Code Improvement</span>
+</span><span class="line"><span class="cm">  1.4 Code Improvement + Added support for non-English Words</span>
+</span><span class="line"><span class="cm">  1.3 Code Improvement, 10x speed increase</span>
+</span><span class="line"><span class="cm">  1.2 Added User Script Commands, script can now be auto-updated without losing User Data</span>
+</span><span class="line"><span class="cm">  1.1 Total Code rewrite, Xpath pattern</span>
+</span><span class="line"><span class="cm">  1.0 Initial release</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">*/</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// anonymous function wrapper, used for error checking &amp; limiting scope</span>
+</span><span class="line">    <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">self</span> <span class="o">!==</span> <span class="nb">window</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="c1">// end execution if in a frame</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// setting User Preferences</span>
+</span><span class="line">    <span class="kd">function</span> <span class="nx">setUserPref</span><span class="p">(</span><span class="nx">varName</span><span class="p">,</span> <span class="nx">defaultVal</span><span class="p">,</span> <span class="nx">menuText</span><span class="p">,</span> <span class="nx">promtText</span><span class="p">,</span> <span class="nx">sep</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">GM_registerMenuCommand</span><span class="p">(</span><span class="nx">menuText</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">prompt</span><span class="p">(</span><span class="nx">promtText</span><span class="p">,</span> <span class="nx">GM_getValue</span><span class="p">(</span><span class="nx">varName</span><span class="p">,</span> <span class="nx">defaultVal</span><span class="p">));</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="nx">val</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                <span class="k">return</span><span class="p">;</span>
+</span><span class="line">            <span class="p">}</span> <span class="c1">// end execution if clicked CANCEL</span>
+</span><span class="line">
+</span><span class="line">            <span class="c1">// prepare string of variables separated by the separator</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="nx">sep</span> <span class="o">&amp;&amp;</span> <span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                <span class="kd">var</span> <span class="nx">pat1</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;\\s*&#39;</span> <span class="o">+</span> <span class="nx">sep</span> <span class="o">+</span> <span class="s1">&#39;+\\s*&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">);</span> <span class="c1">// trim space/s around separator &amp; trim repeated separator</span>
+</span><span class="line">                <span class="kd">var</span> <span class="nx">pat2</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;(?:^&#39;</span> <span class="o">+</span> <span class="nx">sep</span> <span class="o">+</span> <span class="s1">&#39;+|&#39;</span> <span class="o">+</span> <span class="nx">sep</span> <span class="o">+</span> <span class="s1">&#39;+$)&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">);</span> <span class="c1">// trim starting &amp; trailing separator</span>
+</span><span class="line">
+</span><span class="line">                <span class="nx">val</span> <span class="o">=</span> <span class="nx">val</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">pat1</span><span class="p">,</span> <span class="nx">sep</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="nx">pat2</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">            <span class="nx">val</span> <span class="o">=</span> <span class="nx">val</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\s{2,}/g</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">).</span><span class="nx">trim</span><span class="p">();</span> <span class="c1">// remove multiple spaces and trim</span>
+</span><span class="line">            <span class="nx">GM_setValue</span><span class="p">(</span><span class="nx">varName</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span> <span class="c1">// reload the page with the new changes</span>
+</span><span class="line">        <span class="p">});</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// prepare UserPrefs</span>
+</span><span class="line">    <span class="nx">setUserPref</span><span class="p">(</span>
+</span><span class="line">        <span class="s1">&#39;keywords&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;word 1,word 2,word 3&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;Set Keywords&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;Set keywords separated by comma\t\t\t\t\t\t\t\r\n\r\nExample:\r\nword 1,word 2,word 3&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;,&#39;</span>
+</span><span class="line">    <span class="p">);</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">    <span class="nx">setUserPref</span><span class="p">(</span>
+</span><span class="line">        <span class="s1">&#39;highlightStyle&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;color: #f00; background-color: #ffebcd;&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;Set Highlight Style&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="s1">&#39;Set the Highlight Style (use proper CSS)\r\n\r\nExample:\r\ncolor: #f00; font-weight: bold; background-color: #ffe4b5;&#39;</span>
+</span><span class="line">    <span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">highlightStyle</span> <span class="o">=</span> <span class="nx">GM_getValue</span><span class="p">(</span><span class="s1">&#39;highlightStyle&#39;</span><span class="p">);</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">keywords</span> <span class="o">=</span> <span class="nx">GM_getValue</span><span class="p">(</span><span class="s1">&#39;keywords&#39;</span><span class="p">);</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">keywords</span> <span class="o">||</span> <span class="o">!</span><span class="nx">highlightStyle</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="c1">// end execution if not found</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">rQuantifiers</span> <span class="o">=</span> <span class="sr">/[-\/\\^$*+?.()|[\]{}]/g</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">keywords</span> <span class="o">=</span> <span class="nx">keywords</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">rQuantifiers</span><span class="p">,</span> <span class="s1">&#39;\\$&amp;&#39;</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">);</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">pat</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="nx">keywords</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;gi&#39;</span><span class="p">);</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">span</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// getting all text nodes with a few exceptions</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">snapElements</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span>
+</span><span class="line">        <span class="s1">&#39;.//text()[normalize-space() != &quot;&quot; &#39;</span> <span class="o">+</span>
+</span><span class="line">        <span class="s1">&#39;and not(ancestor::style) &#39;</span> <span class="o">+</span>
+</span><span class="line">        <span class="s1">&#39;and not(ancestor::script) &#39;</span> <span class="o">+</span>
+</span><span class="line">        <span class="s1">&#39;and not(ancestor::textarea) &#39;</span> <span class="o">+</span>
+</span><span class="line">        <span class="s1">&#39;and not(ancestor::code) &#39;</span> <span class="o">+</span>
+</span><span class="line">        <span class="s1">&#39;and not(ancestor::pre)]&#39;</span><span class="p">,</span>
+</span><span class="line">        <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">XPathResult</span><span class="p">.</span><span class="nx">UNORDERED_NODE_SNAPSHOT_TYPE</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">snapElements</span><span class="p">.</span><span class="nx">snapshotItem</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="c1">// end execution if not found</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">snapElements</span><span class="p">.</span><span class="nx">snapshotLength</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="nx">snapElements</span><span class="p">.</span><span class="nx">snapshotItem</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">// check if it contains the keywords</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">pat</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="c1">// create an element, replace the text node with an element</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">sp</span> <span class="o">=</span> <span class="nx">span</span><span class="p">.</span><span class="nx">cloneNode</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">sp</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">pat</span><span class="p">,</span> <span class="s1">&#39;&lt;span style=&quot;&#39;</span> <span class="o">+</span> <span class="nx">highlightStyle</span> <span class="o">+</span> <span class="s1">&#39;&quot;&gt;$1&lt;/span&gt;&#39;</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">node</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">replaceChild</span><span class="p">(</span><span class="nx">sp</span><span class="p">,</span> <span class="nx">node</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>highlight of a given text</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">Well</span><span class="p">,</span> <span class="nx">you</span> <span class="nx">can</span> <span class="nx">definitely</span> <span class="k">do</span> <span class="k">this</span> <span class="k">in</span> <span class="nx">Greasemonkey</span><span class="p">.</span> <span class="nx">As</span> <span class="nx">far</span> <span class="nx">as</span> <span class="nx">I</span> <span class="nx">know</span><span class="p">,</span> <span class="nx">Stylish</span> <span class="nx">is</span> <span class="nx">just</span> <span class="nx">a</span> <span class="nx">CSS</span> <span class="nx">manager</span><span class="p">,</span> <span class="nx">and</span> <span class="nx">can</span> <span class="nx">not</span> <span class="k">do</span> <span class="k">this</span><span class="p">.</span> <span class="nx">I</span> <span class="nx">made</span> <span class="nx">a</span> <span class="nx">Greasemonkey</span> <span class="nx">user</span> <span class="nx">script</span> <span class="nx">does</span> <span class="nx">a</span> <span class="nx">general</span> <span class="nx">highlight</span> <span class="nx">of</span> <span class="nx">a</span> <span class="nx">given</span> <span class="nx">text</span><span class="p">.</span> <span class="nx">The</span> <span class="nx">version</span> <span class="nx">below</span> <span class="nx">runs</span> <span class="nx">on</span> <span class="nx">YA</span><span class="p">,</span> <span class="nx">and</span> <span class="nx">highlights</span> <span class="nx">instances</span> <span class="nx">of</span> <span class="s2">&quot;&quot;</span> <span class="k">in</span> <span class="nx">blue</span><span class="p">.</span> <span class="o">:</span><span class="p">)</span> <span class="nx">You</span> <span class="nx">can</span> <span class="nx">obviously</span> <span class="nx">configure</span> <span class="nx">it</span> <span class="nx">to</span> <span class="nx">suit</span> <span class="nx">your</span> <span class="nx">needs</span><span class="p">.</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">Also</span> <span class="nx">note</span> <span class="nx">there</span> <span class="nx">may</span> <span class="nx">be</span> <span class="nx">bugs</span><span class="p">.</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/* Copyright (C) 2007 Matthew Flaschen &lt;matthew DOT flaschen AT gatech DOT edu&gt; </span>
+</span><span class="line">
+</span><span class="line"><span class="cm">This program is free software; you can redistribute it and/or modify </span>
+</span><span class="line"><span class="cm">it under the terms of the GNU General Public License as published by </span>
+</span><span class="line"><span class="cm">the Free Software Foundation; either version 2 of the License, or </span>
+</span><span class="line"><span class="cm">(at your option) any later version. </span>
+</span><span class="line">
+</span><span class="line"><span class="cm">This program is distributed in the hope that it will be useful, </span>
+</span><span class="line"><span class="cm">but WITHOUT ANY WARRANTY; without even the implied warranty of </span>
+</span><span class="line"><span class="cm">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the </span>
+</span><span class="line"><span class="cm">GNU General Public License for more details. </span>
+</span><span class="line">
+</span><span class="line"><span class="cm">You should have received a copy of the GNU General Public License along </span>
+</span><span class="line"><span class="cm">with this program; if not, write to the Free Software Foundation, Inc., </span>
+</span><span class="line"><span class="cm">51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. </span>
+</span><span class="line">
+</span><span class="line"><span class="cm">The GPL is also available at http://www.gnu.org/copyleft/gpl.html </span>
+</span><span class="line"><span class="cm">*/</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">var</span> <span class="nx">TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">COLOR</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">var</span> <span class="nx">allText</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span> <span class="s2">&quot;//text()[contains(., &#39;&quot;</span> <span class="o">+</span> <span class="nx">TEXT</span> <span class="o">+</span> <span class="s2">&quot;&#39; )]&quot;</span><span class="p">,</span> <span class="nb">document</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">XPathResult</span><span class="p">.</span> <span class="nx">ORDERED_NODE_SNAPSHOT_TYPE</span> <span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">allText</span><span class="p">.</span><span class="nx">snapshotLength</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">cur</span> <span class="o">=</span> <span class="nx">allText</span><span class="p">.</span><span class="nx">snapshotItem</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">par</span> <span class="o">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">textInd</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">curName</span> <span class="o">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">nodeName</span><span class="p">;</span>
+</span><span class="line">    <span class="k">do</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">curText</span> <span class="o">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+</span><span class="line">        <span class="nx">GM_log</span><span class="p">(</span><span class="s2">&quot;curText: &quot;</span> <span class="o">+</span> <span class="nx">curText</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">textInd</span> <span class="o">=</span> <span class="nx">curText</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">TEXT</span><span class="p">);</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">textInd</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">before</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">curText</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">textInd</span><span class="p">));</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">highlight</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">highlight</span><span class="p">.</span><span class="kr">class</span> <span class="o">=</span> <span class="s2">&quot;highlight&quot;</span><span class="p">;</span>
+</span><span class="line">            <span class="nx">highlight</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">TEXT</span><span class="p">;</span>
+</span><span class="line">            <span class="nx">highlight</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="nx">COLOR</span><span class="p">;</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">after</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">curText</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">textInd</span> <span class="o">+</span> <span class="nx">TEXT</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class="line">            <span class="nx">par</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">before</span><span class="p">,</span> <span class="nx">cur</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">par</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">highlight</span><span class="p">,</span> <span class="nx">cur</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">par</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">after</span><span class="p">,</span> <span class="nx">cur</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">par</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">cur</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">cur</span> <span class="o">=</span> <span class="nx">after</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="nx">textInd</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><a href="http://userscripts-mirror.org/scripts/review/2254">linkify ting</a></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// This script looks for any thing of the form</span>
+</span><span class="line"><span class="c1">// [something not blank][a dot][something not blank], </span>
+</span><span class="line"><span class="c1">// then matches that which comes after the dot - and possibly before a slash - </span>
+</span><span class="line"><span class="c1">// with a list of know extensions, such as com, us, net etc. </span>
+</span><span class="line"><span class="c1">// If it has such an extension, it is turned into a link. </span>
+</span><span class="line"><span class="c1">// This way the script attempts to catch links like</span>
+</span><span class="line"><span class="c1">// google.com and userscripts.org/tag/link.</span>
+</span><span class="line"><span class="c1">// Because the script looks up extensions in a list, </span>
+</span><span class="line"><span class="c1">// you might want to alter the list (lovligeEndelser) to fit your needs. </span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// The script is borrows a bit from the ÂLinkify PlusÂ script </span>
+</span><span class="line"><span class="c1">// (especially the parent not a | head | etc -  thing). And therefore the following </span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">//- - - </span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// Loosely based on the Linkify script located at:</span>
+</span><span class="line"><span class="c1">//   http://downloads.mozdev.org/greasemonkey/linkify.user.js</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// Originally written by Anthony Lieuallen of http://www.arantius.com/</span>
+</span><span class="line"><span class="c1">// Licensed for unlimited modification and redistribution as long as</span>
+</span><span class="line"><span class="c1">// this notice is kept intact.</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// If possible, please contact me regarding new features, bugfixes</span>
+</span><span class="line"><span class="c1">// or changes that I could integrate into the existing code instead of</span>
+</span><span class="line"><span class="c1">// creating a different script.  Thank you</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">//- - -</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// for my sake you may do what you want with the script, </span>
+</span><span class="line"><span class="c1">// but you should keep the notice by Anthony Lieuallen</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// adam</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// ==UserScript==</span>
+</span><span class="line"><span class="c1">// @name          Linkify ting</span>
+</span><span class="line"><span class="c1">// @namespace     http://ergosum.frac.dk/user/</span>
+</span><span class="line"><span class="c1">// @description   Turn plain text links into real clikable links. Attempts to catch links like google.com</span>
+</span><span class="line"><span class="c1">// @include       *</span>
+</span><span class="line"><span class="c1">// @exclude       http://*.google.*/*</span>
+</span><span class="line"><span class="c1">// ==/UserScript==</span>
+</span><span class="line"><span class="k">try</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">//dk|com|net|org|se|no|nl|us|uk|de|it|nu|edu|info</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/\b(http:\/\/|shttp:\/\/){0,1}(\w(\w|-)+\.)+(dk|com|net|org|se|no|nl|us|uk|de|it|nu|edu|info)(\/\w*)*(\.\w{2,4}){0,1}(\?\w*|#\w*|&amp;\w*)*\b/gi</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">altText</span><span class="p">,</span> <span class="nx">tekst</span><span class="p">,</span> <span class="nx">muligtLink</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">ikkeTilladteTags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;textarea&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">];</span> <span class="c1">//tags, hvor det der stÃ¥r inden i ikke skal vÃ¦re links</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="s2">&quot;//text()[not(parent::&quot;</span> <span class="o">+</span> <span class="nx">ikkeTilladteTags</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; or parent::&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)]&quot;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="nx">altText</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nb">document</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">XPathResult</span><span class="p">.</span><span class="nx">UNORDERED_NODE_SNAPSHOT_TYPE</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">altText</span><span class="p">.</span><span class="nx">snapshotLength</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">tekst</span> <span class="o">=</span> <span class="nx">altText</span><span class="p">.</span><span class="nx">snapshotItem</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">muligtLink</span> <span class="o">=</span> <span class="nx">tekst</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">muligtLink</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">
+</span><span class="line">            <span class="c1">//til at holde det nye link, og teksten omkring det</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">span</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">);</span>
+</span><span class="line">            <span class="c1">//tekst.parentNode.replaceChild(span, tekst);</span>
+</span><span class="line">            <span class="c1">//alert(&quot;parent:&quot; + span.parentNode);</span>
+</span><span class="line">
+</span><span class="line">            <span class="kd">var</span> <span class="nx">lastLastIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">            <span class="nx">regex</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">            <span class="k">for</span> <span class="p">(</span><span class="nx">myArray</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">muligtLink</span><span class="p">);)</span> <span class="p">{</span>
+</span><span class="line">                <span class="c1">//vores match gemmes</span>
+</span><span class="line">                <span class="kd">var</span> <span class="nx">link</span> <span class="o">=</span> <span class="nx">myArray</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class="line">
+</span><span class="line">                <span class="c1">//alert(&quot;har fundet dette link: &quot; + link);</span>
+</span><span class="line">
+</span><span class="line">                <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">muligtLink</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastLastIndex</span><span class="p">,</span> <span class="nx">myArray</span><span class="p">.</span><span class="nx">index</span><span class="p">)));</span> <span class="c1">//indsæt det der kommer før dette hit</span>
+</span><span class="line">
+</span><span class="line">                <span class="kd">var</span> <span class="nx">href</span> <span class="o">=</span> <span class="nx">link</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">                <span class="c1">//sætter http:// foran href, hvis der ikke er det</span>
+</span><span class="line">                <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class="line">                <span class="k">if</span> <span class="p">(</span><span class="nx">href</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">7</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                    <span class="nx">prefix</span> <span class="o">=</span> <span class="nx">href</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+</span><span class="line">                <span class="p">}</span>
+</span><span class="line">                <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                    <span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span> <span class="o">+</span> <span class="nx">href</span><span class="p">;</span>
+</span><span class="line">                <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">                <span class="c1">//skab vores link:</span>
+</span><span class="line">                <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+</span><span class="line">                <span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="nx">href</span><span class="p">);</span> <span class="c1">//giv det en href</span>
+</span><span class="line">                <span class="nx">a</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">link</span><span class="p">));</span> <span class="c1">//linkteksten</span>
+</span><span class="line">                <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">//sætter ind i span</span>
+</span><span class="line">
+</span><span class="line">                <span class="nx">lastLastIndex</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">lastIndex</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">            <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">muligtLink</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">lastLastIndex</span><span class="p">)));</span> <span class="c1">//insæt det der kommer efter sidste hit</span>
+</span><span class="line">            <span class="nx">tekst</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">replaceChild</span><span class="p">(</span><span class="nx">span</span><span class="p">,</span> <span class="nx">tekst</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><a href="https://greasyfork.org/en/scripts/2709-linkify-plus/code">linkify-plus</a></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+<span class="line-number">111</span>
+<span class="line-number">112</span>
+<span class="line-number">113</span>
+<span class="line-number">114</span>
+<span class="line-number">115</span>
+<span class="line-number">116</span>
+<span class="line-number">117</span>
+<span class="line-number">118</span>
+<span class="line-number">119</span>
+<span class="line-number">120</span>
+<span class="line-number">121</span>
+<span class="line-number">122</span>
+<span class="line-number">123</span>
+<span class="line-number">124</span>
+<span class="line-number">125</span>
+<span class="line-number">126</span>
+<span class="line-number">127</span>
+<span class="line-number">128</span>
+<span class="line-number">129</span>
+<span class="line-number">130</span>
+<span class="line-number">131</span>
+<span class="line-number">132</span>
+<span class="line-number">133</span>
+<span class="line-number">134</span>
+<span class="line-number">135</span>
+<span class="line-number">136</span>
+<span class="line-number">137</span>
+<span class="line-number">138</span>
+<span class="line-number">139</span>
+<span class="line-number">140</span>
+<span class="line-number">141</span>
+<span class="line-number">142</span>
+<span class="line-number">143</span>
+<span class="line-number">144</span>
+<span class="line-number">145</span>
+<span class="line-number">146</span>
+<span class="line-number">147</span>
+<span class="line-number">148</span>
+<span class="line-number">149</span>
+<span class="line-number">150</span>
+<span class="line-number">151</span>
+<span class="line-number">152</span>
+<span class="line-number">153</span>
+<span class="line-number">154</span>
+<span class="line-number">155</span>
+<span class="line-number">156</span>
+<span class="line-number">157</span>
+<span class="line-number">158</span>
+<span class="line-number">159</span>
+<span class="line-number">160</span>
+<span class="line-number">161</span>
+<span class="line-number">162</span>
+<span class="line-number">163</span>
+<span class="line-number">164</span>
+<span class="line-number">165</span>
+<span class="line-number">166</span>
+<span class="line-number">167</span>
+<span class="line-number">168</span>
+<span class="line-number">169</span>
+<span class="line-number">170</span>
+<span class="line-number">171</span>
+<span class="line-number">172</span>
+<span class="line-number">173</span>
+<span class="line-number">174</span>
+<span class="line-number">175</span>
+<span class="line-number">176</span>
+<span class="line-number">177</span>
+<span class="line-number">178</span>
+<span class="line-number">179</span>
+<span class="line-number">180</span>
+<span class="line-number">181</span>
+<span class="line-number">182</span>
+<span class="line-number">183</span>
+<span class="line-number">184</span>
+<span class="line-number">185</span>
+<span class="line-number">186</span>
+<span class="line-number">187</span>
+<span class="line-number">188</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// ==UserScript==</span>
+</span><span class="line"><span class="c1">// @name        Linkify Plus</span>
+</span><span class="line"><span class="c1">// @version     2.1.4</span>
+</span><span class="line"><span class="c1">// @namespace   http://arantius.com/misc/greasemonkey/</span>
+</span><span class="line"><span class="c1">// @description Turn plain text URLs into links.  Supports http, https, ftp, email addresses.</span>
+</span><span class="line"><span class="c1">// @include     http*</span>
+</span><span class="line"><span class="c1">// @exclude     http://www.google.tld/search*</span>
+</span><span class="line"><span class="c1">// @exclude     https://www.google.tld/search*</span>
+</span><span class="line"><span class="c1">// @exclude     http://music.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     https://music.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     http://mail.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     https://mail.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     http://docs.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     https://docs.google.com/*</span>
+</span><span class="line"><span class="c1">// @exclude     http://mxr.mozilla.org/*</span>
+</span><span class="line"><span class="c1">// ==/UserScript==</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// Copyright (c) 2011, Anthony Lieuallen</span>
+</span><span class="line"><span class="c1">// All rights reserved.</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// Redistribution and use in source and binary forms, with or without</span>
+</span><span class="line"><span class="c1">// modification, are permitted provided that the following conditions are met:</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// * Redistributions of source code must retain the above copyright notice, </span>
+</span><span class="line"><span class="c1">//   this list of conditions and the following disclaimer.</span>
+</span><span class="line"><span class="c1">// * Redistributions in binary form must reproduce the above copyright notice, </span>
+</span><span class="line"><span class="c1">//   this list of conditions and the following disclaimer in the documentation </span>
+</span><span class="line"><span class="c1">//   and/or other materials provided with the distribution.</span>
+</span><span class="line"><span class="c1">// * Neither the name of Anthony Lieuallen nor the names of its contributors </span>
+</span><span class="line"><span class="c1">//   may be used to endorse or promote products derived from this software </span>
+</span><span class="line"><span class="c1">//   without specific prior written permission.</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line"><span class="c1">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; </span>
+</span><span class="line"><span class="c1">// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE </span>
+</span><span class="line"><span class="c1">// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE </span>
+</span><span class="line"><span class="c1">// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE </span>
+</span><span class="line"><span class="c1">// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR </span>
+</span><span class="line"><span class="c1">// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </span>
+</span><span class="line"><span class="c1">// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </span>
+</span><span class="line"><span class="c1">// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+</span><span class="line"><span class="c1">// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) </span>
+</span><span class="line"><span class="c1">// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE </span>
+</span><span class="line"><span class="c1">// POSSIBILITY OF SUCH DAMAGE.</span>
+</span><span class="line"><span class="c1">//</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/*******************************************************************************</span>
+</span><span class="line"><span class="cm">Loosely based on the Linkify script located at:</span>
+</span><span class="line"><span class="cm">  http://downloads.mozdev.org/greasemonkey/linkify.user.js</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">Version history:</span>
+</span><span class="line"><span class="cm"> Version 2.1.4 (Aug 12, 2012):</span>
+</span><span class="line"><span class="cm">  - Bug fix for when (only some) nodes have been removed from the document.</span>
+</span><span class="line"><span class="cm"> Version 2.1.3 (Oct 24, 2011):</span>
+</span><span class="line"><span class="cm">  - More excludes.</span>
+</span><span class="line"><span class="cm"> Version 2.1.2:</span>
+</span><span class="line"><span class="cm">  - Some bug fixes.</span>
+</span><span class="line"><span class="cm"> Version 2.1.1:</span>
+</span><span class="line"><span class="cm">  - Ignore certain &quot;highlighter&quot; script containers.</span>
+</span><span class="line"><span class="cm"> Version 2.1:</span>
+</span><span class="line"><span class="cm">  - Rewrite the regular expression to be more readable.</span>
+</span><span class="line"><span class="cm">  - Fix trailing &quot;.&quot; characters.</span>
+</span><span class="line"><span class="cm"> Version 2.0.3:</span>
+</span><span class="line"><span class="cm">  - Fix infinite recursion on X(HT)ML pages.</span>
+</span><span class="line"><span class="cm"> Version 2.0.2:</span>
+</span><span class="line"><span class="cm">  - Limit @include, for greater site/plugin compatibility.</span>
+</span><span class="line"><span class="cm"> Version 2.0.1:</span>
+</span><span class="line"><span class="cm">  - Fix aberrant &#39;mailto:&#39; where it does not belong.</span>
+</span><span class="line"><span class="cm"> Version 2.0:</span>
+</span><span class="line"><span class="cm">  - Apply incrementally, so the browser does not hang on large pages.</span>
+</span><span class="line"><span class="cm">  - Continually apply to new content added to the page (i.e. AJAX).</span>
+</span><span class="line"><span class="cm"> Version 1.1.4:</span>
+</span><span class="line"><span class="cm">  - Basic &quot;don&#39;t screw up xml pretty printing&quot; exception case</span>
+</span><span class="line"><span class="cm"> Version 1.1.3:</span>
+</span><span class="line"><span class="cm">  - Include &quot;+&quot; in the username of email addresses.</span>
+</span><span class="line"><span class="cm"> Version 1.1.2:</span>
+</span><span class="line"><span class="cm">  - Include &quot;.&quot; in the username of email addresses.</span>
+</span><span class="line"><span class="cm"> Version 1.1:</span>
+</span><span class="line"><span class="cm">  - Fixed a big that caused the first link in a piece of text to</span>
+</span><span class="line"><span class="cm">    be skipped (i.e. not linkified).</span>
+</span><span class="line"><span class="cm">*******************************************************************************/</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">var</span> <span class="nx">notInTags</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class="line">    <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="s1">&#39;noscript&#39;</span><span class="p">,</span> <span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="s1">&#39;style&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;textarea&#39;</span>
+</span><span class="line"><span class="p">];</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">textNodeXpath</span> <span class="o">=</span>
+</span><span class="line">    <span class="s2">&quot;.//text()[not(ancestor::&quot;</span> <span class="o">+</span> <span class="nx">notInTags</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;) and not(ancestor::&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)]&quot;</span><span class="p">;</span>
+</span><span class="line"><span class="c1">// Built based on:</span>
+</span><span class="line"><span class="c1">//  - http://en.wikipedia.org/wiki/URI_scheme</span>
+</span><span class="line"><span class="c1">//  - http://www.regular-expressions.info/regexbuddy/email.html</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">urlRE</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span>
+</span><span class="line">    <span class="s1">&#39;(&#39;</span>
+</span><span class="line">    <span class="c1">// leading scheme:// or &quot;www.&quot;</span>
+</span><span class="line">    <span class="o">+</span> <span class="s1">&#39;\\b([a-z][-a-z0-9+.]+://|www\\.)&#39;</span>
+</span><span class="line">    <span class="c1">// everything until non-URL character</span>
+</span><span class="line">    <span class="o">+</span> <span class="s1">&#39;[^\\s\&#39;&quot;&lt;&gt;()]+&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span>
+</span><span class="line">    <span class="c1">// email</span>
+</span><span class="line">    <span class="o">+</span> <span class="s1">&#39;\\b[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}\\b&#39;</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;gi&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">queue</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/******************************************************************************/</span>
+</span><span class="line">
+</span><span class="line"><span class="nx">linkifyContainer</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+</span><span class="line"><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;DOMNodeInserted&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">linkifyContainer</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+</span><span class="line"><span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="cm">/******************************************************************************/</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">function</span> <span class="nx">linkifyContainer</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// Prevent infinite recursion, in case X(HT)ML documents with namespaces</span>
+</span><span class="line">    <span class="c1">// break the XPath&#39;s attempt to do so.  (Don&#39;t evaluate spans we put our</span>
+</span><span class="line">    <span class="c1">// classname into.)</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">container</span><span class="p">.</span><span class="nx">className</span> <span class="o">&amp;&amp;</span> <span class="nx">container</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/\blinkifyplus\b/</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">xpathResult</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span>
+</span><span class="line">        <span class="nx">textNodeXpath</span><span class="p">,</span> <span class="nx">container</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">        <span class="nx">XPathResult</span><span class="p">.</span><span class="nx">UNORDERED_NODE_SNAPSHOT_TYPE</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">function</span> <span class="nx">continuation</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class="line">            <span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">        <span class="k">while</span> <span class="p">(</span><span class="nx">node</span> <span class="o">=</span> <span class="nx">xpathResult</span><span class="p">.</span><span class="nx">snapshotItem</span><span class="p">(</span><span class="nx">i</span><span class="o">++</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">            <span class="kd">var</span> <span class="nx">parent</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">;</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">parent</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">            <span class="c1">// Skip styled &lt;pre&gt; -- often highlighted by script.</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;PRE&#39;</span> <span class="o">==</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">tagName</span> <span class="o">&amp;&amp;</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">className</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">            <span class="nx">linkifyTextNode</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="nx">counter</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                <span class="k">return</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">continuation</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">continuation</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="kd">function</span> <span class="nx">linkifyTextNode</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">m</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">txt</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">textContent</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">span</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="line">    <span class="k">while</span> <span class="p">(</span><span class="nx">m</span> <span class="o">=</span> <span class="nx">urlRE</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">txt</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="kc">null</span> <span class="o">==</span> <span class="nx">span</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="c1">// Create a span to hold the new text with links in it.</span>
+</span><span class="line">            <span class="nx">span</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">span</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;linkifyplus&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">        <span class="c1">//get the link without trailing dots</span>
+</span><span class="line">        <span class="nx">l</span> <span class="o">=</span> <span class="nx">m</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\.*$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">lLen</span> <span class="o">=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class="line">        <span class="c1">//put in text up to the link</span>
+</span><span class="line">        <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">txt</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">m</span><span class="p">.</span><span class="nx">index</span><span class="p">)));</span>
+</span><span class="line">        <span class="c1">//create a link and put it in the span</span>
+</span><span class="line">        <span class="nx">a</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">a</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;linkifyplus&#39;</span><span class="p">;</span>
+</span><span class="line">        <span class="nx">a</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">l</span><span class="p">));</span>
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;:/&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="k">if</span> <span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">l</span> <span class="o">=</span> <span class="s2">&quot;mailto:&quot;</span> <span class="o">+</span> <span class="nx">l</span><span class="p">;</span>
+</span><span class="line">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">l</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="nx">l</span><span class="p">;</span>
+</span><span class="line">            <span class="p">}</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">        <span class="nx">a</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="nx">l</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span><span class="line">        <span class="c1">//track insertion point</span>
+</span><span class="line">        <span class="nx">p</span> <span class="o">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">index</span> <span class="o">+</span> <span class="nx">lLen</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">span</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="c1">//take the text after the last link</span>
+</span><span class="line">        <span class="nx">span</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">txt</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">txt</span><span class="p">.</span><span class="nx">length</span><span class="p">)));</span>
+</span><span class="line">        <span class="c1">//replace the original text with the new span</span>
+</span><span class="line">        <span class="k">try</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">node</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">replaceChild</span><span class="p">(</span><span class="nx">span</span><span class="p">,</span> <span class="nx">node</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">            <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+</span><span class="line">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git crlf]]></title>
@@ -3535,216 +4610,6 @@ zookeeper_st放弃了事件循环，可在事件驱动的应用程序中使用�
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[elasticsearch之基本操作]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2013/01/11/es/"/>
-    <updated>2013-01-11T17:08:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2013/01/11/es</id>
-    <content type="html"><![CDATA[<p><a href="http://www.elasticsearch.org">elasticsearch</a>是一个是开源的（Apache2协议），分布式的，<a href="http://zh.wikipedia.org/zh-cn/REST">RESTful</a>的，构建在<a href="http://lucene.apache.org/">Apache Lucene</a>之上的的搜索引擎。 </p>
-
-<p>它有很多特点例如Schema Free，Document Oriented。它是#nosql的，基于JSON，同时支持多种API，包括HTTP, thrift, memcached。支持HTTP,是比较爽的一点，因为基本上所有的应用都可以用ES了，页面上的js脚本都可以去查询。</p>
-
-<h2 id="section">安装</h2>
-
-<p>启动和安装特别简单，在<a href="http://www.elasticsearch.org/download/">ES下载页面</a>下载zip或者tar包后，解压，然后到elasticsearch的目录下，运行下面的命令就可以了。</p>
-
-<pre class="sh-commands"><code>bin/elasticsearch -f</code></pre>
-
-<p>搭建集群也非常简单，在同网段的机器上，启动es后，它们会自动组建成一个集群，并完成数据的分布式存储，查询时也会按照分布式的方式去查找。</p>
-
-<p>好了恭喜你，现在你已经可以搭建ES单机版和ES集群了，一切都这么简单。</p>
-
-<!-- more -->
-
-<p>下面我们就来看一下ES的HTTP的API的插入、删除、更新、查找、搜索的功能吧，（ES安装在ubuntu server 64位 12.04LTS）。</p>
-
-<h2 id="section-1">插入</h2>
-
-<p>先来一个简单的官方例子，插入的参数为<code>-XPUT</code>，插入一条记录。</p>
-
-<pre class="sh-bash"><code>$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elastic Search"
-}'
-</code></pre>
-
-<p>执行结果如下图所示，绿色框内的内容是ES返回的执行结果：</p>
-
-<pre class="sh-bash"><code>andrew@ubuntu:~$ curl -XPUT 'http://localhost:9200/twitter/tweet/1' -d '{
-</code><code>&gt;     &quot;user&quot; : &quot;kimchy&quot;,
-</code><code>&gt;     &quot;post_date&quot; : &quot;2009-11-15T14:12:12&quot;,
-</code><code>&gt;     &quot;message&quot; : &quot;trying out Elastic Search&quot;
-</code><code>&gt; }'
-</code><code>{&quot;ok&quot;:true,&quot;_index&quot;:&quot;twitter&quot;,&quot;_type&quot;:&quot;tweet&quot;,&quot;_id&quot;:&quot;1&quot;,&quot;_version&quot;:6}andrew@ubuntu:~$</code></pre>
-
-<p>从上面的这个例子中，可以看出ES的http的服务的默认端口9200，后面的<code>/twitter/tweet/1</code>是这条记录的索引部分。</p>
-
-<p>这也就体现了它的RESTful风格，所有的记录都是通过URI确定。这三级目录分布对应了<code>_index</code>，<code>_type</code>, <code>_id</code>（绿框内可以看出来）。实际上ES上存放的所有的记录都只能通过三级目录的方式找到，不能多也不能少。</p>
-
-<p><code>_id</code>字段可以是数字也可以是字符串。在执行上面的命令时ES会自动创建这些索引。<code>-d</code>后面跟上了要插入的json格式的记录。</p>
-
-<p><code>-XPUT</code>表明这是插入一条数据，ES中叫创建一个索引。ES返回的结果中，一个<code>_version</code>字段，表明了当前记录的版本号，当你想这个索引重新put一条记录时，版本号会自动加一。</p>
-
-<h2 id="section-2">删除</h2>
-
-<p>删除的http请求参数为<code>-XDELETE</code>，通过下面的命令可以删除这条记录：</p>
-
-<pre class="sh-commands"><code>curl -XDELETE 'http://localhost:9200/twitter/tweet/1'
-</code></pre>
-
-<p>删除这条记录的时候，<code>_verison</code>也会自动加一的。</p>
-
-<h2 id="section-3">查询</h2>
-
-<p>创建了一个索引后，可以通过下面的方式查询（参数<code>-XGET</code>）出来:</p>
-
-<pre class="sh-commands"><code>curl -XGET 'http://localhost:9200/twitter/tweet/1'
-</code></pre>
-
-<p>执行上面的查询命令，可以等到下面的结果：</p>
-
-<pre class="sh-bash"><code>andrew@ubuntu:~$ curl -XGET 'http://localhost:9200/twitter/tweet/1'
-{"_index":"twitter","_type":"tweet","_id":"1","_version":5,"exists":true, "_source" : {
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elastic Search"
-}}andrew@ubuntu:~$ 
-</code></pre>
-
-<p><code>exists</code>表示是否有查询结果，<code>_source</code>字段是查询到的记录。</p>
-
-<p>查询的时候，可以将<code>_type</code>设置成为<code>_all</code>，ES就会返回在<code>_index</code>下所有type中，第一个匹配<code>_id</code>的记录。</p>
-
-<p>还可以通过参数对返回结果继续控制，例如：用fields选取返回的字段，用pretty控制返回的json格式是否更阅读友好。<code>format=yaml</code>可以设置输入格式为YAML。
-下面是两个例子</p>
-
-<pre class="sh-commands"><code>curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&amp;pretty=true'
-</code><code>curl -XGET 'http://localhost:9200/twitter/tweet/1?fields=message,user&amp;format=yaml'</code></pre>
-
-<p>当然ES还支持一次查询多组记录，即multi get，在URI中是使用关键字<code>_mget</code>，具体可以参考ES的文档<a href="http://www.elasticsearch.org/guide/reference/api/multi-get.html">multi get</a>。</p>
-
-<h2 id="section-4">更新</h2>
-
-<p>ES同样支持更新，但是更新的方式是通过一个提供的脚本进行的。ES的做法是，通过index找到相应的存放记录的节点，然后执行脚本，执行完之后，返回新的索引。实际上执行的是一个get和reindex的过程，在这个过程中，通过versioning来控制没有其它的更新操作（这个功能是0.19后可用的）。具体实现的原理应该和<a href="http://www.elasticsearch.org/blog/2011/02/08/versioning.html">elasticsearch Versioning</a>相关。</p>
-
-<p>get，reindex的含义是，ES先取出这条记录，然后根据新数据生成新记录，然后在把新记录放回到ES中（并不会覆盖老的记录）。</p>
-
-<p>首先创建一条记录</p>
-
-<pre class="sh-bash"><code>$ curl -XPUT localhost:9200/test/type1/1 -d '{
-    "counter" : 1,
-    "tags" : ["red"]
-}'
-</code></pre>
-
-<p>将counter的值加4</p>
-
-<pre class="sh-bash"><code>$ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.counter += count",
-    "params" : {
-        "count" : 4
-    }
-}'
-</code></pre>
-
-<p>也可以添加一个tag的值</p>
-
-<pre class="sh-bash"><code>$ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.tags += tag",
-    "params" : {
-        "tag" : "blue"
-    }
-}'
-</code></pre>
-
-<p>现在还支持upsert功能，即在更新的时候，如果记录没有这个key，则插入这个key，下面是一个例子，如果没有<code>counter</code>字段，则插入该字段：</p>
-
-<pre class="sh-bash"><code>$ curl -XPOST 'localhost:9200/test/type1/1/_update' -d '{
-    "script" : "ctx._source.counter += count",
-    "params" : {
-        "count" : 4
-    },
-    "upsert" : {
-        "counter" : 1
-    }
-}'
-</code></pre>
-
-<p>关于update还有其它很多功能，可以参考<a href="http://www.elasticsearch.org/guide/reference/api/update.html">ES的API update</a></p>
-
-<h2 id="section-5">搜索</h2>
-
-<p>elasticsearch的名字里面有一个search，那么主要功能也是search了。</p>
-
-<p>es的search有两种形式，一是通过URI，二是通过Requst Body。通过URI查询，即将查询的语句放入到请求的url中，例如：</p>
-
-<pre class="sh-commands"><code>curl -XGET 'http://localhost:9200/twitter/tweet/_search?q=user:kimchy'
-</code></pre>
-
-<p>第二种方式，即在查询的请求中加入一个doc</p>
-
-<pre class="sh-bash"><code>$ curl -XGET 'http://localhost:9200/twitter/tweet/_search' -d '{
-    "query" : {
-        "term" : { "user" : "kimchy" }
-    }
-}'
-</code></pre>
-
-<p>query body的定义可以查看<a href="http://www.elasticsearch.org/guide/reference/query-dsl/">query DSL</a>
-另外两种查询方式都可以带参数，参数的含义参考<a href="http://www.elasticsearch.org/guide/reference/api/search/uri-request.html">URI Request</a>和<a href="http://www.elasticsearch.org/guide/reference/api/search/request-body.html">Request Body</a>。</p>
-
-<p>ES的搜索功能是可以跨index和type的，例如下面这几条命令</p>
-
-<pre class="sh-commands"><code>curl -XGET 'http://localhost:9200/twitter/_search?q=user:kimchy'
-</code><code>curl -XGET 'http://localhost:9200/twitter/tweet,user/_search?q=user:kimchy'
-</code><code>curl -XGET 'http://localhost:9200/kimchy,elasticsearch/tweet/_search?q=tag:wow'
-</code><code>curl -XGET 'http://localhost:9200/_all/tweet/\_search?q=tag:wow'
-</code><code>curl -XGET 'http://localhost:9200/\_search?q=tag:wow'</code></pre>
-
-<p>第一条是在所有的<code>twitter</code>这个index下的所有type中查找，第二条是在<code>tweet,user</code>这两个type中查找，第三条是在<code>kimchy,elasticsearch</code>这两个index的<code>tweet</code>这个type中查找，第四条使用了<code>_all</code>关键字，是在所有的index的<code>tweet</code>的type中查找，第五条更暴力，在所有的index和type中查找。</p>
-
-<p>查找还有其它的很多选项，<a href="http://www.elasticsearch.org/guide/reference/api/search/sort.html">sort</a>，<a href="http://www.elasticsearch.org/guide/reference/api/search/highlighting.html">高亮</a>，选取返回记录的域<a href="http://www.elasticsearch.org/guide/reference/api/search/fields.html">Fields</a>，还可以对返回的域使用一个脚本进行计算<a href="http://www.elasticsearch.org/guide/reference/api/search/script-fields.html">script Fields</a>，或者对返回结果继续统计<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">Facets</a>，Facets的内容比较多，它支持关键词统计，范围内统计，直方图式统计，日期的直方图式统计，过滤，查询，还有记录地理位置距离的统计<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/geo-distance-facet.html">geo distance</a>。
-支持名字过滤<a href="http://www.elasticsearch.org/guide/reference/api/search/named-filters.html">Named Filters</a>。
-定义搜索类型<a href="http://www.elasticsearch.org/guide/reference/api/search/search-type.html">Search Type </a>。例如什么Query And Fetch，Query Then Fetch。
-索引加速的功能<a href="http://www.elasticsearch.org/guide/reference/api/search/index-boost.html">Index Boost</a>，可以让某一个索引的权重大于另外一个。
-保持上次检索的环境了结果<a href="http://www.elasticsearch.org/guide/reference/api/search/scroll.html">Scroll</a>。保留每一个命中的score值<a href="http://www.elasticsearch.org/guide/reference/api/search/explain.html">Explain</a>。
-设置命中的<a href="http://www.elasticsearch.org/guide/reference/api/search/min-score.html">min_score</a>。保留版本号<a href="http://www.elasticsearch.org/guide/reference/api/search/version.html">Version</a>。</p>
-
-<p>Search的参数很多，我也没有一一看，不过果然是名字里面有个search，对检索的各种场景都有支持。</p>
-
-<p>当然还支持多个查询multi search，例如下面这个例子</p>
-
-<pre class="sh-bash"><code>$ cat requests
-{"index" : "test"}
-{"query" : {"match_all" : {}}, "from" : 0, "size" : 10}
-{"index" : "test", "search_type" : "count"}
-{"query" : {"match_all" : {}}}
-{}
-{"query" : {"match_all" : {}}}
-
-$ curl -XGET localhost:9200/_msearch --data-binary @requests; echo
-</code></pre>
-
-<h2 id="section-6">小结</h2>
-
-<p>以上就是elasticsearch的基本的几个功能了。当然它还有其它的很多功能，大家可以上<a href="http://www.elasticsearch.org">http://www.elasticsearch.org</a>去查看。</p>
-
-<p>ES是基于Lucene的，有很多概念是直接来自于它，所有要想深入学习ES，还得有点Lucene的基础。</p>
-
-<p>总的，感觉elasticsearch是一个比较强大的工具，而且对社交网络的支持比较好，而且使用方便，配置简单，就不知道稳定性如何了。</p>
-
-<p>下面是两篇不错的文章，大家也可以借鉴一下：</p>
-
-<ul>
-  <li><a href="http://blog.csdn.net/laigood12345/article/details/7421173">http://blog.csdn.net/laigood12345/article/details/7421173</a></li>
-  <li><a href="http://www.qwolf.com/?p=1387">http://www.qwolf.com/?p=1387</a></li>
-</ul>
-
-<p>还有elasticsearch的中文站点<a href="http://www.elasticsearch.cn/">http://www.elasticsearch.cn/</a>，不过这个网站还在构建中，翻译工作也才刚刚开始，大家就期盼早点完成。</p>
 ]]></content>
   </entry>
   
