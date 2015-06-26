@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-06-24T09:55:45+08:00</updated>
+  <updated>2015-06-26T10:24:16+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -12,6 +12,132 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[apache vedio streaming]]></title>
+    <link href="http://liuhongjiang.github.com/tech/blog/2015/06/26/apache-vedio-streaming/"/>
+    <updated>2015-06-26T10:04:00+08:00</updated>
+    <id>http://liuhongjiang.github.com/tech/blog/2015/06/26/apache-vedio-streaming</id>
+    <content type="html"><![CDATA[<h2 id="apachemp4">apache支持mp4的流播放</h2>
+<p>apache可以通过配置模块支持MP4和flv格式的视频流。<a href="https://www.alduccino.com/mod-h264-and-mod-flv-streaming-for-apache-on-whm-cpanel">Mod_h264 and mod_FLV Streaming for Apache</a>
+如果需要更多的视频流支持，建议使用 <a href="https://www.ffmpeg.org/ffserver.html">ffserver</a></p>
+
+<p>下面以在centeros的apache上配置MP4模块的支持为例，首先是在apache端的配置</p>
+
+<!--more-->
+
+<h2 id="modh264streaming">安装mod_h264_streaming</h2>
+
+<p>安装apache httpd的apxs：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">yum install httpd-devel
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果apache是通过yum安装在系统中的话， 需要root权限：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd</span> ~/download
+</span><span class="line">wget http://h264.code-shop.com/download/apache_mod_h264_streaming-2.2.7.tar.gz
+</span><span class="line">tar -xzvf apache_mod_h264_streaming-2.2.7.tar.gz
+</span><span class="line"><span class="nb">cd </span>mod_h264_streaming-2.2.7
+</span><span class="line">./configure --with-apxs<span class="o">=</span><span class="s1">&#39;which apxs&#39;</span>
+</span><span class="line">make <span class="o">&amp;&amp;</span> make install
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>配置apache，
+在httpd.conf中添加配置, mod_h264_streaming.so的路径可能不一样：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">AddType video/mp4 .mp4 .m4v
+</span><span class="line">AddType video/ogg .ogv
+</span><span class="line">AddType video/webm .webm
+</span><span class="line">
+</span><span class="line">LoadModule h264_streaming_module /usr/lib64/httpd/modules/mod_h264_streaming.so
+</span><span class="line">AddHandler h264-streaming.extensions .mp4
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>重启apache.
+然后可以在httpd的根目录下放入一个mp4的文件</p>
+
+<h2 id="html">编写一个html文件</h2>
+
+<p>例子如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class="line"><span class="nt">&lt;html&gt;</span>
+</span><span class="line"><span class="nt">&lt;body&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="nt">&lt;video</span> <span class="na">width=</span><span class="s">&quot;400&quot;</span> <span class="na">preload</span> <span class="na">controls</span><span class="nt">&gt;</span>
+</span><span class="line">  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;http://localhost/h264.mp4&quot;</span> <span class="na">type=</span><span class="s">&quot;video/mp4&quot;</span><span class="nt">&gt;</span>
+</span><span class="line">  Your browser does not support HTML5 video.
+</span><span class="line"><span class="nt">&lt;/video&gt;</span>
+</span><span class="line"><span class="nt">&lt;/body&gt;</span>
+</span><span class="line"><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="pitfall">pitfall</h2>
+<p>During I test using the html5 vedio tag to display the mp4 vedio, I only got the audio and no image at all when I open the html file with Chrome.
+And I tried with firefox, and got this error: “No video with supported format and MIME type found”.</p>
+
+<p>I googled this error message, and didn’t get a direct answer about how to fix it.</p>
+
+<p>And luckly, I found the reason.
+It turns out the html5 vedio tag support the vedio coded with H.264, and my mp4 file is coded with MPEG-4.
+So I used another mp4 file with coding format h.264, and it works well.</p>
+
+<p>(As I googled, but failed to find the solution, I wrote this solution in English, so everyone can get help from my contribution，if he saw this on google).</p>
+
+<h2 id="mp4">关于MP4的一些知识</h2>
+
+<p>当前，html5的video 元素支持三种视频格式：</p>
+
+<ul>
+  <li>Ogg = 带有 Theora 视频编码和 Vorbis 音频编码的 Ogg 文件</li>
+  <li>MPEG4 = 带有 H.264 视频编码和 AAC 音频编码的 MPEG 4 文件</li>
+  <li>WebM = 带有 VP8 视频编码和 Vorbis 音频编码的 WebM 文件</li>
+</ul>
+
+<p>MP4只是一种封装而已, 能封装H264, XVID, VC-1等编码进去。MPEG-4是一种编码。</p>
+
+<p>MP4现在常用的只有 H264 和 MPEG4格式， H263 和VP6格式 已淘汰。Xvid.Divx 不是什么格式. Xvid.Divx是MPEG4的编码器 X264是H264的编码器</p>
+
+<h2 id="reference">reference</h2>
+<ul>
+  <li><a href="http://g33kinfo.com/info/archives/4305">http://g33kinfo.com/info/archives/4305</a></li>
+  <li><a href="http://universvideo.com/installing-apache-mod-h264/">http://universvideo.com/installing-apache-mod-h264/</a></li>
+  <li><a href="http://voice.firefallpro.com/2012/03/html5-audio-video-mime-types.html">http://voice.firefallpro.com/2012/03/html5-audio-video-mime-types.html</a></li>
+</ul>
+
+<h2 id="section">查看模块加载状态</h2>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">apachectl -t -D DUMP_MODULES | grep h264_streaming_module
+</span><span class="line">httpd -M
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[greasemonkey script]]></title>
@@ -4351,262 +4477,6 @@ zookeeper_st放弃了事件循环，可在事件驱动的应用程序中使用�
     </li>
     <li id="fn:5">
       <p>sahusoft, <a href="http://blog.csdn.net/sahusoft/article/details/7032604">分布式系统进程的选举</a><a href="#fnref:5" rel="reference">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[linux命令行提示符配置]]></title>
-    <link href="http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting/"/>
-    <updated>2013-01-16T09:29:00+08:00</updated>
-    <id>http://liuhongjiang.github.com/tech/blog/2013/01/16/shell-prompting</id>
-    <content type="html"><![CDATA[<p>linux下shell提示符可以任意配置的。</p>
-
-<p>首先看看bash的配置文件，一般在用户的HOME目录下有这样几个文件<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>：</p>
-
-<ul>
-  <li>.bash_history ：记录了您以前输入的命令，</li>
-  <li>.bash_logout ：当您退出 shell 时，要执行的命令，</li>
-  <li>.bash_profile ：当您登入 shell 时，要执行的命令，</li>
-  <li>.bashrc ：每次打开新的 shell 时，要执行的命令。</li>
-</ul>
-
-<p>这些文件是每一位用户的设置。系统级的设置存储在’/etc/profile’、’/etc/bashrc’及目录’/etc/profile.d’下的文件中。但您得习惯用各自的配置文件：编辑不需要’root’权限，还可以使您的设置更有个性。当系统级与用户级的设置发生冲突时，将采用用户的设置。</p>
-
-<p>每次当您打开一个控制台(console)或 xterm 时，最先看到的就是提示符(prompt)，类似于：</p>
-
-<pre class="sh-bash"><code>account@hostname ~ $</code></pre>
-
-<p>在默认设置下，提示符将显示您的用户名、主机名（默认是’localhost’）、当前所在目录（在Unix中，’~’表示您的home目录）。
-按照传统，最后一个字符可以标识您是普通用户（<code>$</code>），还是’root’（<code>#</code>）。
-您可以通过 <code>$PS1</code>, <code>$PS2</code> 变量来设置提示符，<code>$PS2</code>是当在多行内输入一个命令时，换行后，出现的提示符。命令</p>
-
-<!-- more -->
-
-<pre class="sh-bash"><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS1
-</code><code>${debian_chroot:+($debian_chroot)}\u@\h:\w\$
-</code><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS2
-</code><code>&gt;</code></pre>
-
-<p>将显示当前的设定。其中可用字符的含义在 man bash 的’PROMPTING’部分有说明，PROMPTING部分的翻译</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-<span class="line-number">26</span>
-<span class="line-number">27</span>
-<span class="line-number">28</span>
-<span class="line-number">29</span>
-<span class="line-number">30</span>
-<span class="line-number">31</span>
-<span class="line-number">32</span>
-<span class="line-number">33</span>
-<span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-</pre></td><td class="code"><pre><code class="bash"><span class="line">提示符<span class="o">(</span>PROMPTING<span class="o">)</span>
-</span><span class="line">    在 交互执行时， bash 在准备好读入一条命令时显示主提示符 PS1，在需要更多的输入来完成一条命令时显示 PS2。 Bash 允许通过插入一些反斜杠转义的特
-</span><span class="line">    殊字符来定制这些提示字符串，这些字符被如下解释：
-</span><span class="line">        <span class="se">\a</span>     一个 ASCII 响铃字符 <span class="o">(</span>07<span class="o">)</span>
-</span><span class="line">        <span class="se">\d</span>     日期，格式是 <span class="s2">&quot;星期 月份 日&quot;</span> <span class="o">(</span>例如，<span class="s2">&quot;Tue May 26&quot;</span><span class="o">)</span>
-</span><span class="line">        <span class="se">\D</span><span class="o">{</span>format<span class="o">}</span>
-</span><span class="line">               format 被传递给 strftime<span class="o">(</span>3<span class="o">)</span>，结果被插入到提示字符串中；空的 format 将使用语言环境特定的时间格式。花括号是必需的
-</span><span class="line">        <span class="se">\e</span>     一个 ASCII 转义字符 <span class="o">(</span>033<span class="o">)</span>
-</span><span class="line">        <span class="se">\h</span>     主机名，第一个 ‘.’ 之前的部分
-</span><span class="line">        <span class="se">\H</span>     主机名
-</span><span class="line">        <span class="se">\j</span>     shell 当前管理的作业数量
-</span><span class="line">        <span class="se">\l</span>     shell 的终端设备名的基本部分
-</span><span class="line">        <span class="se">\n</span>     新行符
-</span><span class="line">        <span class="se">\r</span>     回车
-</span><span class="line">        <span class="se">\s</span>     shell 的名称， <span class="nv">$0</span> 的基本部分 <span class="o">(</span>最后一个斜杠后面的部分<span class="o">)</span>
-</span><span class="line">        <span class="se">\t</span>     当前时间，采用 24小时制的 HH:MM:SS 格式
-</span><span class="line">        <span class="se">\T</span>     当前时间，采用 12小时制的 HH:MM:SS 格式
-</span><span class="line">        <span class="se">\@</span>     当前时间，采用 12小时制上午/下午 <span class="o">(</span>am/pm<span class="o">)</span> 格式
-</span><span class="line">        <span class="se">\A</span>     当前时间，采用 24小时制上午/下午格式
-</span><span class="line">        <span class="se">\u</span>     当前用户的用户名 the username of the current user
-</span><span class="line">        <span class="se">\v</span>     bash 的版本 <span class="o">(</span>例如，2.00<span class="o">)</span>
-</span><span class="line">        <span class="se">\V</span>     bash 的发行编号，版本号加补丁级别 <span class="o">(</span>例如，2.00.0<span class="o">)</span>
-</span><span class="line">        <span class="se">\w</span>     当前工作目录
-</span><span class="line">        <span class="se">\W</span>     当前工作目录的基本部分
-</span><span class="line">        <span class="se">\!</span>     此命令的历史编号
-</span><span class="line">        <span class="se">\#</span>     此命令的命令编号
-</span><span class="line">        <span class="se">\$</span>     如果有效 UID 是 0，就是 <span class="c">#, 其他情况下是 $</span>
-</span><span class="line">        <span class="se">\n</span>nn   对应八进制数 nnn 的字符
-</span><span class="line">        <span class="se">\\</span>     一个反斜杠
-</span><span class="line">        <span class="se">\[</span>     一个不可打印字符序列的开始，可以用于在提示符中嵌入终端控制序列
-</span><span class="line">        <span class="se">\]</span>     一个不可打印字符序列的结束
-</span><span class="line">
-</span><span class="line">    命令编号和历史编号通常是不同的：历史编号是命令在历史列表中的位置，可能包含从历史文件中恢复的命令 <span class="o">(</span>参见下面的 HISTORY 历史章节<span class="o">)</span>，而命令编 号
-</span><span class="line">    是 当 前 shell 会话中执行的命令序列中，命令的位置。字符串被解码之后，它将进行扩展，要经过 parameter expansion, <span class="nb">command </span>substitution, arith‐
-</span><span class="line">    metic expansion 和 quote removal, 最后要经过 shell 选项 promptvars 处理 <span class="o">(</span>参见下面的 shell 内建命令<span class="o">(</span>SHELL BUILTIN COMMANDS<span class="o">)</span> 章节中，对 命 令
-</span><span class="line">    <span class="nb">shopt</span> 的描述<span class="o">)</span>。
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>例如一个默认的<code>$PS1</code>设置如下：</p>
-
-<pre class="sh-bash"><code>andrew@ubuntu:~/lhj-github/tech$ echo $PS1
-</code><code>${debian_chroot:+($debian_chroot)}\u@\h:\w\$</code></pre>
-
-<p>前面这部分<code>${debian_chroot:+($debian_chroot)}</code>是ubuntu一种特殊的运行程序的方式，可以参考<sup id="fnref:3"><a href="#fn:3" rel="footnote">2</a></sup><sup id="fnref:4"><a href="#fn:4" rel="footnote">3</a></sup>，和我们要讲的内容没有什么关系。后面这部分<code>\u@\h:\w\$</code>就是shell prompting的配置了，可以根据上面的内容翻译出来。我现在的这个配置，显示出来就像这个样子了：</p>
-
-<pre class="sh-bash"><code>andrew@ubuntu:~/lhj-github/tech$</code></pre>
-
-<p>当然还可以配置颜色，首先来看ascii字符颜色表<sup id="fnref:5"><a href="#fn:5" rel="footnote">4</a></sup><sup id="fnref:6"><a href="#fn:6" rel="footnote">5</a></sup>：</p>
-
-<table class="mytable">
-  <thead>
-    <tr>
-      <th>前景</th>
-      <th>背景</th>
-      <th>颜色</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>30</td>
-      <td>40</td>
-      <td>黑色</td>
-    </tr>
-    <tr>
-      <td>31</td>
-      <td>41</td>
-      <td>紅色</td>
-    </tr>
-    <tr>
-      <td>32</td>
-      <td>42</td>
-      <td>綠色</td>
-    </tr>
-    <tr>
-      <td>33</td>
-      <td>43</td>
-      <td>黃色</td>
-    </tr>
-    <tr>
-      <td>34</td>
-      <td>44</td>
-      <td>藍色</td>
-    </tr>
-    <tr>
-      <td>35</td>
-      <td>45</td>
-      <td>紫紅色</td>
-    </tr>
-    <tr>
-      <td>36</td>
-      <td>46</td>
-      <td>青藍色</td>
-    </tr>
-    <tr>
-      <td>37</td>
-      <td>47</td>
-      <td>白色</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><br /></p>
-
-<table class="mytable">
-  <thead>
-    <tr>
-      <th>代码</th>
-      <th>意义</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>OFF</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>高亮显示</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>underline</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>闪烁</td>
-    </tr>
-    <tr>
-      <td>7</td>
-      <td>反白显示</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>不可见</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>然后就可以设置prompting的颜色了，最简单的方法是在HOME目录下的.bashrc文件添加以下配置（这种方法只会影响当前用户），
-例如我现在的设置为</p>
-
-<pre class="sh-bash"><code>export PS1=&quot;\w\e[32m\$ \e[0m&quot;</code></pre>
-
-<p>前面部分<code>\e[32m</code>是设置提示符的颜色，后面的<code>\e[0m</code>是恢复后面命令行输入输出的颜色，如果不用这个的话，所有的输入输出都会受到影响。</p>
-
-<p>当然也可以配置一个多个属性的，只需要用分号隔开就可以了，这是一个例子:</p>
-
-<pre class="sh-bash"><code>export PS1=&quot;\w\e[32;40;4;1;7m\$ \e[0m&quot;</code></pre>
-
-<p>我使用的是ubuntu server 64 12.04，shell用的是bash，在配置的过过程中，唯独只有闪烁功能好像没有起作用，如果有朋友解决了这个问题麻烦给我说一下。</p>
-
-<p>在学习这个的过程中，我还找到了一篇关于提示符配置的<a href="http://blog.sina.com.cn/s/blog_6d0cbb0301019egu.html">不错的博文</a>，大家也可以阅读一下。</p>
-
-<h2 id="python-">python 输出有颜色的字符</h2>
-
-<p>也可以使用python输出有颜色的字符，下面是例子代码</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[43;32m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;yellow background, green font&quot;</span><span class="p">)</span>
-</span><span class="line"><span class="k">print</span> <span class="s">&#39;</span><span class="se">\033</span><span class="s">[42;31m{0}</span><span class="se">\033</span><span class="s">[0m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;green background, red font&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p><a href="http://blog.chinaunix.net/uid-13342902-id-2901676.html">linux shell简介(3)</a><a href="#fnref:1" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:3">
-      <p><a href="https://help.ubuntu.com/community/BasicChroot">https://help.ubuntu.com/community/BasicChroot</a><a href="#fnref:3" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:4">
-      <p><a href="https://wiki.ubuntu.com/DebootstrapChroot">https://wiki.ubuntu.com/DebootstrapChroot</a><a href="#fnref:4" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:5">
-      <p><a href="http://bbs.chinaunix.net/forum.php?mod=viewthread&amp;tid=54256">http://bbs.chinaunix.net/forum.php?mod=viewthread&amp;tid=54256</a><a href="#fnref:5" rel="reference">&#8617;</a></p>
-    </li>
-    <li id="fn:6">
-      <p><a href="http://www.chinaunix.net/old_jh/6/54256.html">http://www.chinaunix.net/old_jh/6/54256.html</a><a href="#fnref:6" rel="reference">&#8617;</a></p>
     </li>
   </ol>
 </div>

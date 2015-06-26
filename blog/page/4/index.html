@@ -9,7 +9,7 @@
   <meta name="author" content="刘洪江">
 
   
-  <meta name="description" content=" 如何搭建blog 这个blog是使用Octopress搭建的，它是一种基于Jekyll的博客框架。 存放在github上。 markdown解析器用的kramdown 数学公式解析器用的MathJax ">
+  <meta name="description" content="在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。借用强大的MathJax + Latex就可以解决这个问题。废话少说，先来一个例子 % <![CDATA[ \begin{align*} & \phi(x,y) = \phi \left(\sum_ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -168,6 +168,83 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/tech/blog/2012/11/21/math/">显示公式</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-21T12:49:00+08:00" pubdate data-updated="true">Nov 21<span>st</span>, 2012</time>
+        
+		
+        
+        <span style="text-transform:none">
+		  | Tags: 
+          
+            <a class='category' href='/tech/blog/categories/math/'>math</a>
+          
+        </span>
+        
+        <span class="share-to-weibo">
+  <a href="javascript:void(0)" onclick="window.open('http://service.weibo.com/share/share.php?appkey=1479507984&amp;ralateUid=1462341965&amp;title=显示公式 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=615,height=505,toolbar=0,status=0')" class="sina-weibo" title="分享到新浪微博"></a>
+  <a href="javascript:void(0)" onclick="window.open('http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;appkey=&amp;title=显示公式 - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=700,height=680,toolbar=0,status=0')" class="tencent-weibo" title="分享到腾讯微博"></a>
+  <!-- a href="javascript:void(0)" onclick="window.open('https://twitter.com/intent/tweet?text=显示公式  - &amp;url=http://liuhongjiang.github.com/tech/blog/2012/11/21/math/', null, 'width=600,height=300,toolbar=0,status=0')" class="twitter" title="分享到Twitter"></a -->
+</span>
+ 
+      </p>
+    
+  </header>
+
+
+    <div class="entry-content">
+        
+        <p>在网页或blog中引用数学公式是一件痛苦的事情。经过几番在网上的查找，算是勉强找到了一个借鉴方法。借用强大的<code>MathJax + Latex</code>就可以解决这个问题。废话少说，先来一个例子  </p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+ %]]></script>
+
+
+    </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/tech/blog/2012/11/21/math/">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/tech/blog/2012/11/21/how-to-build-blog/">使用Octopress搭建博客</a></h1>
     
     
@@ -311,6 +388,10 @@
   <ul id="Recent Posts">
     
       <li class="post">
+        <a href="/tech/blog/2015/06/26/apache-vedio-streaming/">apache vedio streaming</a>
+      </li>
+    
+      <li class="post">
         <a href="/tech/blog/2015/06/24/greasemonkey-script/">greasemonkey script</a>
       </li>
     
@@ -324,10 +405,6 @@
     
       <li class="post">
         <a href="/tech/blog/2015/05/15/sublime-tips/">sublime tips</a>
-      </li>
-    
-      <li class="post">
-        <a href="/tech/blog/2015/05/13/sqlite/">sqlite</a>
       </li>
     
   </ul>
