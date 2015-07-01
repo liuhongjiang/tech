@@ -4,7 +4,7 @@
   <title><![CDATA[刘洪江的流水帐]]></title>
   <link href="http://liuhongjiang.github.com/tech/atom.xml" rel="self"/>
   <link href="http://liuhongjiang.github.com/tech/"/>
-  <updated>2015-06-26T10:24:16+08:00</updated>
+  <updated>2015-07-01T14:25:44+08:00</updated>
   <id>http://liuhongjiang.github.com/tech/</id>
   <author>
     <name><![CDATA[刘洪江]]></name>
@@ -1756,6 +1756,28 @@ If you want to actually keep whatever changes you’ve got locally, do a <code>-
 <p>这样就可以达到需要的效果。</p>
 
 <p>不要使用git revert， git revert会提交一个新的commit去revert原来的commit，这样在history中就可以看到。</p>
+
+<h2 id="git-clean">git clean</h2>
+
+<p>http://stackoverflow.com/questions/61212/how-do-i-remove-local-untracked-files-from-my-current-git-branch</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git clean -f
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>But beware… there’s no going back. Use <code>-n</code> or <code>--dry-run</code> to preview the damage you’ll do.</p>
+
+<p>If you want to also remove directories, run <code>git clean -f -d</code> or <code>git clean -fd</code></p>
+
+<p>If you just want to remove ignored files, run <code>git clean -f -X</code> or <code>git clean -fX</code></p>
+
+<p>If you want to remove ignored as well as non-ignored files, run <code>git clean -f -x</code> or <code>git clean -fx</code></p>
+
+<p>Note the case difference on the <code>X</code> for the two latter commands.</p>
+
+<p>If <code>clean.requireForce</code> is set to “true” (the default) in your configuration, then unless you specify -f nothing will actually happen.</p>
+
+<p>See the <a href="http://git-scm.com/docs/git-clean">git-clean</a> docs for more information.</p>
 ]]></content>
   </entry>
   
